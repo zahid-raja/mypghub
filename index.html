@@ -1,0 +1,797 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>MyPGHub</title>
+
+<style>
+
+body{
+  margin:0;
+  font-family:Arial;
+  background:#f1f3f6;
+}
+
+/* HEADER */
+
+.header{
+  background:white;
+  padding:15px;
+  box-shadow:0 1px 5px rgba(0,0,0,0.1);
+  position:sticky;
+  top:0;
+  z-index:1000;
+}
+
+.logo-row{
+  margin-bottom:15px;
+}
+
+.box{
+  background:#f0f5ff;
+  border-radius:12px;
+  padding:12px 15px;
+}
+
+.logo-box{
+  display:inline-block;
+  font-size:22px;
+  font-weight:bold;
+  color:#2874f0;
+}
+
+.header-row{
+  display:flex;
+  align-items:center;
+  gap:15px;
+}
+
+.search-box{
+  flex:1;
+}
+
+.search-box input{
+  width:100%;
+  border:none;
+  outline:none;
+  background:transparent;
+  font-size:15px;
+}
+
+.action-box{
+  cursor:pointer;
+  min-width:80px;
+  text-align:center;
+  font-size:15px;
+}
+
+/* CATEGORY */
+
+.categories{
+  display:flex;
+  gap:10px;
+  padding:12px;
+  overflow-x:auto;
+}
+
+.categories::-webkit-scrollbar{
+  display:none;
+}
+
+.cat-btn{
+  background:white;
+  padding:10px 15px;
+  border-radius:20px;
+  white-space:nowrap;
+  box-shadow:0 1px 4px rgba(0,0,0,0.1);
+}
+
+/* GRID */
+
+.grid{
+  display:grid;
+  grid-template-columns:repeat(4,1fr);
+  gap:15px;
+  padding:15px;
+}
+
+.card{
+  background:white;
+  border-radius:12px;
+  overflow:hidden;
+  box-shadow:0 1px 5px rgba(0,0,0,0.1);
+  cursor:pointer;
+}
+
+.card img{
+  width:100%;
+  height:170px;
+  object-fit:cover;
+}
+
+.card-content{
+  padding:10px;
+}
+
+.price{
+  color:green;
+  font-size:18px;
+  font-weight:bold;
+}
+
+.pg-type{
+  color:#555;
+  margin-top:5px;
+  font-size:13px;
+}
+
+.distance{
+  color:gray;
+  margin-top:5px;
+  font-size:12px;
+}
+
+/* DETAIL PAGE */
+
+#detailPage{
+  display:none;
+  padding:20px;
+}
+
+.detail-layout{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:25px;
+}
+
+/* LEFT */
+
+.left-side{
+  position:sticky;
+  top:90px;
+  height:fit-content;
+}
+
+.slider{
+  background:white;
+  border-radius:15px;
+  overflow:hidden;
+  position:relative;
+  box-shadow:0 1px 5px rgba(0,0,0,0.1);
+}
+
+.slide{
+  width:100%;
+  height:380px;
+  object-fit:cover;
+  display:none;
+}
+
+.slide.active{
+  display:block;
+}
+
+.prev,
+.next{
+  position:absolute;
+  top:50%;
+  transform:translateY(-50%);
+  border:none;
+  background:rgba(0,0,0,0.5);
+  color:white;
+  padding:12px;
+  border-radius:50%;
+  cursor:pointer;
+}
+
+.prev{
+  left:10px;
+}
+
+.next{
+  right:10px;
+}
+
+/* DOTS */
+
+.dots{
+  text-align:center;
+  margin-top:10px;
+}
+
+.dot{
+  width:10px;
+  height:10px;
+  border-radius:50%;
+  background:#ccc;
+  display:inline-block;
+  margin:5px;
+}
+
+.dot.active{
+  background:#2874f0;
+}
+
+/* RIGHT */
+
+.right-side{
+  background:white;
+  border-radius:15px;
+  padding:20px;
+  box-shadow:0 1px 5px rgba(0,0,0,0.1);
+}
+
+.main-price{
+  color:green;
+  font-size:30px;
+  font-weight:bold;
+}
+
+.top-info{
+  color:#555;
+  margin-top:10px;
+}
+
+/* HIGHLIGHTS */
+
+.highlights{
+  display:flex;
+  flex-wrap:wrap;
+  gap:10px;
+  margin-top:20px;
+}
+
+.highlight-box{
+  background:#f0f5ff;
+  padding:10px 14px;
+  border-radius:20px;
+  font-size:14px;
+}
+
+/* SECTION */
+
+.section{
+  margin-top:25px;
+}
+
+.section h3{
+  margin-bottom:10px;
+}
+
+.facility{
+  display:inline-block;
+  background:#f0f5ff;
+  padding:8px 12px;
+  border-radius:20px;
+  margin:5px;
+}
+
+/* BUTTONS */
+
+.action-buttons{
+  display:flex;
+  gap:10px;
+  margin-top:25px;
+}
+
+.action-buttons button{
+  flex:1;
+  border:none;
+  padding:14px;
+  border-radius:10px;
+  color:white;
+  font-size:15px;
+  cursor:pointer;
+}
+
+.call-btn{
+  background:#2874f0;
+}
+
+.map-btn{
+  background:green;
+}
+
+/* SHOW MORE */
+
+.more-details{
+  display:none;
+}
+
+.show-btn{
+  margin-top:20px;
+  padding:12px 18px;
+  border:none;
+  border-radius:10px;
+  background:#2874f0;
+  color:white;
+  cursor:pointer;
+}
+
+/* BOTTOM NAV */
+
+.bottom-nav{
+  display:none;
+}
+
+/* MOBILE */
+
+@media(max-width:768px){
+
+  .grid{
+    grid-template-columns:repeat(2,1fr);
+    padding-bottom:80px;
+  }
+
+  .detail-layout{
+    grid-template-columns:1fr;
+  }
+
+  .left-side{
+    position:static;
+  }
+
+  .slide{
+    height:250px;
+  }
+
+  .header-row{
+    gap:10px;
+  }
+
+  .action-box{
+    min-width:60px;
+    padding:12px 10px;
+  }
+
+  .bottom-nav{
+    display:flex;
+    justify-content:space-around;
+    align-items:center;
+    position:fixed;
+    bottom:0;
+    width:100%;
+    background:white;
+    padding:12px 0;
+    border-top:1px solid #ccc;
+    box-shadow:0 -1px 5px rgba(0,0,0,0.1);
+  }
+
+}
+
+</style>
+</head>
+
+<body>
+
+<!-- HOME PAGE -->
+
+<div id="homePage">
+
+<div class="header">
+
+<div class="logo-row">
+<div class="box logo-box">
+MyPGHub
+</div>
+</div>
+
+<div class="header-row">
+
+<div class="box search-box">
+<input type="text" placeholder="Search for PG, rooms...">
+</div>
+
+<div class="box action-box">
+Login
+</div>
+
+<div class="box action-box">
+❤️
+</div>
+
+</div>
+
+</div>
+
+<!-- CATEGORIES -->
+
+<div class="categories">
+
+<div class="cat-btn">Boys PG</div>
+
+<div class="cat-btn">Girls PG</div>
+
+<div class="cat-btn">Living PG</div>
+
+<div class="cat-btn">Single Bed</div>
+
+<div class="cat-btn">Double Bed</div>
+
+<div class="cat-btn">1BHK Flat</div>
+
+<div class="cat-btn">2BHK Flat</div>
+
+<div class="cat-btn">3BHK Flat</div>
+
+</div>
+
+<!-- ROOMS -->
+
+<div class="grid" id="roomList"></div>
+
+</div>
+
+<!-- DETAIL PAGE -->
+
+<div id="detailPage">
+
+<button class="show-btn" onclick="goBack()">⬅ Back</button>
+
+<div class="detail-layout">
+
+<!-- LEFT -->
+
+<div class="left-side">
+
+<div class="slider">
+
+<img class="slide active"
+src="https://images.unsplash.com/photo-1560448204-e02f11c3d0e2">
+
+<img class="slide"
+src="https://images.unsplash.com/photo-1560185127-6ed189bf02f4">
+
+<img class="slide"
+src="https://images.unsplash.com/photo-1505693416388-ac5ce068fe85">
+
+<button class="prev" onclick="prevSlide()">❮</button>
+
+<button class="next" onclick="nextSlide()">❯</button>
+
+</div>
+
+<div class="dots">
+<span class="dot active"></span>
+<span class="dot"></span>
+<span class="dot"></span>
+</div>
+
+</div>
+
+<!-- RIGHT -->
+
+<div class="right-side">
+
+<div class="main-price">
+₹6500/month
+</div>
+
+<div class="top-info">
+Boys PG • Double Sharing • 1.5 km from Rungta College
+</div>
+
+<!-- QUICK HIGHLIGHTS -->
+
+<div class="highlights">
+
+  <div class="highlight-box">⏰ 24×7 Entry Available
+</div>
+
+<div class="highlight-box">📹 CCTV Security</div>
+
+<div class="highlight-box">🛏 2 Beds</div>
+
+<div class="highlight-box">❄ Cooler</div>
+
+<div class="highlight-box">📶 WiFi</div>
+
+<div class="highlight-box">🍴 Mess</div>
+
+<div class="highlight-box">🅿 Parking</div>
+
+<div class="highlight-box">🚫 Cooking Inside Room</div>
+
+</div>
+
+<!-- FACILITIES -->
+
+<div class="section">
+
+<h3>Facilities</h3>
+
+<div class="facility">WiFi</div>
+
+<div class="facility">Cooler</div>
+
+<div class="facility">AC</div>
+
+<div class="facility">Bed</div>
+
+<div class="facility">Table</div>
+
+<div class="facility">Chair</div>
+
+<div class="facility">Cupboard</div>
+
+<div class="facility">Washing Machine</div>
+
+<div class="facility">RO Water</div>
+
+<div class="facility">Power Backup</div>
+
+<div class="facility">Mattress</div>
+
+<div class="facility">Pillow</div>
+
+<div class="facility">Refrigerator</div>
+
+</div>
+
+<!-- ROOM DETAILS -->
+
+<div class="section">
+
+<h3>Room Details</h3>
+
+<p>✔ Attached Bathroom</p>
+
+<p>✔ Balcony Available</p>
+
+<p>✔ Fully Furnished</p>
+
+<p>✔ Double Sharing</p>
+
+</div>
+
+<!-- Mess -->
+
+<div class="section">
+
+<h3>Mess Details</h3>
+
+<p>🍴 Breakfast Included</p>
+
+<p>🍴 Dinner Included</p>
+
+<p>🥗 Veg & Non-Veg Available</p>
+
+</div>
+
+<!-- RULES -->
+
+<div class="section">
+
+<h3>Rules</h3>
+
+<p>🚫 No Smoking</p>
+
+<p>🔇 No Loud Music After 10 PM</p>
+
+<p>⏰ Gate Closes at 11 PM</p>
+
+<p> 🚫 Cooking Not Allowed</p>
+
+</div>
+
+<!-- HIDDEN -->
+
+<div class="more-details" id="moreDetails">
+
+<div class="section">
+
+<h3>Owner Details</h3>
+
+<p>👤 Rahul Verma</p>
+
+<p>📞 9876543210</p>
+
+<p>💬 WhatsApp Available</p>
+
+</div>
+
+<div class="section">
+
+<h3>Location</h3>
+
+<p>📍 Near Rungta College, Bhilai</p>
+
+<p>📍 Walking Distance from Main Road</p>
+
+</div>
+
+<div class="section">
+
+<h3>Nearby Places</h3>
+
+<p>🏫 Rungta College - 1.5 km</p>
+
+<p>🛒 Market - 500m</p>
+
+<p>🏥 Hospital - 1 km</p>
+
+</div>
+
+</div>
+
+<button class="show-btn" onclick="toggleDetails()">
+Show More
+</button>
+
+<!-- BUTTONS -->
+
+<div class="action-buttons">
+
+<button class="call-btn"
+onclick="window.location.href='tel:9876543210'">
+📞 Call
+</button>
+
+<button class="map-btn"
+onclick="window.open('https://maps.google.com')">
+📍 Location
+</button>
+
+</div>
+
+</div>
+
+</div>
+
+</div>
+
+<!-- BOTTOM NAV -->
+
+<div class="bottom-nav">
+
+<div>🏠 Home</div>
+
+<div>❤️ Favourite</div>
+
+<div>👤 Account</div>
+
+</div>
+
+<script>
+
+/* ROOMS */
+
+let container=document.getElementById("roomList");
+
+for(let i=1;i<=10;i++){
+
+let distance=(Math.random()*5+0.5).toFixed(1);
+
+container.innerHTML += `
+
+<div class="card" onclick="openDetails()">
+
+<img src="https://images.unsplash.com/photo-1560448204-e02f11c3d0e2?random=${i}">
+
+<div class="card-content">
+
+<div class="price">
+₹${3000+i*200}/month
+</div>
+
+<div class="pg-type">
+Boys PG • Double Sharing
+</div>
+
+<div class="distance">
+${distance} km from Rungta College
+</div>
+
+</div>
+
+</div>
+
+`;
+
+}
+
+/* PAGE SWITCH */
+
+function openDetails(){
+
+document.getElementById("homePage").style.display="none";
+
+document.getElementById("detailPage").style.display="block";
+
+window.scrollTo(0,0);
+
+}
+
+function goBack(){
+
+document.getElementById("detailPage").style.display="none";
+
+document.getElementById("homePage").style.display="block";
+
+}
+
+/* SLIDER */
+
+let current=0;
+
+let slides=document.querySelectorAll(".slide");
+
+let dots=document.querySelectorAll(".dot");
+
+function showSlide(i){
+
+slides.forEach(slide=>slide.classList.remove("active"));
+
+dots.forEach(dot=>dot.classList.remove("active"));
+
+slides[i].classList.add("active");
+
+dots[i].classList.add("active");
+
+}
+
+function nextSlide(){
+
+current=(current+1)%slides.length;
+
+showSlide(current);
+
+}
+
+function prevSlide(){
+
+current=(current-1+slides.length)%slides.length;
+
+showSlide(current);
+
+}
+
+/* SWIPE */
+
+let startX=0;
+
+document.addEventListener("touchstart",e=>{
+
+startX=e.touches[0].clientX;
+
+});
+
+document.addEventListener("touchend",e=>{
+
+let endX=e.changedTouches[0].clientX;
+
+if(startX>endX+50){
+
+nextSlide();
+
+}
+
+if(startX<endX-50){
+
+prevSlide();
+
+}
+
+});
+
+/* SHOW MORE */
+
+function toggleDetails(){
+
+let more=document.getElementById("moreDetails");
+
+if(more.style.display==="block"){
+
+more.style.display="none";
+
+}else{
+
+more.style.display="block";
+
+}
+
+}
+
+</script>
+
+</body>
+</html>
