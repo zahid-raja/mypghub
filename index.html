@@ -23,7 +23,7 @@ body{
 }
 
 .logo-row{
-  margin-bottom:15px;
+  margin-bottom:12px;
 }
 
 .box{
@@ -83,6 +83,8 @@ body{
   border-radius:20px;
   white-space:nowrap;
   box-shadow:0 1px 4px rgba(0,0,0,0.1);
+  font-size:14px;
+  font-weight:bold;
 }
 
 /* GRID */
@@ -104,7 +106,7 @@ body{
 
 .card img{
   width:100%;
-  height:170px;
+  height:180px;
   object-fit:cover;
 }
 
@@ -137,6 +139,16 @@ body{
   padding:20px;
 }
 
+.back-btn{
+  margin-bottom:15px;
+  padding:10px 15px;
+  border:none;
+  border-radius:8px;
+  background:#2874f0;
+  color:white;
+  cursor:pointer;
+}
+
 .detail-layout{
   display:grid;
   grid-template-columns:1fr 1fr;
@@ -161,7 +173,7 @@ body{
 
 .slide{
   width:100%;
-  height:380px;
+  height:420px;
   object-fit:cover;
   display:none;
 }
@@ -170,17 +182,20 @@ body{
   display:block;
 }
 
+/* LAPTOP BUTTONS */
+
 .prev,
 .next{
   position:absolute;
   top:50%;
   transform:translateY(-50%);
   border:none;
-  background:rgba(0,0,0,0.5);
+  background:rgba(0,0,0,0.6);
   color:white;
   padding:12px;
   border-radius:50%;
   cursor:pointer;
+  z-index:10;
 }
 
 .prev{
@@ -229,6 +244,7 @@ body{
 .top-info{
   color:#555;
   margin-top:10px;
+  line-height:24px;
 }
 
 /* HIGHLIGHTS */
@@ -254,7 +270,7 @@ body{
 }
 
 .section h3{
-  margin-bottom:10px;
+  margin-bottom:12px;
 }
 
 .facility{
@@ -263,6 +279,7 @@ body{
   padding:8px 12px;
   border-radius:20px;
   margin:5px;
+  font-size:14px;
 }
 
 /* BUTTONS */
@@ -317,10 +334,51 @@ body{
 
 @media(max-width:768px){
 
+  .header{
+    padding:12px;
+  }
+
+  .logo-box{
+    font-size:18px;
+  }
+
+  .header-row{
+    gap:8px;
+  }
+
+  .box{
+    padding:10px;
+  }
+
+  .action-box{
+    min-width:55px;
+    font-size:13px;
+  }
+
   .grid{
     grid-template-columns:repeat(2,1fr);
-    padding-bottom:80px;
+    gap:10px;
+    padding:10px;
+    padding-bottom:90px;
   }
+
+  .card img{
+    height:120px;
+  }
+
+  .price{
+    font-size:15px;
+  }
+
+  .pg-type{
+    font-size:11px;
+  }
+
+  .distance{
+    font-size:10px;
+  }
+
+  /* MOBILE DETAILS */
 
   .detail-layout{
     grid-template-columns:1fr;
@@ -331,17 +389,40 @@ body{
   }
 
   .slide{
-    height:250px;
+    height:240px;
   }
 
-  .header-row{
-    gap:10px;
+  /* HIDE LAPTOP BUTTONS */
+
+  .prev,
+  .next{
+    display:none;
   }
 
-  .action-box{
-    min-width:60px;
-    padding:12px 10px;
+  .right-side{
+    margin-top:15px;
+    padding:15px;
   }
+
+  .main-price{
+    font-size:24px;
+  }
+
+  .highlight-box{
+    font-size:12px;
+    padding:8px 10px;
+  }
+
+  .facility{
+    font-size:12px;
+  }
+
+  .action-buttons button{
+    font-size:13px;
+    padding:12px;
+  }
+
+  /* MOBILE NAV */
 
   .bottom-nav{
     display:flex;
@@ -352,8 +433,14 @@ body{
     width:100%;
     background:white;
     padding:12px 0;
-    border-top:1px solid #ccc;
+    border-top:1px solid #ddd;
     box-shadow:0 -1px 5px rgba(0,0,0,0.1);
+    z-index:9999;
+  }
+
+  .bottom-nav div{
+    font-size:13px;
+    text-align:center;
   }
 
 }
@@ -378,7 +465,7 @@ MyPGHub
 <div class="header-row">
 
 <div class="box search-box">
-<input type="text" placeholder="Search for PG, rooms...">
+<input type="text" placeholder="Search PG, room...">
 </div>
 
 <div class="box action-box">
@@ -393,29 +480,22 @@ Login
 
 </div>
 
-<!-- CATEGORIES -->
+<!-- CATEGORY -->
 
 <div class="categories">
 
 <div class="cat-btn">Boys PG</div>
-
 <div class="cat-btn">Girls PG</div>
-
 <div class="cat-btn">Living PG</div>
-
 <div class="cat-btn">Single Bed</div>
-
 <div class="cat-btn">Double Bed</div>
-
 <div class="cat-btn">1BHK Flat</div>
-
 <div class="cat-btn">2BHK Flat</div>
-
 <div class="cat-btn">3BHK Flat</div>
 
 </div>
 
-<!-- ROOMS -->
+<!-- ROOM GRID -->
 
 <div class="grid" id="roomList"></div>
 
@@ -425,7 +505,7 @@ Login
 
 <div id="detailPage">
 
-<button class="show-btn" onclick="goBack()">⬅ Back</button>
+<button class="back-btn" onclick="goBack()">⬅ Back</button>
 
 <div class="detail-layout">
 
@@ -470,14 +550,13 @@ src="https://images.unsplash.com/photo-1505693416388-ac5ce068fe85">
 Boys PG • Double Sharing • 1.5 km from Rungta College
 </div>
 
-<!-- QUICK HIGHLIGHTS -->
+<!-- HIGHLIGHTS -->
 
 <div class="highlights">
 
-  <div class="highlight-box">⏰ 24×7 Entry Available
-</div>
+<div class="highlight-box">⏰ 24×7 Entry</div>
 
-<div class="highlight-box">📹 CCTV Security</div>
+<div class="highlight-box">📹 CCTV</div>
 
 <div class="highlight-box">🛏 2 Beds</div>
 
@@ -489,7 +568,7 @@ Boys PG • Double Sharing • 1.5 km from Rungta College
 
 <div class="highlight-box">🅿 Parking</div>
 
-<div class="highlight-box">🚫 Cooking Inside Room</div>
+<div class="highlight-box">🚫 Cooking Not Allowed</div>
 
 </div>
 
@@ -500,29 +579,17 @@ Boys PG • Double Sharing • 1.5 km from Rungta College
 <h3>Facilities</h3>
 
 <div class="facility">WiFi</div>
-
 <div class="facility">Cooler</div>
-
 <div class="facility">AC</div>
-
 <div class="facility">Bed</div>
-
 <div class="facility">Table</div>
-
 <div class="facility">Chair</div>
-
 <div class="facility">Cupboard</div>
-
 <div class="facility">Washing Machine</div>
-
 <div class="facility">RO Water</div>
-
 <div class="facility">Power Backup</div>
-
 <div class="facility">Mattress</div>
-
 <div class="facility">Pillow</div>
-
 <div class="facility">Refrigerator</div>
 
 </div>
@@ -534,25 +601,20 @@ Boys PG • Double Sharing • 1.5 km from Rungta College
 <h3>Room Details</h3>
 
 <p>✔ Attached Bathroom</p>
-
 <p>✔ Balcony Available</p>
-
 <p>✔ Fully Furnished</p>
-
 <p>✔ Double Sharing</p>
 
 </div>
 
-<!-- Mess -->
+<!-- MESS -->
 
 <div class="section">
 
 <h3>Mess Details</h3>
 
 <p>🍴 Breakfast Included</p>
-
 <p>🍴 Dinner Included</p>
-
 <p>🥗 Veg & Non-Veg Available</p>
 
 </div>
@@ -564,16 +626,12 @@ Boys PG • Double Sharing • 1.5 km from Rungta College
 <h3>Rules</h3>
 
 <p>🚫 No Smoking</p>
-
 <p>🔇 No Loud Music After 10 PM</p>
-
 <p>⏰ Gate Closes at 11 PM</p>
-
-<p> 🚫 Cooking Not Allowed</p>
 
 </div>
 
-<!-- HIDDEN -->
+<!-- MORE -->
 
 <div class="more-details" id="moreDetails">
 
@@ -596,18 +654,6 @@ Boys PG • Double Sharing • 1.5 km from Rungta College
 <p>📍 Near Rungta College, Bhilai</p>
 
 <p>📍 Walking Distance from Main Road</p>
-
-</div>
-
-<div class="section">
-
-<h3>Nearby Places</h3>
-
-<p>🏫 Rungta College - 1.5 km</p>
-
-<p>🛒 Market - 500m</p>
-
-<p>🏥 Hospital - 1 km</p>
 
 </div>
 
@@ -639,15 +685,17 @@ onclick="window.open('https://maps.google.com')">
 
 </div>
 
-<!-- BOTTOM NAV -->
+<!-- MOBILE BOTTOM NAV -->
 
 <div class="bottom-nav">
 
-<div>🏠 Home</div>
+<div>🏠<br>Home</div>
 
-<div>❤️ Favourite</div>
+<div>❤️<br>Favourite</div>
 
-<div>👤 Account</div>
+<div>➕<br>Add Room</div>
+
+<div>👤<br>Account</div>
 
 </div>
 
@@ -745,17 +793,17 @@ showSlide(current);
 
 }
 
-/* SWIPE */
+/* MOBILE SWIPE */
 
 let startX=0;
 
-document.addEventListener("touchstart",e=>{
+document.querySelector(".slider").addEventListener("touchstart",e=>{
 
 startX=e.touches[0].clientX;
 
 });
 
-document.addEventListener("touchend",e=>{
+document.querySelector(".slider").addEventListener("touchend",e=>{
 
 let endX=e.changedTouches[0].clientX;
 
