@@ -1,8 +1,17 @@
 // ==========================================================================
-// COMPLETE FIREBASE SETUP WITH PHONE & GOOGLE SIGN-IN Integrated
+// COMPLETE FIREBASE SETUP WITH MOBILE-FRIENDLY RE-DIRECT & SKELETON TRIGGER
 // ==========================================================================
 import { initializeApp } from "https://www.gstatic.com/firebasejs/12.12.1/firebase-app.js";
-import { getAuth, RecaptchaVerifier, signInWithPhoneNumber, onAuthStateChanged, GoogleAuthProvider, signInWithPopup } from "https://www.gstatic.com/firebasejs/12.12.1/firebase-auth.js";
+import { 
+  getAuth, 
+  RecaptchaVerifier, 
+  signInWithPhoneNumber, 
+  onAuthStateChanged, 
+  GoogleAuthProvider, 
+  signInWithPopup,
+  signInWithRedirect,
+  getRedirectResult 
+} from "https://www.gstatic.com/firebasejs/12.12.1/firebase-auth.js";
 
 const firebaseConfig = {
   apiKey: "AIzaSyCxP405IU4nljGIF9LzA4WeVLVk2kb8OEU",
@@ -87,29 +96,60 @@ window.verifyOTP = () => {
     });
 };
 
-// 3. GOOGLE LOGIN FUNCTION (Naya Feature ✨)
+// 3. GOOGLE LOGIN FUNCTION (📱 Mobile Friendly Redirect Method Attached)
 window.loginWithGoogle = () => {
-  signInWithPopup(auth, googleProvider)
-    .then((result) => {
-      alert("Logged in successfully with Google!");
-      if (window.closeLoginModal) window.closeLoginModal();
-    })
-    .catch((error) => {
-      console.error("Google Auth Error:", error);
-      alert("Google Login Failed: " + error.message);
-    });
+  // Mobile check karne ke liye screen width ka use kiya hai (768px se choti screen par mobile system chalega)
+  if (window.innerWidth < 768) {
+    console.log("Mobile detected, using Redirect method...");
+    signInWithRedirect(auth, googleProvider);
+  } else {
+    console.log("Desktop detected, using Popup method...");
+    signInWithPopup(auth, googleProvider)
+      .then((result) => {
+        alert("Logged in successfully with Google!");
+        if (window.closeLoginModal) window.closeLoginModal();
+      })
+      .catch((error) => {
+        console.error("Google Auth Popup Error:", error);
+        alert("Google Login Failed: " + error.message);
+      });
+  }
 };
 
+// Mobile redirect ke baad result check karne ke liye helper function
+getRedirectResult(auth)
+  .then((result) => {
+    if (result && result.user) {
+      console.log("Mobile redirect login successful!", result.user);
+      alert("Logged in successfully with Google!");
+      if (window.closeLoginModal) window.closeLoginModal();
+    }
+  })
+  .catch((error) => {
+    console.error("Google Auth Redirect Error:", error);
+  });
+
 // ==========================================================================
-// SMART STATE MONITOR: REFRESH PAR BAAR-BAAR MODAL KHULNA ROKEGA 🛡️
+// SMART STATE MONITOR: REFRESH PAR SKELETON HATA KAR REAL CONTENT DIKHAYEGA 🛡️
 // ==========================================================================
 onAuthStateChanged(auth, (user) => {
   const loginText = document.getElementById("loginText");
   const userNumberDisplay = document.getElementById("userNumberDisplay");
   const loginModal = document.getElementById("loginModal");
 
+  // 🎬 YOUTUBE SKELETON CONTROL: Firebase ka faisla aate hi skeleton ko hatao aur asli content dikhao
+  const skeleton = document.getElementById("youtubeSkeleton");
+  const realContent = document.getElementById("realContent");
+  
+  if (skeleton) {
+    skeleton.style.display = "none"; // YouTube bars ko gayab karo
+  }
+  if (realContent) {
+    realContent.classList.remove("hidden-content"); // Asli layout ko samne lao
+  }
+
   if (user) {
-    // 1. User Logn Hai (Success Zone)
+    // 1. User Login Hai (Success Zone)
     console.log("User is already logged in:", user.uid);
     
     // Modal ko turant band karo agar galti se khula ho
@@ -144,9 +184,7 @@ onAuthStateChanged(auth, (user) => {
       userNumberDisplay.innerText = "";
     }
 
-    // AAPKI CHOICE: Agar aap chahte hain ki guest user aate hi automatic modal khule, 
-    // toh is niche wali line ko rehne dein. Agar aap chahte hain ki jab wo "Login" button 
-    // par click kare TABHI khule, toh niche wali line ko delete/comment kar dein.
+    // Default me guest user aate hi login screen open ho jayega
     if (loginModal) {
       loginModal.style.display = "flex"; 
     }
