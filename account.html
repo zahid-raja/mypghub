@@ -245,7 +245,12 @@
 
   <div class="section" id="ownerSection">
     <div class="section-title">Owner Panel</div>
-    <div class="item">➕ Add Room</div>
+    <a href="add-room.html" style="text-decoration: none; color: inherit;">
+  <div style="display: flex; align-items: center; padding: 15px 0; border-bottom: 1px solid #f0f0f0; cursor: pointer;">
+    <span style="font-size: 20px; color: #7c4dff; margin-right: 15px; font-weight: bold; width: 24px; text-align: center;">➕</span>
+    <span style="font-size: 16px; font-weight: 500; color: #000;">Add Room</span>
+  </div>
+</a>
     <div class="item">✏ Edit Room</div>
     <div class="item">🗑 Delete Room</div>
     <div class="item">📊 Room Analytics</div>
@@ -312,37 +317,68 @@
     const app = initializeApp(firebaseConfig);
     const auth = getAuth(app);
 
+    // Ek flag jo track karega ki user khud logout kar raha hai ya nahi
+    let isLoggingOut = false;
+
     // Monitoring the User Auth State on Page Load
     onAuthStateChanged(auth, (user) => {
+      // Agar user khud logout button daba chuka hai, toh niche ka security check skip karo
+      if (isLoggingOut) return;
+
       const userPhoneDisplay = document.getElementById("userPhoneDisplay");
       const loginStatus = document.getElementById("loginStatus");
       const logoutBtn = document.getElementById("logoutBtn");
+      const userPhoto = document.getElementById("userPhoto");
 
       if (user) {
-        // User logged in hai -> Unka phone number set karein
-        if (userPhoneDisplay) userPhoneDisplay.innerText = user.phoneNumber; 
-        if (loginStatus) loginStatus.innerText = "Verified User";
+        console.log("User active on Account Page:", user);
+        
+        // 1. Google User Name ya Phone Number display karein
+        if (userPhoneDisplay) {
+          if (user.displayName) {
+            userPhoneDisplay.innerText = user.displayName;
+          } else if (user.phoneNumber) {
+            userPhoneDisplay.innerText = user.phoneNumber;
+          } else {
+            userPhoneDisplay.innerText = "Verified User";
+          }
+        }
+
+        // 2. Status / Email Meta Info
+        if (loginStatus) {
+          loginStatus.innerText = user.email ? user.email : "Verified Mobile User";
+        }
+
+        // 3. Google Profile Photo Sync
+        if (userPhoto && user.photoURL) {
+          userPhoto.src = user.photoURL;
+        }
+
+        // Logout button dikhao
         if (logoutBtn) logoutBtn.style.display = "block";
+
       } else {
-        // User logged out hai -> Home page par kick back karein (Security check)
+        // Agar koi user login nahi hai aur na hi wo logout process me hai (Direct Access Try)
+        console.log("Unauthorized access attempt.");
         alert("Access Denied! Please login first.");
         window.location.href = "index.html";
       }
     });
 
-    // Real Firebase Logout Process triggered from button
+    // Real Firebase Logout Process
     window.handleLogout = () => {
+      // Logout shuru hote hi flag ko true karo taaki security alert trigger na ho
+      isLoggingOut = true; 
+
       signOut(auth)
         .then(() => {
           alert("Logged out successfully!");
           window.location.href = "index.html";
         })
         .catch((error) => {
+          isLoggingOut = false; // Agar error aaye toh flag wapas normal karo
           console.error("Logout Error:", error);
           alert("Error while logging out: " + error.message);
         });
     };
   </script>
-</body>
-
-</html>
