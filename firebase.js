@@ -102,7 +102,7 @@ window.loginWithGoogle = () => {
     console.log("Mobile detected, using Redirect method...");
     signInWithRedirect(auth, googleProvider);
   } else {
-    console.log("Desktop detected, using Popup method (No Change)...");
+    console.log("Desktop detected, using Popup method...");
     signInWithPopup(auth, googleProvider)
       .then((result) => {
         alert("Logged in successfully with Google!");
@@ -115,12 +115,12 @@ window.loginWithGoogle = () => {
   }
 };
 
-// 🔄 MOBILE REDIRECT HANDLING (Yeh variable login screen ko baar-baar aane se rokega)
-let isRedirectChecking = true; 
+// 🔄 GLOBAL FLAG: Jab tak check chal raha hai, tab tak modal block rahega
+let isAuthResolving = true; 
 
 getRedirectResult(auth)
   .then((result) => {
-    isRedirectChecking = false; // Checking poori hui
+    isAuthResolving = false; // Redirect processing khatam
     if (result && result.user) {
       console.log("Mobile redirect login successful!", result.user);
       alert("Logged in successfully with Google!");
@@ -128,9 +128,8 @@ getRedirectResult(auth)
     }
   })
   .catch((error) => {
-    isRedirectChecking = false; // Error aaya toh bhi checking band
+    isAuthResolving = false;
     console.error("Google Auth Redirect Error:", error);
-    alert("Login Error: " + error.message);
   });
 
 // ==========================================================================
@@ -141,7 +140,7 @@ onAuthStateChanged(auth, (user) => {
   const userNumberDisplay = document.getElementById("userNumberDisplay");
   const loginModal = document.getElementById("loginModal");
 
-  // 🎬 SKELETON REMOVER: Skeleton ko delete marenge taaki mobile smooth chale
+  // 🎬 SKELETON REMOVER
   const skeleton = document.getElementById("youtubeSkeleton");
   const realContent = document.getElementById("realContent");
   
@@ -153,7 +152,8 @@ onAuthStateChanged(auth, (user) => {
   }
 
   if (user) {
-    // 1. User Login Hai (Success Zone)
+    // 1. User Login Hai
+    isAuthResolving = false; // Agar user session mil gayi toh loading band
     console.log("User is already logged in:", user.uid);
     if (loginModal) loginModal.style.display = "none"; 
     if (loginText) loginText.style.display = "none";
@@ -171,7 +171,7 @@ onAuthStateChanged(auth, (user) => {
       userNumberDisplay.style.display = "inline-block";
     }
   } else {
-    // 2. User Logged Out Hai (Guest Mode)
+    // 2. User Logged Out Hai
     console.log("No active user session found.");
     if (loginText) {
       loginText.style.display = "inline-block";
@@ -182,17 +182,18 @@ onAuthStateChanged(auth, (user) => {
       userNumberDisplay.innerText = "";
     }
 
-    // 🔥 FIX: Jab mobile me email select karke page wapas khulega, toh jab tak Firebase backend me 
-    // user check kar raha hai, tab tak login screen (modal) nahi khulegi!
-    if (!isRedirectChecking) {
-      if (loginModal) {
-        loginModal.style.display = "flex"; 
+    // 🔥 BREAK THE LOOP: Jab tak background me redirect check ho raha hai, tab tak modal automatic nahi dikhega
+    setTimeout(() => {
+      if (!auth.currentUser && !isAuthResolving) {
+        if (loginModal) {
+          loginModal.style.display = "flex"; 
+        }
+      } else {
+        if (loginModal) {
+          loginModal.style.display = "none"; 
+        }
       }
-    } else {
-      if (loginModal) {
-        loginModal.style.display = "none"; 
-      }
-    }
+    }, 1200); // 1.2 second ka smart halt diya hai Firebase ko apna kam pura karne ke liye
   }
 });
 
