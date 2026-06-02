@@ -1,893 +1,199 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
+
 <head>
+  <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>MyPGHub</title>
-
-<style>
-
-body{
-  margin:0;
-  font-family:Arial;
-  background:#f1f3f6;
-}
-
-/* HEADER */
-
-.header{
-  background:white;
-  padding:15px;
-  box-shadow:0 1px 5px rgba(0,0,0,0.1);
-  position:sticky;
-  top:0;
-  z-index:1000;
-}
-
-.logo-row{
-  margin-bottom:12px;
-  display:flex;
-  align-items:center;
-  justify-content:space-between;
-}
-
-.box{
-  background:#f0f5ff;
-  border-radius:12px;
-  padding:12px 15px;
-}
-
-.logo-box{
-  display:inline-block;
-  font-size:22px;
-  font-weight:bold;
-  color:#2874f0;
-}
-.nav-links{
-  display:none;
-  gap:20px;
-}
-
-.nav-links div{
-  cursor:pointer;
-  font-weight:bold;
-  color:#555;
-}
-
-.nav-links div:hover{
-  color:#2874f0;
-}
-
-@media(min-width:769px){
-
-  .nav-links{
-    display:flex;
-  }
-
-}
-
-.header-row{
-  display:flex;
-  align-items:center;
-  gap:15px;
-}
-
-.search-box{
-  flex:1;
-}
-
-.search-box input{
-  width:100%;
-  border:none;
-  outline:none;
-  background:transparent;
-  font-size:15px;
-}
-
-.action-box{
-  cursor:pointer;
-  min-width:80px;
-  text-align:center;
-  font-size:15px;
-}
-
-/* CATEGORY */
-
-.categories{
-  display:flex;
-  gap:10px;
-  padding:12px;
-  overflow-x:auto;
-}
-
-.categories::-webkit-scrollbar{
-  display:none;
-}
-
-.cat-btn{
-  background:white;
-  padding:10px 15px;
-  border-radius:20px;
-  white-space:nowrap;
-  box-shadow:0 1px 4px rgba(0,0,0,0.1);
-  font-size:14px;
-  font-weight:bold;
-}
-
-/* GRID */
-
-.grid{
-  display:grid;
-  grid-template-columns:repeat(4,1fr);
-  gap:15px;
-  padding:15px;
-}
-
-.card{
-  background:white;
-  border-radius:12px;
-  overflow:hidden;
-  box-shadow:0 1px 5px rgba(0,0,0,0.1);
-  cursor:pointer;
-}
-
-.card img{
-  width:100%;
-  height:180px;
-  object-fit:cover;
-}
-
-.card-content{
-  padding:10px;
-}
-
-.price{
-  color:green;
-  font-size:18px;
-  font-weight:bold;
-}
-
-.pg-type{
-  color:#555;
-  margin-top:5px;
-  font-size:13px;
-}
-
-.distance{
-  color:gray;
-  margin-top:5px;
-  font-size:12px;
-}
-
-/* DETAIL PAGE */
-
-#detailPage{
-  display:none;
-  padding:20px;
-}
-
-.back-btn{
-  margin-bottom:15px;
-  padding:10px 15px;
-  border:none;
-  border-radius:8px;
-  background:#2874f0;
-  color:white;
-  cursor:pointer;
-  position:sticky;
-  top:40px;
-  z-index:1000;
-}
-
-.detail-layout{
-  display:grid;
-  grid-template-columns:1fr 1fr;
-  gap:25px;
-}
-
-/* LEFT */
-
-.left-side{
-  position:sticky;
-  top:90px;
-  height:fit-content;
-}
-
-.slider{
-  background:white;
-  border-radius:15px;
-  overflow:hidden;
-  position:relative;
-  box-shadow:0 1px 5px rgba(0,0,0,0.1);
-}
-
-.slide{
-  width:100%;
-  height:420px;
-  object-fit:cover;
-  display:none;
-}
-
-.slide.active{
-  display:block;
-}
-
-/* LAPTOP BUTTONS */
-
-.prev,
-.next{
-  position:absolute;
-  top:50%;
-  transform:translateY(-50%);
-  border:none;
-  background:rgba(0,0,0,0.6);
-  color:white;
-  padding:12px;
-  border-radius:50%;
-  cursor:pointer;
-  z-index:10;
-}
-
-.prev{
-  left:10px;
-}
-
-.next{
-  right:10px;
-}
-
-/* DOTS */
-
-.dots{
-  text-align:center;
-  margin-top:10px;
-}
-
-.dot{
-  width:10px;
-  height:10px;
-  border-radius:50%;
-  background:#ccc;
-  display:inline-block;
-  margin:5px;
-}
-
-.dot.active{
-  background:#2874f0;
-}
-
-/* RIGHT */
-
-.right-side{
-  background:white;
-  border-radius:15px;
-  padding:20px;
-  box-shadow:0 1px 5px rgba(0,0,0,0.1);
-}
-
-.main-price{
-  color:green;
-  font-size:30px;
-  font-weight:bold;
-}
-
-.top-info{
-  color:#555;
-  margin-top:10px;
-  line-height:24px;
-}
-
-/* HIGHLIGHTS */
-
-.highlights{
-  display:flex;
-  flex-wrap:wrap;
-  gap:10px;
-  margin-top:20px;
-}
-
-.highlight-box{
-  background:#f0f5ff;
-  padding:10px 14px;
-  border-radius:20px;
-  font-size:14px;
-}
-
-/* SECTION */
-
-.section{
-  margin-top:25px;
-}
-
-.section h3{
-  margin-bottom:12px;
-}
-
-.facility{
-  display:inline-block;
-  background:#f0f5ff;
-  padding:8px 12px;
-  border-radius:20px;
-  margin:5px;
-  font-size:14px;
-}
-
-/* BUTTONS */
-
-.action-buttons{
-  display:flex;
-  gap:10px;
-  margin-top:25px;
-}
-
-.action-buttons button{
-  flex:1;
-  border:none;
-  padding:14px;
-  border-radius:10px;
-  color:white;
-  font-size:15px;
-  cursor:pointer;
-}
-
-.call-btn{
-  background:#2874f0;
-}
-
-.map-btn{
-  background:green;
-}
-
-/* SHOW MORE */
-
-.more-details{
-  display:none;
-}
-
-.show-btn{
-  margin-top:20px;
-  padding:12px 18px;
-  border:none;
-  border-radius:10px;
-  background:#2874f0;
-  color:white;
-  cursor:pointer;
-}
-
-/* BOTTOM NAV */
-
-.bottom-nav{
-  display:none;
-}
-
-/* MOBILE */
-
-@media(max-width:768px){
-
-  .header{
-    padding:12px;
-  }
-
-  .logo-box{
-    font-size:18px;
-  }
-
-  .header-row{
-    gap:8px;
-  }
-
-  .box{
-    padding:10px;
-  }
-
-  .action-box{
-    min-width:55px;
-    font-size:13px;
-  }
-
-  .grid{
-    grid-template-columns:repeat(2,1fr);
-    gap:10px;
-    padding:10px;
-    padding-bottom:90px;
-  }
-
-  .card img{
-    height:120px;
-  }
-
-  .price{
-    font-size:15px;
-  }
-
-  .pg-type{
-    font-size:11px;
-  }
-
-  .distance{
-    font-size:10px;
-  }
-
-  /* MOBILE DETAILS */
-
-  .detail-layout{
-    grid-template-columns:1fr;
-  }
-
-  .left-side{
-    position:static;
-  }
-
-  .slide{
-    height:240px;
-  }
-
-  /* HIDE LAPTOP BUTTONS */
-
-  .prev,
-  .next{
-    display:none;
-  }
-
-  .right-side{
-    margin-top:15px;
-    padding:15px;
-  }
-
-  .main-price{
-    font-size:24px;
-  }
-
-  .highlight-box{
-    font-size:12px;
-    padding:8px 10px;
-  }
-
-  .facility{
-    font-size:12px;
-  }
-
-  .action-buttons button{
-    font-size:13px;
-    padding:12px;
-  }
-
-  /* MOBILE NAV */
-
-  .bottom-nav{
-    display:flex;
-    justify-content:space-around;
-    align-items:center;
-    position:fixed;
-    bottom:0;
-    width:100%;
-    background:white;
-    padding:12px 0;
-    border-top:1px solid #ddd;
-    box-shadow:0 -1px 5px rgba(0,0,0,0.1);
-    z-index:9999;
-  }
-
-  .bottom-nav div{
-    font-size:13px;
-    text-align:center;
-  }
-
-}
-
-</style>
+  <title>MyPGHub</title>
+  <link rel="stylesheet" href="style.css">
 </head>
 
 <body>
 
 <div id="homePage">
 
-<div class="header">
+  <div class="header">
+    <div class="logo-row">
+      <div class="box logo-box">
+        MyPGHub
+      </div>
+      <div class="nav-links">
+        <div onclick="goBack()" style="cursor: pointer;">
+          Home
+        </div>
+        <div id="accountBtn" class="action-box" onclick="window.handleAccountClick()">Account</div>
+      </div>
+    </div>
 
-<div class="logo-row">
+    <div class="header-row">
+      <div class="box search-box">
+        <input type="text" placeholder="Search PG, room...">
+      </div>
 
-<div class="box logo-box">
-MyPGHub
-</div>
+      <div id="loginText" class="action-box" onclick="window.handleLoginClick()">Login</div>
+      
+      <div id="userNumberDisplay" class="action-box" style="display: none; font-weight: bold; color: #2874f0;"></div>
 
-<div class="nav-links">
+      <div class="box action-box">
+        ❤️
+      </div>
+    </div>
+  </div>
 
-<div onclick="goBack()">Home</div>
+  <div class="categories">
+    <div class="cat-btn">Boys PG</div>
+    <div class="cat-btn">Girls PG</div>
+    <div class="cat-btn">Living PG</div>
+    <div class="cat-btn">Single Bed</div>
+    <div class="cat-btn">Double Bed</div>
+    <div class="cat-btn">1BHK Flat</div>
+    <div class="cat-btn">2BHK Flat</div>
+    <div class="cat-btn">3BHK Flat</div>
+  </div>
 
-<div onclick="loginWithGoogle()">Account</div>
-
-</div>
-
-</div>
-
-<div class="header-row">
-
-<div class="box search-box">
-<input type="text" placeholder="Search PG, room...">
-</div>
-
-<div class="box action-box" id="loginBtn" onclick="loginWithGoogle()" style="cursor:pointer;">
-  Login
-</div>
-
-<div class="box action-box">
-❤️
-</div>
-
-</div>
-
-</div>
-
-<div class="categories">
-
-<div class="cat-btn">Boys PG</div>
-<div class="cat-btn">Girls PG</div>
-<div class="cat-btn">Living PG</div>
-<div class="cat-btn">Single Bed</div>
-<div class="cat-btn">Double Bed</div>
-<div class="cat-btn">1BHK Flat</div>
-<div class="cat-btn">2BHK Flat</div>
-<div class="cat-btn">3BHK Flat</div>
-
-</div>
-
-<div class="grid" id="roomList"></div>
+  <div class="grid" id="roomList"></div>
 
 </div>
 
 <div id="detailPage">
+  <button class="back-btn" onclick="goBack()">
+    ⬅ Back
+  </button>
 
-<button class="back-btn" onclick="goBack()">⬅ Back</button>
+  <div class="detail-layout">
+    <div class="left-side">
+      <div class="slider">
+        <img class="slide active" src="https://images.unsplash.com/photo-1560448204-e02f11c3d0e2">
+        <img class="slide" src="https://images.unsplash.com/photo-1560185127-6ed189bf02f4">
+        <img class="slide" src="https://images.unsplash.com/photo-1505693416388-ac5ce068fe85">
+        <button class="prev" onclick="prevSlide()">❮</button>
+        <button class="next" onclick="nextSlide()">❯</button>
+      </div>
+      <div class="dots">
+        <span class="dot active"></span>
+        <span class="dot"></span>
+        <span class="dot"></span>
+      </div>
+    </div>
 
-<div class="detail-layout">
+    <div class="right-side">
+      <div class="main-price">₹6500/month</div>
+      <div class="top-info">Boys PG • Double Sharing • 1.5 km from Rungta College</div>
 
-<div class="left-side">
+      <div class="highlights">
+        <div class="highlight-box">⏰ 24×7 Entry</div>
+        <div class="highlight-box">📹 CCTV</div>
+        <div class="highlight-box">🛏 2 Beds</div>
+        <div class="highlight-box">❄ Cooler</div>
+        <div class="highlight-box">📶 WiFi</div>
+        <div class="highlight-box">🍴 Mess</div>
+        <div class="highlight-box">🅿 Parking</div>
+        <div class="highlight-box">🚫 Cooking Not Allowed</div>
+      </div>
 
-<div class="slider">
+      <div class="section">
+        <h3>Facilities</h3>
+        <div class="facility">WiFi</div>
+        <div class="facility">Cooler</div>
+        <div class="facility">AC</div>
+        <div class="facility">Bed</div>
+        <div class="facility">Table</div>
+        <div class="facility">Chair</div>
+        <div class="facility">Cupboard</div>
+        <div class="facility">Washing Machine</div>
+        <div class="facility">RO Water</div>
+        <div class="facility">Power Backup</div>
+        <div class="facility">Mattress</div>
+        <div class="facility">Pillow</div>
+        <div class="facility">Refrigerator</div>
+      </div>
 
-<img class="slide active"
-src="https://images.unsplash.com/photo-1560448204-e02f11c3d0e2">
+      <div class="section">
+        <h3>Room Details</h3>
+        <p>✔ Attached Bathroom</p>
+        <p>✔ Balcony Available</p>
+        <p>✔ Fully Furnished</p>
+        <p>✔ Double Sharing</p>
+      </div>
 
-<img class="slide"
-src="https://images.unsplash.com/photo-1560185127-6ed189bf02f4">
+      <div class="section">
+        <h3>Mess Details</h3>
+        <p>🍴 Breakfast Included</p>
+        <p>🍴 Dinner Included</p>
+        <p>🥗 Veg & Non-Veg Available</p>
+      </div>
 
-<img class="slide"
-src="https://images.unsplash.com/photo-1505693416388-ac5ce068fe85">
+      <div class="section">
+        <h3>Rules</h3>
+        <p>🚫 No Smoking</p>
+        <p>🔇 No Loud Music After 10 PM</p>
+        <p>⏰ Gate Closes at 11 PM</p>
+      </div>
 
-<button class="prev" onclick="prevSlide()">❮</button>
+      <div class="more-details" id="moreDetails">
+        <div class="section">
+          <h3>Owner Details</h3>
+          <p>👤 Rahul Verma</p>
+          <p>📞 9876543210</p>
+          <p>💬 WhatsApp Available</p>
+        </div>
+        <div class="section">
+          <h3>Location</h3>
+          <p>📍 Near Rungta College, Bhilai</p>
+          <p>📍 Walking Distance from Main Road</p>
+        </div>
+      </div>
 
-<button class="next" onclick="nextSlide()">❯</button>
+      <button class="show-btn" onclick="toggleDetails()">
+        Show More
+      </button>
 
-</div>
-
-<div class="dots">
-<span class="dot active"></span>
-<span class="dot"></span>
-<span class="dot"></span>
-</div>
-
-</div>
-
-<div class="right-side">
-
-<div class="main-price">
-₹6500/month
-</div>
-
-<div class="top-info">
-Boys PG • Double Sharing • 1.5 km from Rungta College
-</div>
-
-<div class="highlights">
-
-<div class="highlight-box">⏰ 24×7 Entry</div>
-
-<div class="highlight-box">📹 CCTV</div>
-
-<div class="highlight-box">🛏 2 Beds</div>
-
-<div class="highlight-box">❄ Cooler</div>
-
-<div class="highlight-box">📶 WiFi</div>
-
-<div class="highlight-box">🍴 Mess</div>
-
-<div class="highlight-box">🅿 Parking</div>
-
-<div class="highlight-box">🚫 Cooking Not Allowed</div>
-
-</div>
-
-<div class="section">
-
-<h3>Facilities</h3>
-
-<div class="facility">WiFi</div>
-<div class="facility">Cooler</div>
-<div class="facility">AC</div>
-<div class="facility">Bed</div>
-<div class="facility">Table</div>
-<div class="facility">Chair</div>
-<div class="facility">Cupboard</div>
-<div class="facility">Washing Machine</div>
-<div class="facility">RO Water</div>
-<div class="facility">Power Backup</div>
-<div class="facility">Mattress</div>
-<div class="facility">Pillow</div>
-<div class="facility">Refrigerator</div>
-
-</div>
-
-<div class="section">
-
-<h3>Room Details</h3>
-
-<p>✔ Attached Bathroom</p>
-<p>✔ Balcony Available</p>
-<p>✔ Fully Furnished</p>
-<p>✔ Double Sharing</p>
-
-</div>
-
-<div class="section">
-
-<h3>Mess Details</h3>
-
-<p>🍴 Breakfast Included</p>
-<p>🍴 Dinner Included</p>
-<p>🥗 Veg & Non-Veg Available</p>
-
-</div>
-
-<div class="section">
-
-<h3>Rules</h3>
-
-<p>🚫 No Smoking</p>
-<p>🔇 No Loud Music After 10 PM</p>
-<p>⏰ Gate Closes at 11 PM</p>
-
-</div>
-
-<div class="more-details" id="moreDetails">
-
-<div class="section">
-
-<h3>Owner Details</h3>
-
-<p>👤 Rahul Verma</p>
-
-<p>📞 9876543210</p>
-
-<p>💬 WhatsApp Available</p>
-
-</div>
-
-<div class="section">
-
-<h3>Location</h3>
-
-<p>📍 Near Rungta College, Bhilai</p>
-
-<p>📍 Walking Distance from Main Road</p>
-
-</div>
-
-</div>
-
-<button class="show-btn" onclick="toggleDetails()">
-Show More
-</button>
-
-<div class="action-buttons">
-
-<button class="call-btn"
-onclick="window.location.href='tel:9876543210'">
-📞 Call
-</button>
-
-<button class="map-btn"
-onclick="window.open('https://maps.google.com')">
-📍 Location
-</button>
-
-</div>
-
-</div>
-
-</div>
-
+      <div class="action-buttons">
+        <button class="call-btn" onclick="window.location.href='tel:9876543210'">
+          📞 Call
+        </button>
+        <button class="map-btn" onclick="window.open('https://maps.google.com')">
+          📍 Location
+        </button>
+      </div>
+    </div>
+  </div>
 </div>
 
 <div class="bottom-nav">
-
-<div>🏠<br>Home</div>
-
-<div>❤️<br>Favourite</div>
-
-<div>➕<br>Add Room</div>
-
-<div onclick="loginWithGoogle()" style="cursor:pointer;">👤<br>Account</div>
-
+  <div onclick="window.location.href='index.html'" style="cursor: pointer;">🏠<br>Home</div>
+  <div>❤️<br>Favourite</div>
+  <div>➕<br>Add Room</div>
+  <div onclick="window.handleAccountClick()" style="cursor: pointer;">👤<br>Account</div>
 </div>
 
-<script>
+<script type="module" src="firebase.js"></script>
+<script src="script.js"></script>
 
-/* ROOMS */
+<div id="loginModal" class="modal-overlay">
+  <div class="modal-card">
+    <span class="close-modal-btn" onclick="window.closeLoginModal()">×</span>
+    
+    <h3 class="modal-title">Login / Sign Up</h3>
+    
+    <div id="phoneStage">
+      <p class="modal-subtitle">Enter your mobile number to receive OTP</p>
+      <div class="phone-input-row">
+        <input type="text" value="+91" disabled class="country-code">
+        <input type="tel" id="phoneNumber" placeholder="10 Digit Mobile Number" class="main-phone-input">
+      </div>
+      <button class="modal-btn send-otp-btn" onclick="window.sendOTPCode()">Send OTP</button>
+    </div>
 
-let container=document.getElementById("roomList");
-
-for(let i=1;i<=10;i++){
-
-let distance=(Math.random()*5+0.5).toFixed(1);
-
-container.innerHTML += `
-
-<div class="card" onclick="openDetails()">
-
-<img src="https://images.unsplash.com/photo-1560448204-e02f11c3d0e2?random=${i}">
-
-<div class="card-content">
-
-<div class="price">
-₹${3000+i*200}/month
+    <div id="otpStage" style="display: none;">
+      <p class="modal-subtitle">Enter the 6-digit OTP sent to your phone</p>
+      <input type="text" id="otpCode" placeholder="Enter 6 Digit OTP" class="otp-input">
+      <button class="modal-btn verify-btn" onclick="window.verifyOTP()">Verify & Login</button>
+    </div>
+  </div>
 </div>
 
-<div class="pg-type">
-Boys PG • Double Sharing
-</div>
-
-<div class="distance">
-${distance} km from Rungta College
-</div>
-
-</div>
-
-</div>
-
-`;
-
-}
-
-/* PAGE SWITCH */
-
-function openDetails(){
-
-document.getElementById("homePage").style.display="none";
-
-document.getElementById("detailPage").style.display="block";
-
-window.scrollTo(0,0);
-
-}
-
-function goBack(){
-
-document.getElementById("detailPage").style.display="none";
-
-document.getElementById("homePage").style.display="block";
-
-}
-
-/* SLIDER */
-
-let current=0;
-
-let slides=document.querySelectorAll(".slide");
-
-let dots=document.querySelectorAll(".dot");
-
-function showSlide(i){
-
-slides.forEach(slide=>slide.classList.remove("active"));
-
-dots.forEach(dot=>dot.classList.remove("active"));
-
-slides[i].classList.add("active");
-
-dots[i].classList.add("active");
-
-}
-
-function nextSlide(){
-
-current=(current+1)%slides.length;
-
-showSlide(current);
-
-}
-
-function prevSlide(){
-
-current=(current-1+slides.length)%slides.length;
-
-showSlide(current);
-
-}
-
-/* MOBILE SWIPE */
-
-let startX=0;
-
-document.querySelector(".slider").addEventListener("touchstart",e=>{
-
-startX=e.touches[0].clientX;
-
-});
-
-document.querySelector(".slider").addEventListener("touchend",e=>{
-
-let endX=e.changedTouches[0].clientX;
-
-if(startX>endX+50){
-
-nextSlide();
-
-}
-
-if(startX<endX-50){
-
-prevSlide();
-
-}
-
-});
-
-/* SHOW MORE */
-
-function toggleDetails(){
-
-let more=document.getElementById("moreDetails");
-
-if(more.style.display==="block"){
-
-more.style.display="none";
-
-}else{
-
-more.style.display="block";
-
-}
-
-}
-
-</script>
-
-<script type="module">
-  import { initializeApp } from "https://www.gstatic.com/firebasejs/12.12.1/firebase-app.js";
-  import { getAuth, signInWithPopup, GoogleAuthProvider, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/12.12.1/firebase-auth.js";
-
-  const firebaseConfig = {
-    apiKey: "AIzaSyCxP405IU4nljGIF9LzA4WeVLVk2kb80EU", // Fixed key ending with 80EU
-  authDomain: "mypghub-68a0f.firebaseapp.com",
-  projectId: "mypghub-68a0f",
-  storageBucket: "mypghub-68a0f.firebasestorage.app",
-  messagingSenderId: "128487472086",
-  appId: "1:128487472086:web:6e4daabb527b0f2abb4277",
-  measurementId: "G-EV19LWYTZ3"
-  };
-
-  const app = initializeApp(firebaseConfig);
-  const auth = getAuth(app);
-  const provider = new GoogleAuthProvider();
-
-  // Button clickable banane ke liye window object mein function joda
-  window.loginWithGoogle = async () => {
-    try {
-      await signInWithPopup(auth, provider);
-    } catch (error) {
-      alert("Login Error: " + error.message);
-    }
-  };
-
-  // Login hone ke baad button par naam dikhane ke liye
-  onAuthStateChanged(auth, (user) => {
-    const btn = document.getElementById("loginBtn");
-    if (user) {
-      btn.innerHTML = user.displayName.split(' ')[0];
-    } else {
-      btn.innerHTML = "Login";
-    }
-  });
-</script>
+<div id="recaptcha-container"></div>
 </body>
+
 </html>
