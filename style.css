@@ -449,156 +449,169 @@ body{
     text-align:center;
   }
 }
-/* ==========================================
-   FLIPKART STYLE LOGIN MODAL CSS
-   ========================================== */
+/* ==========================================================================
+   PREMIUM MODAL DESIGN (FLIPKART STYLE MODERN LOOK)
+   ========================================================================== */
 
-/* 1. Pura screen dhakne ke liye dark overlay */
+/* Background Overlay */
 .modal-overlay {
   position: fixed;
   top: 0;
   left: 0;
   width: 100%;
   height: 100%;
-  background: rgba(0, 0, 0, 0.6); /* Flipkart jaisa thoda dark parda */
-  z-index: 99999;
-  display: none; /* Shuru me hidden rahega */
-  justify-content: center;
+  background: rgba(0, 0, 0, 0.6);
+  display: flex;
   align-items: center;
+  justify-content: center;
+  z-index: 1000;
+  backdrop-filter: blur(4px); /* Background halka blur hoga premium look ke liye */
 }
 
-/* 2. Flipkart Login Box Card */
+/* Main Modal Card */
 .modal-card {
   background: #ffffff;
   width: 100%;
-  max-width: 400px; /* Mobile aur Desktop dono pe mast fit baithega */
-  padding: 35px 30px;
-  border-radius: 4px; /* Flipkart soft corners nahi, sharp/formal corners use karta hai */
-  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+  max-width: 400px;
+  padding: 40px 30px;
+  border-radius: 16px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
   position: relative;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
   box-sizing: border-box;
 }
 
-/* 3. Close (X) Button */
+/* Close (X) Button */
 .close-modal-btn {
   position: absolute;
-  top: 12px;
-  right: 15px;
+  top: 20px;
+  right: 20px;
   font-size: 28px;
   color: #878787;
   cursor: pointer;
+  transition: color 0.2s ease;
   line-height: 1;
 }
+
 .close-modal-btn:hover {
   color: #212121;
 }
 
-/* 4. Headings */
+/* Typography */
 .modal-title {
-  margin: 0 0 10px 0;
-  font-size: 22px;
-  font-weight: 500;
+  font-size: 24px;
+  font-weight: 600;
   color: #212121;
+  margin: 0 0 8px 0;
 }
 
 .modal-subtitle {
-  margin: 0 0 25px 0;
   font-size: 14px;
   color: #878787;
+  margin-bottom: 30px;
   line-height: 1.4;
 }
 
-/* 5. Input Container Row */
+/* Input Row Section */
 .phone-input-row {
   display: flex;
   align-items: center;
-  border-bottom: 2px solid #e0e0e0; /* Flipkart style bottom-only border */
+  border-bottom: 2px solid #e0e0e0;
   margin-bottom: 30px;
   padding-bottom: 5px;
+  transition: border-color 0.2s ease;
 }
 
 .phone-input-row:focus-within {
-  border-bottom: 2px solid #2874f0; /* Focus karne par Flipkart Blue border */
+  border-bottom-color: #ff9f00; /* Orange color focused par */
 }
 
-/* Country Code (+91) */
 .country-code {
+  font-size: 16px;
+  font-weight: 600;
+  color: #212121;
   width: 40px;
   border: none;
   background: transparent;
-  font-size: 16px;
-  font-weight: bold;
-  color: #212121;
+  outline: none;
   padding: 0;
 }
 
-/* Main Phone Input */
 .main-phone-input {
   flex: 1;
   border: none;
-  outline: none;
   background: transparent;
+  outline: none;
   font-size: 16px;
   color: #212121;
   padding: 5px 0;
 }
 
-/* OTP Input (Center aligned Flipkart style) */
-.otp-input {
-  width: 100%;
-  border: none;
-  border-bottom: 2px solid #e0e0e0;
-  outline: none;
-  font-size: 18px;
-  letter-spacing: 6px;
-  text-align: center;
-  padding: 10px 0;
-  margin-bottom: 30px;
-  color: #212121;
-}
-.otp-input:focus {
-  border-bottom: 2px solid #2874f0;
+.main-phone-input::placeholder {
+  color: #c2c2c2;
 }
 
-/* 6. Flipkart Buttons */
+/* Universal Button Style */
 .modal-btn {
   width: 100%;
   padding: 14px;
-  border: none;
-  outline: none;
-  font-size: 15px;
-  font-weight: 500;
+  font-size: 16px;
+  font-weight: 600;
+  border-radius: 8px;
   cursor: pointer;
-  border-radius: 2px;
-  transition: 0.2s;
+  transition: all 0.2s ease;
+  box-sizing: border-box;
 }
 
-/* Send OTP Button (Flipkart Orange) */
+/* Send OTP Button (Flipkart Dark Orange) */
 .send-otp-btn {
   background: #ff9f00;
-  color: white;
-  box-shadow: 0 1px 2px rgba(0,0,0,0.1);
+  color: #ffffff;
+  border: none;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
+
 .send-otp-btn:hover {
-  background: #f39600;
+  background: #f39200;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
 }
 
-/* Verify Button (Flipkart Blue) */
-.verify-btn {
-  background: #2874f0;
-  color: white;
-}
-.verify-btn:hover {
-  background: #1466f0;
-}
-
-/* Terms and Privacy Text at bottom */
-.modal-card::after {
-  content: "By continuing, you agree to MyPGHub's Terms of Use and Privacy Policy.";
-  display: block;
-  font-size: 12px;
-  color: #878787;
-  margin-top: 25px;
+/* OR Divider Line */
+.or-divider {
   text-align: center;
-  line-height: 1.4;
+  margin: 20px 0;
+  color: #878787;
+  font-size: 12px;
+  font-weight: 500;
+  position: relative;
+}
+
+/* Google Button (Clean, White & Responsive) */
+.google-btn {
+  background: #ffffff;
+  color: #212121;
+  border: 1px solid #d4d4d4;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+}
+
+.google-btn:hover {
+  background: #f7f9fa;
+  border-color: #a0a0a0;
+}
+
+.google-btn img {
+  display: block;
+  object-fit: contain;
+}
+
+/* Footer / Terms Section */
+.modal-footer-text {
+  font-size: 11px;
+  color: #878787;
+  text-align: center;
+  margin-top: 25px;
+  line-height: 1.5;
 }
