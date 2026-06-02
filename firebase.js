@@ -1,5 +1,5 @@
 // ==========================================================================
-// COMPLETE FIREBASE SETUP WITH MOBILE-FRIENDLY RE-DIRECT & SKELETON TRIGGER
+// COMPLETE FIREBASE SETUP (UNIVERSAL POPUP METHOD FOR LAPTOP & MOBILE)
 // ==========================================================================
 import { initializeApp } from "https://www.gstatic.com/firebasejs/12.12.1/firebase-app.js";
 import { 
@@ -8,9 +8,7 @@ import {
   signInWithPhoneNumber, 
   onAuthStateChanged, 
   GoogleAuthProvider, 
-  signInWithPopup,
-  signInWithRedirect,
-  getRedirectResult 
+  signInWithPopup
 } from "https://www.gstatic.com/firebasejs/12.12.1/firebase-auth.js";
 
 const firebaseConfig = {
@@ -28,6 +26,9 @@ export const auth = getAuth(app);
 window.auth = auth;
 
 const googleProvider = new GoogleAuthProvider();
+// Google ko force karenge ki wo har baar account selection screen dikhaye
+googleProvider.setCustomParameters({ prompt: 'select_account' });
+
 let confirmationResult = null;
 
 // Invisible reCAPTCHA setup
@@ -96,44 +97,29 @@ window.verifyOTP = () => {
     });
 };
 
-// 3. GOOGLE LOGIN FUNCTION (💻 Laptop me Popup, 📱 Mobile me Redirect)
+// 3. GOOGLE LOGIN FUNCTION (🔥 Laptop aur Mobile Dono Ke Liye Popup Method)
 window.loginWithGoogle = () => {
-  if (window.innerWidth < 768) {
-    console.log("Mobile detected, using Redirect method...");
-    signInWithRedirect(auth, googleProvider);
-  } else {
-    console.log("Desktop detected, using Popup method...");
-    signInWithPopup(auth, googleProvider)
-      .then((result) => {
-        alert("Logged in successfully with Google!");
-        if (window.closeLoginModal) window.closeLoginModal();
-      })
-      .catch((error) => {
-        console.error("Google Auth Popup Error:", error);
-        alert("Google Login Failed: " + error.message);
-      });
-  }
-};
-
-// 🔄 GLOBAL FLAG: Jab tak check chal raha hai, tab tak modal block rahega
-let isAuthResolving = true; 
-
-getRedirectResult(auth)
-  .then((result) => {
-    isAuthResolving = false; // Redirect processing khatam
-    if (result && result.user) {
-      console.log("Mobile redirect login successful!", result.user);
+  console.log("Launching Universal Google Popup...");
+  
+  signInWithPopup(auth, googleProvider)
+    .then((result) => {
+      console.log("Google Login Successful:", result.user);
       alert("Logged in successfully with Google!");
       if (window.closeLoginModal) window.closeLoginModal();
-    }
-  })
-  .catch((error) => {
-    isAuthResolving = false;
-    console.error("Google Auth Redirect Error:", error);
-  });
+    })
+    .catch((error) => {
+      console.error("Google Auth Error:", error);
+      // Agar phone ka browser popup block kare toh user ko warning dikhao
+      if (error.code === "auth/popup-blocked") {
+        alert("Please allow popups for this site in your browser settings or try again!");
+      } else {
+        alert("Google Login Failed: " + error.message);
+      }
+    });
+};
 
 // ==========================================================================
-// 🚀 LAG-FREE SMART STATE MONITOR (LAPTOP + MOBILE OPTIMIZED)
+// 🚀 CLEAN & LAG-FREE STATE MONITOR
 // ==========================================================================
 onAuthStateChanged(auth, (user) => {
   const loginText = document.getElementById("loginText");
@@ -152,9 +138,8 @@ onAuthStateChanged(auth, (user) => {
   }
 
   if (user) {
-    // 1. User Login Hai
-    isAuthResolving = false; // Agar user session mil gayi toh loading band
-    console.log("User is already logged in:", user.uid);
+    // 1. User Login Hai -> Modal Hatao aur Details Dikhao
+    console.log("User active session found:", user.uid);
     if (loginModal) loginModal.style.display = "none"; 
     if (loginText) loginText.style.display = "none";
 
@@ -171,8 +156,8 @@ onAuthStateChanged(auth, (user) => {
       userNumberDisplay.style.display = "inline-block";
     }
   } else {
-    // 2. User Logged Out Hai
-    console.log("No active user session found.");
+    // 2. User Logged Out Hai -> Default Guest Mode
+    console.log("No active user session.");
     if (loginText) {
       loginText.style.display = "inline-block";
       loginText.innerText = "Login";
@@ -182,18 +167,10 @@ onAuthStateChanged(auth, (user) => {
       userNumberDisplay.innerText = "";
     }
 
-    // 🔥 BREAK THE LOOP: Jab tak background me redirect check ho raha hai, tab tak modal automatic nahi dikhega
-    setTimeout(() => {
-      if (!auth.currentUser && !isAuthResolving) {
-        if (loginModal) {
-          loginModal.style.display = "flex"; 
-        }
-      } else {
-        if (loginModal) {
-          loginModal.style.display = "none"; 
-        }
-      }
-    }, 1200); // 1.2 second ka smart halt diya hai Firebase ko apna kam pura karne ke liye
+    // Default me modal flex rahega jab tak login na ho
+    if (loginModal) {
+      loginModal.style.display = "flex"; 
+    }
   }
 });
 
