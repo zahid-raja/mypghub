@@ -1,10 +1,9 @@
 // ==========================================================================
-// COMPLETE & FINAL FIREBASE SETUP WITH INTEGRATED NAVIGATION LOGIC
+// COMPLETE FIREBASE SETUP WITH PHONE & GOOGLE SIGN-IN Integrated
 // ==========================================================================
 import { initializeApp } from "https://www.gstatic.com/firebasejs/12.12.1/firebase-app.js";
-import { getAuth, RecaptchaVerifier, signInWithPhoneNumber, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/12.12.1/firebase-auth.js";
+import { getAuth, RecaptchaVerifier, signInWithPhoneNumber, onAuthStateChanged, GoogleAuthProvider, signInWithPopup } from "https://www.gstatic.com/firebasejs/12.12.1/firebase-auth.js";
 
-// Updated Connection Credentials
 const firebaseConfig = {
   apiKey: "AIzaSyCxP405IU4nljGIF9LzA4WeVLVk2kb8OEU",
   authDomain: "mypghub-68a0f.firebaseapp.com",
@@ -15,11 +14,11 @@ const firebaseConfig = {
   measurementId: "G-EV19LWYTZ3"
 };
 
-// Initialize Core App & Auth
 const app = initializeApp(firebaseConfig);
 export const auth = getAuth(app);
-window.auth = auth; // Script.js aur HTML ke globally usage ke liye
+window.auth = auth;
 
+const googleProvider = new GoogleAuthProvider();
 let confirmationResult = null;
 
 // Invisible reCAPTCHA setup
@@ -34,7 +33,7 @@ function setupRecaptcha() {
   }
 }
 
-// 1. "Send OTP" Button Logic (Stage A)
+// 1. PHONE OTP - Send OTP Code
 window.sendOTPCode = () => {
   const phoneInput = document.getElementById("phoneNumber");
   const phone = phoneInput ? phoneInput.value.trim() : "";
@@ -51,7 +50,6 @@ window.sendOTPCode = () => {
   signInWithPhoneNumber(auth, fullPhoneNumber, appVerifier)
     .then((result) => {
       window.confirmationResult = result;
-      // UI Change: Phone hide karo, OTP show karo
       document.getElementById("phoneStage").style.display = "none";
       document.getElementById("otpStage").style.display = "block";
       alert("OTP sent successfully!");
@@ -62,7 +60,7 @@ window.sendOTPCode = () => {
     });
 };
 
-// 2. "Verify & Login" Button Logic (Stage B)
+// 2. PHONE OTP - Verify OTP Code
 window.verifyOTP = () => {
   const otpInput = document.getElementById("otpCode");
   const code = otpInput ? otpInput.value.trim() : "";
@@ -89,59 +87,79 @@ window.verifyOTP = () => {
     });
 };
 
+// 3. GOOGLE LOGIN FUNCTION (Naya Feature ✨)
+window.loginWithGoogle = () => {
+  signInWithPopup(auth, googleProvider)
+    .then((result) => {
+      alert("Logged in successfully with Google!");
+      if (window.closeLoginModal) window.closeLoginModal();
+    })
+    .catch((error) => {
+      console.error("Google Auth Error:", error);
+      alert("Google Login Failed: " + error.message);
+    });
+};
+
 // ==========================================================================
-// UPDATED STATE MONITOR: HIDE LOGIN BUTTON & SHOW 4 DIGITS
+// SMART STATE MONITOR: REFRESH PAR BAAR-BAAR MODAL KHULNA ROKEGA 🛡️
 // ==========================================================================
 onAuthStateChanged(auth, (user) => {
   const loginText = document.getElementById("loginText");
   const userNumberDisplay = document.getElementById("userNumberDisplay");
+  const loginModal = document.getElementById("loginModal");
 
   if (user) {
-    // 1. Agar user logged in hai:
-    let rawNumber = user.phoneNumber ? user.phoneNumber.replace("+91", "") : "";
-    let firstFourDigits = rawNumber.substring(0, 4);
-
-    // Login text ko chhupao (Hide)
-    if (loginText) {
-      loginText.style.display = "none";
+    // 1. User Logn Hai (Success Zone)
+    console.log("User is already logged in:", user.uid);
+    
+    // Modal ko turant band karo agar galti se khula ho
+    if (loginModal) {
+      loginModal.style.display = "none"; 
     }
 
-    // Number wale element me "7033..." daalo aur use dikhao (Show)
-    if (userNumberDisplay && firstFourDigits) {
-      userNumberDisplay.innerText = firstFourDigits + "...";
-      userNumberDisplay.style.display = "inline-block"; 
-    }
-    console.log("User logged in. Hiding 'Login' button, showing digits.");
+    if (loginText) loginText.style.display = "none";
 
+    if (userNumberDisplay) {
+      if (user.phoneNumber) {
+        let rawNumber = user.phoneNumber.replace("+91", "");
+        userNumberDisplay.innerText = rawNumber.substring(0, 4) + "...";
+      } else if (user.displayName) {
+        let shortName = user.displayName.split(" ")[0];
+        userNumberDisplay.innerText = shortName;
+      } else {
+        userNumberDisplay.innerText = "User";
+      }
+      userNumberDisplay.style.display = "inline-block";
+    }
   } else {
-    // 2. Agar user logged out hai (Guest Mode):
-    // Login button ko wapas dikhao (Show)
+    // 2. User Logged Out Hai (Guest Mode)
+    console.log("No active user session found.");
+    
     if (loginText) {
       loginText.style.display = "inline-block";
       loginText.innerText = "Login";
     }
-
-    // Number wale box ko chhupao (Hide)
     if (userNumberDisplay) {
       userNumberDisplay.style.display = "none";
       userNumberDisplay.innerText = "";
     }
-    console.log("No user active. Showing 'Login' button.");
+
+    // AAPKI CHOICE: Agar aap chahte hain ki guest user aate hi automatic modal khule, 
+    // toh is niche wali line ko rehne dein. Agar aap chahte hain ki jab wo "Login" button 
+    // par click kare TABHI khule, toh niche wali line ko delete/comment kar dein.
+    if (loginModal) {
+      loginModal.style.display = "flex"; 
+    }
   }
 });
 
-// ==========================================================================
-// CLICKS AND ROUTING CONTROLS FOR INDEX.HTML ELEMENTS
-// ==========================================================================
-
-// Login text par click karne se popup tabhi khulega jab user guest ho
+// ROUTING CONTROLS
 window.handleLoginClick = () => {
   if (!auth.currentUser) {
     if (window.openLoginModal) window.openLoginModal();
   }
 };
 
-// Account text par click hote hi direct account.html open ho jayega
 window.handleAccountClick = () => {
   window.location.href = "account.html";
 };
