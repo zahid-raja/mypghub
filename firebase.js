@@ -98,7 +98,6 @@ window.verifyOTP = () => {
 
 // 3. GOOGLE LOGIN FUNCTION (📱 Mobile Friendly Redirect Method Attached)
 window.loginWithGoogle = () => {
-  // Mobile check karne ke liye screen width ka use kiya hai (768px se choti screen par mobile system chalega)
   if (window.innerWidth < 768) {
     console.log("Mobile detected, using Redirect method...");
     signInWithRedirect(auth, googleProvider);
@@ -130,33 +129,28 @@ getRedirectResult(auth)
   });
 
 // ==========================================================================
-// SMART STATE MONITOR: REFRESH PAR SKELETON HATA KAR REAL CONTENT DIKHAYEGA 🛡️
+// 🚀 LAG-FREE SMART STATE MONITOR (MOBILE OPTIMIZED)
 // ==========================================================================
 onAuthStateChanged(auth, (user) => {
   const loginText = document.getElementById("loginText");
   const userNumberDisplay = document.getElementById("userNumberDisplay");
   const loginModal = document.getElementById("loginModal");
 
-  // 🎬 YOUTUBE SKELETON CONTROL: Firebase ka faisla aate hi skeleton ko hatao aur asli content dikhao
+  // 🎬 SKELETON REMOVER: Chupane ke bajaye permanent DELETE marenge taaki lag khatam ho!
   const skeleton = document.getElementById("youtubeSkeleton");
   const realContent = document.getElementById("realContent");
   
   if (skeleton) {
-    skeleton.style.display = "none"; // YouTube bars ko gayab karo
+    skeleton.remove(); // 🔥 Background animation khatam, phone smooth chalega!
   }
   if (realContent) {
-    realContent.classList.remove("hidden-content"); // Asli layout ko samne lao
+    realContent.classList.remove("hidden-content"); // Asli content samne aayega
   }
 
   if (user) {
     // 1. User Login Hai (Success Zone)
     console.log("User is already logged in:", user.uid);
-    
-    // Modal ko turant band karo agar galti se khula ho
-    if (loginModal) {
-      loginModal.style.display = "none"; 
-    }
-
+    if (loginModal) loginModal.style.display = "none"; 
     if (loginText) loginText.style.display = "none";
 
     if (userNumberDisplay) {
@@ -174,7 +168,6 @@ onAuthStateChanged(auth, (user) => {
   } else {
     // 2. User Logged Out Hai (Guest Mode)
     console.log("No active user session found.");
-    
     if (loginText) {
       loginText.style.display = "inline-block";
       loginText.innerText = "Login";
@@ -184,7 +177,8 @@ onAuthStateChanged(auth, (user) => {
       userNumberDisplay.innerText = "";
     }
 
-    // Default me guest user aate hi login screen open ho jayega
+    // 💡 NOTA: Agar aap chahte ho ki guest aate hi modal automatic na khule, 
+    // balki jab wo click kare tabhi khule, toh niche wali line ko comment (//) kar dena.
     if (loginModal) {
       loginModal.style.display = "flex"; 
     }
