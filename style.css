@@ -337,8 +337,15 @@ body{
 }
 
 /* BOTTOM NAV */
-.bottom-nav{
-  display:none;
+.bottom-nav {
+  display: none;
+
+  /* 🔥 Yeh lines add kar do, Chrome ka glitch hamesha ke liye khatam */
+  -webkit-user-select: none;  /* Mobile Chrome/Safari me text select hona rokega */
+  -moz-user-select: none;     /* Firefox ke liye */
+  -ms-user-select: none;
+  user-select: none;          /* Standard selection block */
+  -webkit-tap-highlight-color: transparent; /* Click karne par jo annoying grey shadow aati hai use hatayega */
 }
 
 /* MOBILE */
