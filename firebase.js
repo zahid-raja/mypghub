@@ -96,13 +96,13 @@ window.verifyOTP = () => {
     });
 };
 
-// 3. GOOGLE LOGIN FUNCTION (📱 Mobile Friendly Redirect Method Attached)
+// 3. GOOGLE LOGIN FUNCTION (💻 Laptop me Popup, 📱 Mobile me Redirect)
 window.loginWithGoogle = () => {
   if (window.innerWidth < 768) {
     console.log("Mobile detected, using Redirect method...");
     signInWithRedirect(auth, googleProvider);
   } else {
-    console.log("Desktop detected, using Popup method...");
+    console.log("Desktop detected, using Popup method (No Change)...");
     signInWithPopup(auth, googleProvider)
       .then((result) => {
         alert("Logged in successfully with Google!");
@@ -115,9 +115,12 @@ window.loginWithGoogle = () => {
   }
 };
 
-// Mobile redirect ke baad result check karne ke liye helper function
+// 🔄 MOBILE REDIRECT HANDLING (Yeh variable login screen ko baar-baar aane se rokega)
+let isRedirectChecking = true; 
+
 getRedirectResult(auth)
   .then((result) => {
+    isRedirectChecking = false; // Checking poori hui
     if (result && result.user) {
       console.log("Mobile redirect login successful!", result.user);
       alert("Logged in successfully with Google!");
@@ -125,26 +128,28 @@ getRedirectResult(auth)
     }
   })
   .catch((error) => {
+    isRedirectChecking = false; // Error aaya toh bhi checking band
     console.error("Google Auth Redirect Error:", error);
+    alert("Login Error: " + error.message);
   });
 
 // ==========================================================================
-// 🚀 LAG-FREE SMART STATE MONITOR (MOBILE OPTIMIZED)
+// 🚀 LAG-FREE SMART STATE MONITOR (LAPTOP + MOBILE OPTIMIZED)
 // ==========================================================================
 onAuthStateChanged(auth, (user) => {
   const loginText = document.getElementById("loginText");
   const userNumberDisplay = document.getElementById("userNumberDisplay");
   const loginModal = document.getElementById("loginModal");
 
-  // 🎬 SKELETON REMOVER: Chupane ke bajaye permanent DELETE marenge taaki lag khatam ho!
+  // 🎬 SKELETON REMOVER: Skeleton ko delete marenge taaki mobile smooth chale
   const skeleton = document.getElementById("youtubeSkeleton");
   const realContent = document.getElementById("realContent");
   
   if (skeleton) {
-    skeleton.remove(); // 🔥 Background animation khatam, phone smooth chalega!
+    skeleton.remove(); 
   }
   if (realContent) {
-    realContent.classList.remove("hidden-content"); // Asli content samne aayega
+    realContent.classList.remove("hidden-content"); 
   }
 
   if (user) {
@@ -177,10 +182,16 @@ onAuthStateChanged(auth, (user) => {
       userNumberDisplay.innerText = "";
     }
 
-    // 💡 NOTA: Agar aap chahte ho ki guest aate hi modal automatic na khule, 
-    // balki jab wo click kare tabhi khule, toh niche wali line ko comment (//) kar dena.
-    if (loginModal) {
-      loginModal.style.display = "flex"; 
+    // 🔥 FIX: Jab mobile me email select karke page wapas khulega, toh jab tak Firebase backend me 
+    // user check kar raha hai, tab tak login screen (modal) nahi khulegi!
+    if (!isRedirectChecking) {
+      if (loginModal) {
+        loginModal.style.display = "flex"; 
+      }
+    } else {
+      if (loginModal) {
+        loginModal.style.display = "none"; 
+      }
     }
   }
 });
