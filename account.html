@@ -2,348 +2,347 @@
 <html>
 
 <head>
-
-  <meta name="viewport"
-        content="width=device-width, initial-scale=1.0">
-
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>My Account</title>
 
   <style>
-
-  body{
-    margin:0;
-    font-family:Arial;
-    background:#f1f3f6;
-  }
-
-  /* HEADER */
-
-  .header{
-    background:white;
-    padding:15px;
-    display:flex;
-    align-items:center;
-    justify-content:space-between;
-    box-shadow:0 1px 5px rgba(0,0,0,0.1);
-    position:sticky;
-    top:0;
-    z-index:1000;
-  }
-
-  .back-btn{
-    background:#2874f0;
-    color:white;
-    border:none;
-    padding:10px 14px;
-    border-radius:8px;
-    cursor:pointer;
-  }
-
-  .title{
-    font-size:20px;
-    font-weight:bold;
-  }
-
-  /* PROFILE */
-
-  .profile-box{
-    background:white;
-    margin:15px;
-    padding:20px;
-    border-radius:15px;
-    display:flex;
-    align-items:center;
-    gap:15px;
-    box-shadow:0 1px 5px rgba(0,0,0,0.1);
-  }
-
-  .profile-img{
-    width:80px;
-    height:80px;
-    border-radius:50%;
-    object-fit:cover;
-  }
-
-  .name{
-    font-size:20px;
-    font-weight:bold;
-  }
-
-  .email{
-    color:gray;
-    margin-top:5px;
-    font-size:14px;
-  }
-
-  .edit{
-    margin-top:10px;
-    color:#2874f0;
-    font-size:14px;
-    cursor:pointer;
-  }
-
-  /* SECTION */
-
-  .section{
-    background:white;
-    margin:15px;
-    border-radius:15px;
-    padding:15px;
-    box-shadow:0 1px 5px rgba(0,0,0,0.1);
-  }
-
-  .section-title{
-    font-size:18px;
-    font-weight:bold;
-    margin-bottom:10px;
-  }
-
-  .item{
-    padding:15px 0;
-    border-bottom:1px solid #eee;
-    cursor:pointer;
-    font-size:15px;
-  }
-
-  .item:last-child{
-    border-bottom:none;
-  }
-
-  /* BUTTONS */
-
-  .btn{
-    width:calc(100% - 30px);
-    margin:15px;
-    padding:14px;
-    border:none;
-    border-radius:10px;
-    font-size:15px;
-    cursor:pointer;
-  }
-
-  .reset-btn{
-    background:#2874f0;
-    color:white;
-  }
-
-  .logout-btn{
-    background:red;
-    color:white;
-  }
-
-  /* MOBILE */
-
-  @media(max-width:768px){
-
-    .profile-box{
-      flex-direction:column;
-      text-align:center;
+    body {
+      margin: 0;
+      font-family: Arial;
+      background: #f1f3f6;
     }
 
-    .profile-img{
-      width:90px;
-      height:90px;
+    /* HEADER */
+    .header {
+      background: white;
+      padding: 15px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      box-shadow: 0 1px 5px rgba(0, 0, 0, 0.1);
+      position: sticky;
+      top: 0;
+      z-index: 1000;
     }
 
-  }
+    .back-btn {
+      background: #2874f0;
+      color: white;
+      border: none;
+      padding: 10px 14px;
+      border-radius: 8px;
+      cursor: pointer;
+    }
 
+    .title {
+      font-size: 20px;
+      font-weight: bold;
+    }
+
+    /* PROFILE */
+    .profile-box {
+      background: white;
+      margin: 15px;
+      padding: 20px;
+      border-radius: 15px;
+      display: flex;
+      align-items: center;
+      gap: 15px;
+      box-shadow: 0 1px 5px rgba(0, 0, 0, 0.1);
+    }
+
+    .profile-img {
+      width: 80px;
+      height: 80px;
+      border-radius: 50%;
+      object-fit: cover;
+    }
+
+    .name {
+      font-size: 20px;
+      font-weight: bold;
+    }
+
+    .email {
+      color: gray;
+      margin-top: 5px;
+      font-size: 14px;
+    }
+
+    .edit {
+      margin-top: 10px;
+      color: #2874f0;
+      font-size: 14px;
+      cursor: pointer;
+    }
+
+    /* SECTION */
+    .section {
+      background: white;
+      margin: 15px;
+      border-radius: 15px;
+      padding: 15px;
+      box-shadow: 0 1px 5px rgba(0, 0, 0, 0.1);
+    }
+
+    .section-title {
+      font-size: 18px;
+      font-weight: bold;
+      margin-bottom: 10px;
+    }
+
+    .item {
+      padding: 15px 0;
+      border-bottom: 1px solid #eee;
+      cursor: pointer;
+      font-size: 15px;
+    }
+
+    .item:last-child {
+      border-bottom: none;
+    }
+
+    /* BUTTONS */
+    .btn {
+      width: calc(100% - 30px);
+      margin: 15px;
+      padding: 14px;
+      border: none;
+      border-radius: 10px;
+      font-size: 15px;
+      cursor: pointer;
+    }
+
+    .logout-btn {
+      background: red;
+      color: white;
+    }
+
+    /* MOBILE */
+    @media(max-width:768px) {
+      .profile-box {
+        flex-direction: column;
+        text-align: center;
+      }
+
+      .profile-img {
+        width: 90px;
+        height: 90px;
+      }
+    }
+
+    .language-popup {
+      position: fixed;
+      left: 0;
+      bottom: -100%;
+      width: 100%;
+      height: 75%;
+      background: white;
+      border-radius: 20px 20px 0 0;
+      transition: 0.3s;
+      z-index: 99999;
+      box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.2);
+    }
+
+    .language-popup.active {
+      bottom: 0;
+    }
+
+    .popup-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 18px;
+      border-bottom: 1px solid #eee;
+    }
+
+    .popup-title {
+      font-size: 20px;
+      font-weight: bold;
+    }
+
+    .close-popup {
+      font-size: 22px;
+      cursor: pointer;
+    }
+
+    .popup-search {
+      padding: 15px;
+    }
+
+    .popup-search input {
+      width: 100%;
+      padding: 14px;
+      border: none;
+      border-radius: 10px;
+      background: #f1f3f6;
+      box-sizing: border-box;
+    }
+
+    .language-list {
+      overflow-y: auto;
+      height: calc(100% - 120px);
+    }
+
+    .language-item {
+      padding: 18px;
+      border-bottom: 1px solid #eee;
+      cursor: pointer;
+      font-size: 16px;
+    }
+
+    .language-item:hover {
+      background: #f5f5f5;
+    }
   </style>
-
 </head>
 
 <body>
 
-<!-- HEADER -->
+  <div class="header">
+    <button class="back-btn" onclick="window.location.href='index.html'">
+      ⬅ Back
+    </button>
+    <div class="title">
+      My Account
+    </div>
+  </div>
 
-<div class="header">
+  <div class="profile-box">
+    <img class="profile-img" id="userPhoto" src="https://i.imgur.com/HeIi0wU.png">
+    <div>
+      <div class="name" id="userPhoneDisplay">Guest User</div>
+      <div class="email" id="loginStatus">Not Logged In</div>
+      <div class="edit">✏ Edit Profile</div>
+    </div>
+  </div>
 
-  <button class="back-btn">
-    ⬅ Back
+  <div class="section">
+    <div class="section-title">My Activity</div>
+    <div class="item">❤️ Favourite Rooms</div>
+    <div class="item">🏠 Shared Rooms</div>
+    <div class="item">👁 Followed Rooms</div>
+    <div class="item" onclick="window.openLanguagePopup()">🌐 Change Language</div>
+
+    <div class="language-popup" id="languagePopup">
+      <div class="popup-header">
+        <div class="popup-title">Language</div>
+        <div class="close-popup" onclick="window.closeLanguagePopup()">✖</div>
+      </div>
+      <div class="popup-search">
+        <input type="text" placeholder="Search Language">
+      </div>
+      <div class="language-list">
+        <div class="language-item" onclick="window.selectLanguage('English')">English</div>
+        <div class="language-item" onclick="window.selectLanguage('Hindi')">Hindi</div>
+        <div class="language-item" onclick="window.selectLanguage('Urdu')">Urdu</div>
+        <div class="language-item" onclick="window.selectLanguage('Bengali')">Bengali</div>
+        <div class="language-item" onclick="window.selectLanguage('Tamil')">Tamil</div>
+        <div class="language-item" onclick="window.selectLanguage('Telugu')">Telugu</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="section" id="ownerSection">
+    <div class="section-title">Owner Panel</div>
+    <div class="item">➕ Add Room</div>
+    <div class="item">✏ Edit Room</div>
+    <div class="item">🗑 Delete Room</div>
+    <div class="item">📊 Room Analytics</div>
+    <div class="item">📞 Interested Users</div>
+  </div>
+
+  <div class="section">
+    <div class="section-title">Settings</div>
+    <div class="item">🔔 Notifications</div>
+    <div class="item" onclick="window.toggleSecurity()">🔐 Privacy & Security</div>
+
+    <div id="securityOptions" style="display:none;">
+      <div class="item">🗑 Reset App Data</div>
+    </div>
+
+    <div class="item">📄 Legal & About</div>
+    <div class="item">❓ Help & Support</div>
+  </div>
+
+  <button class="btn logout-btn" id="logoutBtn" onclick="window.handleLogout()">
+    Logout
   </button>
 
-  <div class="title">
-    My Account
-  </div>
-
-</div>
-
-<!-- PROFILE -->
-
-<div class="profile-box">
-
-  <img class="profile-img"
-       src="https://i.imgur.com/HeIi0wU.png">
-
-  <div>
-
-    <div class="name">
-      User Name
-    </div>
-
-    <div class="email">
-      user@gmail.com
-    </div>
-
-    <div class="edit">
-      ✏ Edit Profile
-    </div>
-
-  </div>
-
-</div>
-
-<!-- USER SECTION -->
-
-<div class="section">
-
-  <div class="section-title">
-    My Activity
-  </div>
-
-  <div class="item">
-    ❤️ Favourite Rooms
-  </div>
-
-  <div class="item">
-    🏠 Shared Rooms
-  </div>
-
-  <div class="item">
-    👁 Followed Rooms
-  </div>
-
-  <div class="item">
-    🌐 Change Language
-  </div>
-
-</div>
-
-<!-- OWNER SECTION -->
-
-<div class="section"
-     id="ownerSection">
-
-  <div class="section-title">
-    Owner Panel
-  </div>
-
-  <div class="item">
-    ➕ Add Room
-  </div>
-
-  <div class="item">
-    ✏ Edit Room
-  </div>
-
-  <div class="item">
-    🗑 Delete Room
-  </div>
-
-  <div class="item">
-    📊 Room Analytics
-  </div>
-
-  <div class="item">
-    📞 Interested Users
-  </div>
-
-</div>
-
-<!-- SETTINGS -->
-
-<div class="section">
-
-  <div class="section-title">
-    Settings
-  </div>
-
-  <div class="item">
-    🔔 Notifications
-  </div>
-
-  <div class="item"
-     onclick="toggleSecurity()">
-
-  🔐 Privacy & Security
-
-</div>
-
-<div id="securityOptions"
-     style="display:none;">
-
-  <div class="item">
-    🗑 Reset App Data
-  </div>
-
-  <div class="item">
-    🔑 Change Password
-  </div>
-
-  <div class="item">
-    📱 Device Login Activity
-  </div>
-
-</div>
-
-  <div class="item">
-    📄 Legal & About
-  </div>
-
-  <div class="item">
-    ❓ Help & Support
-  </div>
-
-</div>
-
-<!-- RESET -->
-
-
-<!-- LOGOUT -->
-
-<button class="btn logout-btn">
-
-  Logout
-
-</button>
-
-<script>
-
-/* TEMP ROLE TEST */
-
-let role =
-  localStorage.getItem("role");
-
-/* HIDE OWNER PANEL */
-
-if(role !== "owner"){
-
-  document.getElementById(
-    "ownerSection"
-  ).style.display = "none";
-
-}
-
-function toggleSecurity(){
-
-  let box =
-    document.getElementById(
-      "securityOptions"
-    );
-
-  if(box.style.display === "block"){
-
-    box.style.display = "none";
-
-  }else{
-
-    box.style.display = "block";
-
-  }
-
-}
-
-</script>
-
+  <script>
+    window.toggleSecurity = () => {
+      let box = document.getElementById("securityOptions");
+      if (box) {
+        box.style.display = (box.style.display === "block") ? "none" : "block";
+      }
+    };
+
+    window.openLanguagePopup = () => {
+      const popup = document.getElementById("languagePopup");
+      if (popup) popup.classList.add("active");
+    };
+
+    window.closeLanguagePopup = () => {
+      const popup = document.getElementById("languagePopup");
+      if (popup) popup.classList.remove("active");
+    };
+
+    window.selectLanguage = (language) => {
+      localStorage.setItem("language", language);
+      alert(language + " Selected");
+      window.closeLanguagePopup();
+    };
+  </script>
+
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/12.12.1/firebase-app.js";
+    import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/12.12.1/firebase-auth.js";
+
+    // Your Exact Config Credentials
+    const firebaseConfig = {
+      apiKey: "AIzaSyCxP405IU4nljGIF9LzA4WeVLVk2kb8OEU",
+      authDomain: "mypghub-68a0f.firebaseapp.com",
+      projectId: "mypghub-68a0f",
+      storageBucket: "mypghub-68a0f.firebasestorage.app",
+      messagingSenderId: "128487472086",
+      appId: "1:128487472086:web:6e4daabb527b0f2abb4277",
+      measurementId: "G-EV19LWYTZ3"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const auth = getAuth(app);
+
+    // Monitoring the User Auth State on Page Load
+    onAuthStateChanged(auth, (user) => {
+      const userPhoneDisplay = document.getElementById("userPhoneDisplay");
+      const loginStatus = document.getElementById("loginStatus");
+      const logoutBtn = document.getElementById("logoutBtn");
+
+      if (user) {
+        // User logged in hai -> Unka phone number set karein
+        if (userPhoneDisplay) userPhoneDisplay.innerText = user.phoneNumber; 
+        if (loginStatus) loginStatus.innerText = "Verified User";
+        if (logoutBtn) logoutBtn.style.display = "block";
+      } else {
+        // User logged out hai -> Home page par kick back karein (Security check)
+        alert("Access Denied! Please login first.");
+        window.location.href = "index.html";
+      }
+    });
+
+    // Real Firebase Logout Process triggered from button
+    window.handleLogout = () => {
+      signOut(auth)
+        .then(() => {
+          alert("Logged out successfully!");
+          window.location.href = "index.html";
+        })
+        .catch((error) => {
+          console.error("Logout Error:", error);
+          alert("Error while logging out: " + error.message);
+        });
+    };
+  </script>
 </body>
 
 </html>
