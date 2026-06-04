@@ -2,13 +2,16 @@
 // 📥 FIREBASE SDK IMPORTS
 // ==========================================================================
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+// Apne purane imports me 'setPersistence' aur 'browserLocalPersistence' ko aise add kar lo:
 import { 
   getAuth, 
   onAuthStateChanged, 
   GoogleAuthProvider, 
   signInWithPopup, 
   RecaptchaVerifier, 
-  signInWithPhoneNumber 
+  signInWithPhoneNumber,
+  setPersistence,           // 👈 Yeh naya add karna hai
+  browserLocalPersistence   // 👈 Yeh naya add karna hai
 } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
 
 // ==========================================================================
@@ -24,12 +27,20 @@ const firebaseConfig = {
   measurementId: "G-EV19LWYTZ3"
 };
 
-// Initialize Firebase
+// Initialize Firebase (Sirf ek baar)
 const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
 
-let confirmationResultGlobal = null;
+// 🔒 FIXED: Mobile me refresh karne par login barkarar rakhne ka permanent ilaaj
+setPersistence(auth, browserLocalPersistence)
+  .then(() => {
+    console.log("Firebase Persistence set to LOCAL. Mobile refresh bug fixed!");
+  })
+  .catch((error) => {
+    console.error("Persistence Error:", error.message);
+  });
 
+let confirmationResultGlobal = null; // Sirf ek baar
 // ==========================================================================
 // 🚀 1. AUTH STATE WATCHER (🔒 FIXED: Prevent Automatic Logout on Back/Refresh)
 // ==========================================================================
