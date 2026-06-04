@@ -1,8 +1,7 @@
 // ==========================================================================
-// 📥 FIREBASE SDK IMPORTS
+// 📥 1. FIREBASE SDK IMPORTS
 // ==========================================================================
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
-// Apne purane imports me 'setPersistence' aur 'browserLocalPersistence' ko aise add kar lo:
 import { 
   getAuth, 
   onAuthStateChanged, 
@@ -10,12 +9,12 @@ import {
   signInWithPopup, 
   RecaptchaVerifier, 
   signInWithPhoneNumber,
-  setPersistence,           // 👈 Yeh naya add karna hai
-  browserLocalPersistence   // 👈 Yeh naya add karna hai
+  setPersistence,           // 🔒 Local memory me session save rakhne ke liye
+  browserLocalPersistence   // 🔒 Refresh bug ko jad se khatam karne ke liye
 } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
 
 // ==========================================================================
-// ⚙️ FIREBASE CONFIGURATION (🔒 FIXED WITH DEMO API KEYS FOR LIVE SERVER)
+// ⚙️ 2. FIREBASE CONFIGURATION (🔒 TEMPORARY DEMO KEYS FOR LIVE SERVER)
 // ==========================================================================
 const firebaseConfig = {
   apiKey: "AIzaSyCxP405IU4nljGIF9LzA4WeVLVk2kb8OEU",
@@ -27,22 +26,23 @@ const firebaseConfig = {
   measurementId: "G-EV19LWYTZ3"
 };
 
-// Initialize Firebase (Sirf ek baar)
+// Initialize Firebase
 const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
 
-// 🔒 FIXED: Mobile me refresh karne par login barkarar rakhne ka permanent ilaaj
+// 🛡️ SECURITY LOCK: Mobile aur Laptop me refresh karne par login yaad rakhne ke liye
 setPersistence(auth, browserLocalPersistence)
   .then(() => {
-    console.log("Firebase Persistence set to LOCAL. Mobile refresh bug fixed!");
+    console.log("Firebase Persistence activated globally: LOCAL storage mode.");
   })
   .catch((error) => {
-    console.error("Persistence Error:", error.message);
+    console.error("Persistence Configuration Error:", error.message);
   });
 
-let confirmationResultGlobal = null; // Sirf ek baar
+let confirmationResultGlobal = null;
+
 // ==========================================================================
-// 🚀 1. AUTH STATE WATCHER (🔒 FIXED: Strictly Maintain State on Return/Back)
+// 🚀 3. AUTH STATE WATCHER (🔒 SMART SYNC: No Refresh & No Auto-Popup)
 // ==========================================================================
 onAuthStateChanged(auth, (user) => {
   const loginText = document.getElementById("loginText");
@@ -50,13 +50,10 @@ onAuthStateChanged(auth, (user) => {
   const loginModal = document.getElementById("loginModal");
   
   const isAccountPage = window.location.pathname.includes("account.html");
-  // Index page ko har tarah se catch karne ke liye URL checks
-  const isIndexPage = window.location.pathname.includes("index.html") || 
-                      window.location.pathname === "/" || 
-                      window.location.pathname === "";
 
   if (user) {
     console.log("Active Session Verified:", user.uid);
+    // User login hai toh login screens aur links ko smartly hide/show karo
     if (loginModal) loginModal.style.display = "none"; 
     if (loginText) loginText.style.display = "none";
 
@@ -72,35 +69,27 @@ onAuthStateChanged(auth, (user) => {
       userNumberDisplay.style.display = "inline-block";
     }
   } else {
-    console.log("No Session Active / Loading Auth State...");
-    
-    // 🛡️ REFTURN FIX: Agar user index page par return aaya hai, toh galti se jaldbazi me logout mat dikhao
-    // Jab tak Firebase completely confirm nahi karta, UI ko lock rakho
-    if (isIndexPage) {
-      // 200ms ka chota sa delay taaki Firebase apna store dhoondh sake
-      setTimeout(() => {
-        if (!auth.currentUser) {
-          if (loginText) loginText.style.display = "inline-block";
-          if (userNumberDisplay) userNumberDisplay.style.display = "none";
-          if (loginModal) loginModal.style.display = "none"; 
-        }
-      }, 200);
-    }
+    console.log("No Session Active.");
+    // Logged out state ya loading state me UI ko safe rakho (No Refresh logic)
+    if (loginText) loginText.style.display = "inline-block";
+    if (userNumberDisplay) userNumberDisplay.style.display = "none";
+    if (loginModal) loginModal.style.display = "none"; // Refresh par automatic popup nahi khulega
 
+    // Agar bina login ke koi account page me ghuse, toh home page par phenko
     if (isAccountPage) {
-      console.log("Unauthorized access to account page! Redirecting...");
+      console.log("Unauthorized access attempt. Redirecting to home...");
       window.location.href = "index.html"; 
     }
   }
 });
 
 // ==========================================================================
-// 🕹️ 2. ROOM CARD CLICK LOGIC (Flipkart Style Instant Popup)
+// 🕹️ 4. ROOM CARD CLICK LOGIC (Flipkart Style Action)
 // ==========================================================================
 window.handleRoomClick = (roomId) => {
   if (auth.currentUser) {
-    // ✅ User logged in hai -> Seedha Detail page section kholo
-    console.log("Access Granted! Opening Room ID:", roomId);
+    // ✅ User logged in hai -> Directly details open karo
+    console.log("Access Granted! Opening Room Detail for ID:", roomId);
     
     const homePage = document.getElementById("homePage");
     const detailPage = document.getElementById("detailPage");
@@ -108,32 +97,32 @@ window.handleRoomClick = (roomId) => {
     if (homePage && detailPage) {
       homePage.style.display = "none";
       detailPage.style.display = "block";
-      window.scrollTo(0, 0); // Upar scroll karne ke liye
+      window.scrollTo(0, 0);
     }
   } else {
-    // 🔒 User login nahi hai -> Usi waqt popup screen par laao!
-    console.log("Access Denied! Triggering Login Popup for Room ID:", roomId);
+    // 🔒 User login nahi hai -> Instant login modal throw karo
+    console.log("Access Denied! Login Required for Room ID:", roomId);
     window.handleLoginClick(); 
   }
 };
 
 // ==========================================================================
-// 🌐 3. GOOGLE SIGN IN LOGIC
+// 🌐 5. GOOGLE SIGN IN LOGIC
 // ==========================================================================
 window.loginWithGoogle = () => {
   const provider = new GoogleAuthProvider();
   signInWithPopup(auth, provider)
     .then((result) => {
-      console.log("Google Sign-In Successful:", result.user);
+      console.log("Google Auth Success:", result.user);
     })
     .catch((error) => {
-      console.error("Google Sign-In Error:", error.message);
+      console.error("Google Auth Error:", error.message);
       alert("Google Login Failed: " + error.message);
     });
 };
 
 // ==========================================================================
-// 📱 4. PHONE OTP SIGN IN LOGIC
+// 📱 6. PHONE OTP SIGN IN LOGIC
 // ==========================================================================
 window.sendOTPCode = () => {
   const numField = document.getElementById("phoneNumber");
@@ -144,7 +133,7 @@ window.sendOTPCode = () => {
 
   const fullNumber = "+91" + numField.value.trim();
 
-  // Invisible reCAPTCHA setup
+  // Invisible reCAPTCHA - Best for Mobile Phones
   if (!window.recaptchaVerifier) {
     window.recaptchaVerifier = new RecaptchaVerifier(auth, 'recaptcha-container', {
       'size': 'invisible'
@@ -155,13 +144,13 @@ window.sendOTPCode = () => {
     .then((confirmationResult) => {
       confirmationResultGlobal = confirmationResult;
       
-      // Phone block chhupao aur OTP block dikhao
+      // UI toggle: Phone interface chhupao, OTP stage dikhao
       document.getElementById("phoneStage").style.display = "none";
       document.getElementById("otpStage").style.display = "block";
-      console.log("OTP Sent Successfully!");
+      console.log("OTP code dispatched successfully.");
     })
     .catch((error) => {
-      console.error("OTP Error:", error.message);
+      console.error("SMS Dispatch Error:", error.message);
       alert("Error sending OTP: " + error.message);
       if (window.recaptchaVerifier) {
         window.recaptchaVerifier.clear();
@@ -180,21 +169,21 @@ window.verifyOTP = () => {
   const code = otpField.value.trim();
   confirmationResultGlobal.confirm(code)
     .then((result) => {
-      console.log("Phone Auth Successful:", result.user);
+      console.log("Phone Auth Success:", result.user);
     })
     .catch((error) => {
-      console.error("OTP Verification Error:", error.message);
-      alert("Invalid OTP code! Please try again.");
+      console.error("OTP Validation Error:", error.message);
+      alert("Invalid OTP code! Please double check.");
     });
 };
 
 // ==========================================================================
-// 🎛️ 5. MODAL MANUAL INTERFACES CONTROLS (Toggles)
+// 🎛️ 7. UI MODAL CONTROLS (MANUAL TOGGLES)
 // ==========================================================================
 window.handleLoginClick = () => {
   const loginModal = document.getElementById("loginModal");
   if (loginModal) {
-    // Reset inputs whenever modal opens
+    // Reset modal state to phone phase on every fresh open
     document.getElementById("phoneStage").style.display = "block";
     document.getElementById("otpStage").style.display = "none";
     loginModal.style.display = "flex"; 
@@ -210,31 +199,9 @@ window.handleAccountClick = () => {
 };
 
 window.closeLoginModal = () => {
-  console.log("Closing Login Modal...");
+  console.log("Closing Login Modal Screen...");
   const loginModal = document.getElementById("loginModal");
   if (loginModal) {
     loginModal.style.display = "none";
   }
 };
-// ==========================================================================
-// 📱 MOBILE BACK-BUTTON CACHE FIX (Force Reload on Mobile Back Native Action)
-// ==========================================================================
-window.addEventListener('pageshow', (event) => {
-  // Agar page back button se load hua hai (persisted true matlab cache se aaya hai)
-  if (event.persisted || (window.performance && window.performance.navigation.type === 2)) {
-    console.log("Mobile Back Detected - Refreshing page for fresh login state...");
-    window.location.reload(); // Page ko automatic refresh kar dega taaki login maintain rahe
-  }
-});
-// ==========================================================================
-// 📱 MOBILE RETURNING CACHE BUSTER (🔒 FIXED: Force Reload on Return Action)
-// ==========================================================================
-window.addEventListener('pageshow', function (event) {
-  var historyTraversal = event.persisted || 
-                         (typeof window.performance != 'undefined' && 
-                          window.performance.navigation.type === 2);
-  if (historyTraversal) {
-    console.log("Mobile Return Detected - Reloading for fresh active tokens...");
-    window.location.reload(true); // True matlab hard refresh from server data
-  }
-});
