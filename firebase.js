@@ -31,21 +31,23 @@ const auth = getAuth(app);
 let confirmationResultGlobal = null;
 
 // ==========================================================================
-// 🚀 1. AUTH STATE WATCHER (🔒 No Automatic Popup / Safe Refresh Mode)
+// 🚀 1. AUTH STATE WATCHER (🔒 FIXED: Prevent Automatic Logout on Back/Refresh)
 // ==========================================================================
 onAuthStateChanged(auth, (user) => {
   const loginText = document.getElementById("loginText");
   const userNumberDisplay = document.getElementById("userNumberDisplay");
   const loginModal = document.getElementById("loginModal");
+  
+  // Isse pata chalega ki user kis page par hai
   const isAccountPage = window.location.pathname.includes("account.html");
+  const isIndexPage = window.location.pathname.includes("index.html") || window.location.pathname === "/";
 
+  // Agar user successfully login milta hai
   if (user) {
     console.log("Active Session Verified:", user.uid);
-    // User login hai toh modal hamesha band rakho
     if (loginModal) loginModal.style.display = "none"; 
     if (loginText) loginText.style.display = "none";
 
-    // Header me login wale text ki jagah name ya number dikhao
     if (userNumberDisplay) {
       if (user.phoneNumber) {
         let rawNumber = user.phoneNumber.replace("+91", "");
@@ -57,16 +59,21 @@ onAuthStateChanged(auth, (user) => {
       }
       userNumberDisplay.style.display = "inline-block";
     }
-  } else {
-    console.log("No Session Active (Logged Out State)");
-    if (loginText) loginText.style.display = "inline-block";
-    if (userNumberDisplay) userNumberDisplay.style.display = "none";
+  } 
+  // Agar user login nahi hai (Ya abhi Firebase check kar raha hai)
+  else {
+    console.log("Checking session / No Active Session.");
     
-    // 🛡️ REFRESH FIX: Page load ya refresh hone par popup AUTOMATIC NAHI KHULEGA!
-    if (loginModal) loginModal.style.display = "none"; 
+    // 🛡️ SAFE GUARD: Agar user index page par wapas aaya hai, toh galti se bhi automatic logout UI mat dikhao
+    if (isIndexPage) {
+      if (loginText) loginText.style.display = "inline-block";
+      if (userNumberDisplay) userNumberDisplay.style.display = "none";
+      if (loginModal) loginModal.style.display = "none"; 
+    }
 
-    // Unauthorized log ko account page se home page par phenko
+    // Agar user bina login ke jabardasti account page ke andar ghusne ki koshish kare, tabhi bahar pheko
     if (isAccountPage) {
+      console.log("Unauthorized access to account page! Redirecting...");
       window.location.href = "index.html"; 
     }
   }
@@ -194,3 +201,13 @@ window.closeLoginModal = () => {
     loginModal.style.display = "none";
   }
 };
+// ==========================================================================
+// 📱 MOBILE BACK-BUTTON CACHE FIX (Force Reload on Mobile Back Native Action)
+// ==========================================================================
+window.addEventListener('pageshow', (event) => {
+  // Agar page back button se load hua hai (persisted true matlab cache se aaya hai)
+  if (event.persisted || (window.performance && window.performance.navigation.type === 2)) {
+    console.log("Mobile Back Detected - Refreshing page for fresh login state...");
+    window.location.reload(); // Page ko automatic refresh kar dega taaki login maintain rahe
+  }
+});
