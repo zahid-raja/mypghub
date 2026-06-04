@@ -1,16 +1,19 @@
 // ==========================================================================
-// FINAL BULLETPROOF FIREBASE SETUP (LAPTOP UNTOUCHED + MOBILE POPUP FIX)
+// 📥 FIREBASE SDK IMPORTS
 // ==========================================================================
-import { initializeApp } from "https://www.gstatic.com/firebasejs/12.12.1/firebase-app.js";
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
 import { 
   getAuth, 
-  RecaptchaVerifier, 
-  signInWithPhoneNumber, 
   onAuthStateChanged, 
   GoogleAuthProvider, 
-  signInWithPopup
-} from "https://www.gstatic.com/firebasejs/12.12.1/firebase-auth.js";
+  signInWithPopup, 
+  RecaptchaVerifier, 
+  signInWithPhoneNumber 
+} from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
 
+// ==========================================================================
+// ⚙️ FIREBASE CONFIGURATION (🔒 FIXED WITH DEMO API KEYS FOR LIVE SERVER)
+// ==========================================================================
 const firebaseConfig = {
   apiKey: "AIzaSyCxP405IU4nljGIF9LzA4WeVLVk2kb8OEU",
   authDomain: "mypghub-68a0f.firebaseapp.com",
@@ -21,196 +24,173 @@ const firebaseConfig = {
   measurementId: "G-EV19LWYTZ3"
 };
 
+// Initialize Firebase
 const app = initializeApp(firebaseConfig);
-export const auth = getAuth(app);
-window.auth = auth;
+const auth = getAuth(app);
 
-const googleProvider = new GoogleAuthProvider();
-// Google screen har baar account choose karne ka option degi
-googleProvider.setCustomParameters({ prompt: 'select_account' });
-
-let confirmationResult = null;
-
-// Invisible reCAPTCHA setup
-function setupRecaptcha() {
-  if (!window.recaptchaVerifier) {
-    window.recaptchaVerifier = new RecaptchaVerifier(auth, 'recaptcha-container', {
-      'size': 'invisible',
-      'callback': (response) => {
-        console.log("reCAPTCHA verified automatically!");
-      }
-    });
-  }
-}
-
-// 1. PHONE OTP - Send OTP Code
-window.sendOTPCode = () => {
-  const phoneInput = document.getElementById("phoneNumber");
-  const phone = phoneInput ? phoneInput.value.trim() : "";
-
-  if (phone.length !== 10 || isNaN(phone)) {
-    alert("Please enter a valid 10-digit mobile number.");
-    return;
-  }
-
-  setupRecaptcha();
-  const fullPhoneNumber = "+91" + phone;
-  const appVerifier = window.recaptchaVerifier;
-
-  signInWithPhoneNumber(auth, fullPhoneNumber, appVerifier)
-    .then((result) => {
-      window.confirmationResult = result;
-      document.getElementById("phoneStage").style.display = "none";
-      document.getElementById("otpStage").style.display = "block";
-      alert("OTP sent successfully!");
-    })
-    .catch((error) => {
-      console.error("Error during sendOTP:", error);
-      alert("Error sending OTP: " + error.message);
-    });
-};
-
-// 2. PHONE OTP - Verify OTP Code
-window.verifyOTP = () => {
-  const otpInput = document.getElementById("otpCode");
-  const code = otpInput ? otpInput.value.trim() : "";
-
-  if (code.length !== 6 || isNaN(code)) {
-    alert("Please enter a valid 6-digit OTP.");
-    return;
-  }
-
-  const confirmationResult = window.confirmationResult;
-  if (!confirmationResult) {
-    alert("Session expired. Please click 'Send OTP' again.");
-    return;
-  }
-
-  confirmationResult.confirm(code)
-    .then((result) => {
-      alert("Logged in successfully!");
-      if (window.closeLoginModal) window.closeLoginModal();
-    })
-    .catch((error) => {
-      console.error("Verification Error:", error);
-      alert("Invalid OTP! Please try again.");
-    });
-};
-
-// 3. GOOGLE LOGIN FUNCTION (💻 Laptop jaisa chal raha tha waisa hi rahega, 📱 Mobile me Redirect band karke Popup lagaya)
-window.loginWithGoogle = () => {
-  if (window.innerWidth < 768) {
-    console.log("Mobile detected: Using Safe Popup Method to break the redirect loop...");
-  } else {
-    console.log("Laptop detected: Using original Popup Method (No change)...");
-  }
-
-  // Universal Popup login - Yeh GitHub pages par redirect loop ko jad se khatam kar dega
-  signInWithPopup(auth, googleProvider)
-    .then((result) => {
-      console.log("Google Login Successful:", result.user);
-      alert("Logged in successfully with Google!");
-      if (window.closeLoginModal) window.closeLoginModal();
-    })
-    .catch((error) => {
-      console.error("Google Auth Error:", error);
-      if (error.code === "auth/popup-blocked") {
-        alert("Please allow popups for this site in your browser settings or try again!");
-      } else {
-        alert("Google Login Failed: " + error.message);
-      }
-    });
-};
+let confirmationResultGlobal = null;
 
 // ==========================================================================
-// 🚀 CLEAN & LAG-FREE STATE MONITOR (NO POPUP FLICKER + SAFE ROUTING)
+// 🚀 1. AUTH STATE WATCHER (🔒 No Automatic Popup / Safe Refresh Mode)
 // ==========================================================================
 onAuthStateChanged(auth, (user) => {
   const loginText = document.getElementById("loginText");
   const userNumberDisplay = document.getElementById("userNumberDisplay");
   const loginModal = document.getElementById("loginModal");
-
-  // 🎬 SKELETON REMOVER
-  const skeleton = document.getElementById("youtubeSkeleton");
-  const realContent = document.getElementById("realContent");
-  
-  if (skeleton) { skeleton.remove(); }
-  if (realContent) { realContent.classList.remove("hidden-content"); }
-
-  // Check karo ki user abhi kaun se page par hai
   const isAccountPage = window.location.pathname.includes("account.html");
 
   if (user) {
-    // ========================================================
-    // Case A: User LOGGED IN Hai
-    // ========================================================
-    console.log("User active session found:", user.uid);
-    
-    // 1. Main page par ho toh modal chhupao
+    console.log("Active Session Verified:", user.uid);
+    // User login hai toh modal hamesha band rakho
     if (loginModal) loginModal.style.display = "none"; 
     if (loginText) loginText.style.display = "none";
 
-    // 2. Profile Display Name ya Number set karo
+    // Header me login wale text ki jagah name ya number dikhao
     if (userNumberDisplay) {
       if (user.phoneNumber) {
         let rawNumber = user.phoneNumber.replace("+91", "");
         userNumberDisplay.innerText = rawNumber.substring(0, 4) + "...";
       } else if (user.displayName) {
-        let shortName = user.displayName.split(" ")[0];
-        userNumberDisplay.innerText = shortName;
+        userNumberDisplay.innerText = user.displayName.split(" ")[0];
       } else {
         userNumberDisplay.innerText = "User";
       }
       userNumberDisplay.style.display = "inline-block";
     }
-    
   } else {
-    // ========================================================
-    // Case B: User LOGGED OUT Hai
-    // ========================================================
-    console.log("No active user session.");
+    console.log("No Session Active (Logged Out State)");
+    if (loginText) loginText.style.display = "inline-block";
+    if (userNumberDisplay) userNumberDisplay.style.display = "none";
     
-    if (loginText) {
-      loginText.style.display = "inline-block";
-      loginText.innerText = "Login";
-    }
-    if (userNumberDisplay) {
-      userNumberDisplay.style.display = "none";
-      userNumberDisplay.innerText = "";
-    }
+    // 🛡️ REFRESH FIX: Page load ya refresh hone par popup AUTOMATIC NAHI KHULEGA!
+    if (loginModal) loginModal.style.display = "none"; 
 
-    // 🔥 SIDE-EFFECT KA ILAJ HERE:
+    // Unauthorized log ko account page se home page par phenko
     if (isAccountPage) {
-      // 1. Agar user bina login ke direct 'account.html' par aane ki koshish kare, 
-      // toh use jhatke se index page par bhej do.
-      console.log("Unauthorized access to account page. Redirecting to home...");
       window.location.href = "index.html"; 
-    } else {
-      // 2. Agar wo main page (index.html) par hi hai, tabhi use login modal dikhao.
-      // Isse account button par click karte hi galti se modal popup nahi marega.
-      if (loginModal) {
-        loginModal.style.display = "flex"; 
-      }
     }
   }
 });
 
 // ==========================================================================
-// 🕹️ BUTTON CLICK ROUTING CONTROLS
+// 🕹️ 2. ROOM CARD CLICK LOGIC (Flipkart Style Instant Popup)
+// ==========================================================================
+window.handleRoomClick = (roomId) => {
+  if (auth.currentUser) {
+    // ✅ User logged in hai -> Seedha Detail page section kholo
+    console.log("Access Granted! Opening Room ID:", roomId);
+    
+    const homePage = document.getElementById("homePage");
+    const detailPage = document.getElementById("detailPage");
+    
+    if (homePage && detailPage) {
+      homePage.style.display = "none";
+      detailPage.style.display = "block";
+      window.scrollTo(0, 0); // Upar scroll karne ke liye
+    }
+  } else {
+    // 🔒 User login nahi hai -> Usi waqt popup screen par laao!
+    console.log("Access Denied! Triggering Login Popup for Room ID:", roomId);
+    window.handleLoginClick(); 
+  }
+};
+
+// ==========================================================================
+// 🌐 3. GOOGLE SIGN IN LOGIC
+// ==========================================================================
+window.loginWithGoogle = () => {
+  const provider = new GoogleAuthProvider();
+  signInWithPopup(auth, provider)
+    .then((result) => {
+      console.log("Google Sign-In Successful:", result.user);
+    })
+    .catch((error) => {
+      console.error("Google Sign-In Error:", error.message);
+      alert("Google Login Failed: " + error.message);
+    });
+};
+
+// ==========================================================================
+// 📱 4. PHONE OTP SIGN IN LOGIC
+// ==========================================================================
+window.sendOTPCode = () => {
+  const numField = document.getElementById("phoneNumber");
+  if (!numField || !numField.value) {
+    alert("Please enter a 10 digit mobile number!");
+    return;
+  }
+
+  const fullNumber = "+91" + numField.value.trim();
+
+  // Invisible reCAPTCHA setup
+  if (!window.recaptchaVerifier) {
+    window.recaptchaVerifier = new RecaptchaVerifier(auth, 'recaptcha-container', {
+      'size': 'invisible'
+    });
+  }
+
+  signInWithPhoneNumber(auth, fullNumber, window.recaptchaVerifier)
+    .then((confirmationResult) => {
+      confirmationResultGlobal = confirmationResult;
+      
+      // Phone block chhupao aur OTP block dikhao
+      document.getElementById("phoneStage").style.display = "none";
+      document.getElementById("otpStage").style.display = "block";
+      console.log("OTP Sent Successfully!");
+    })
+    .catch((error) => {
+      console.error("OTP Error:", error.message);
+      alert("Error sending OTP: " + error.message);
+      if (window.recaptchaVerifier) {
+        window.recaptchaVerifier.clear();
+        window.recaptchaVerifier = null;
+      }
+    });
+};
+
+window.verifyOTP = () => {
+  const otpField = document.getElementById("otpCode");
+  if (!otpField || !otpField.value || !confirmationResultGlobal) {
+    alert("Please enter the 6-digit OTP code!");
+    return;
+  }
+
+  const code = otpField.value.trim();
+  confirmationResultGlobal.confirm(code)
+    .then((result) => {
+      console.log("Phone Auth Successful:", result.user);
+    })
+    .catch((error) => {
+      console.error("OTP Verification Error:", error.message);
+      alert("Invalid OTP code! Please try again.");
+    });
+};
+
+// ==========================================================================
+// 🎛️ 5. MODAL MANUAL INTERFACES CONTROLS (Toggles)
 // ==========================================================================
 window.handleLoginClick = () => {
-  if (!auth.currentUser) {
-    if (window.openLoginModal) window.openLoginModal();
+  const loginModal = document.getElementById("loginModal");
+  if (loginModal) {
+    // Reset inputs whenever modal opens
+    document.getElementById("phoneStage").style.display = "block";
+    document.getElementById("otpStage").style.display = "none";
+    loginModal.style.display = "flex"; 
   }
 };
 
 window.handleAccountClick = () => {
-  // Agar user logged in hai, toh account page par jaane do
   if (auth.currentUser) {
     window.location.href = "account.html";
   } else {
-    // Agar nahi hai, toh pehle login modal kholo
-    alert("Please login first to view your account!");
-    if (window.openLoginModal) window.openLoginModal();
+    window.handleLoginClick();
+  }
+};
+
+window.closeLoginModal = () => {
+  console.log("Closing Login Modal...");
+  const loginModal = document.getElementById("loginModal");
+  if (loginModal) {
+    loginModal.style.display = "none";
   }
 };
