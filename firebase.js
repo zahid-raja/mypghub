@@ -123,7 +123,7 @@ window.loginWithGoogle = () => {
 };
 
 // ==========================================================================
-// 🚀 CLEAN & LAG-FREE STATE MONITOR
+// 🚀 CLEAN & LAG-FREE STATE MONITOR (FIXED: ACCOUNT BUTTON WORKING)
 // ==========================================================================
 onAuthStateChanged(auth, (user) => {
   const loginText = document.getElementById("loginText");
@@ -134,17 +134,17 @@ onAuthStateChanged(auth, (user) => {
   const skeleton = document.getElementById("youtubeSkeleton");
   const realContent = document.getElementById("realContent");
   
-  if (skeleton) {
-    skeleton.remove(); 
-  }
-  if (realContent) {
-    realContent.classList.remove("hidden-content"); 
+  if (skeleton) { skeleton.remove(); }
+  if (realContent) { realContent.classList.remove("hidden-content"); }
+
+  // Initial State: Jab tak check ho raha hai, jhatke se bachne ke liye modal flex mat karo
+  if (loginModal) {
+    loginModal.style.display = "none";
   }
 
   if (user) {
     // 1. User Login Hai -> Modal Hatao aur Details Dikhao
     console.log("User active session found:", user.uid);
-    if (loginModal) loginModal.style.display = "none"; 
     if (loginText) loginText.style.display = "none";
 
     if (userNumberDisplay) {
@@ -171,14 +171,14 @@ onAuthStateChanged(auth, (user) => {
       userNumberDisplay.innerText = "";
     }
 
-    // Agar koi user logged in nahi hai toh modal display hoga
+    // Agar confirm ho gaya ki koi user nahi hai, tabhi modal ko 'flex' karo
     if (loginModal) {
       loginModal.style.display = "flex"; 
     }
   }
 });
 
-// ROUTING CONTROLS
+// ROUTING CONTROLS (Yeh ab ekdum sahi chalenge)
 window.handleLoginClick = () => {
   if (!auth.currentUser) {
     if (window.openLoginModal) window.openLoginModal();
