@@ -123,7 +123,7 @@ window.loginWithGoogle = () => {
 };
 
 // ==========================================================================
-// 🚀 CLEAN & LAG-FREE STATE MONITOR (FIXED: ACCOUNT BUTTON WORKING)
+// 🚀 CLEAN & LAG-FREE STATE MONITOR (NO POPUP FLICKER + SAFE ROUTING)
 // ==========================================================================
 onAuthStateChanged(auth, (user) => {
   const loginText = document.getElementById("loginText");
@@ -137,16 +137,20 @@ onAuthStateChanged(auth, (user) => {
   if (skeleton) { skeleton.remove(); }
   if (realContent) { realContent.classList.remove("hidden-content"); }
 
-  // Initial State: Jab tak check ho raha hai, jhatke se bachne ke liye modal flex mat karo
-  if (loginModal) {
-    loginModal.style.display = "none";
-  }
+  // Check karo ki user abhi kaun se page par hai
+  const isAccountPage = window.location.pathname.includes("account.html");
 
   if (user) {
-    // 1. User Login Hai -> Modal Hatao aur Details Dikhao
+    // ========================================================
+    // Case A: User LOGGED IN Hai
+    // ========================================================
     console.log("User active session found:", user.uid);
+    
+    // 1. Main page par ho toh modal chhupao
+    if (loginModal) loginModal.style.display = "none"; 
     if (loginText) loginText.style.display = "none";
 
+    // 2. Profile Display Name ya Number set karo
     if (userNumberDisplay) {
       if (user.phoneNumber) {
         let rawNumber = user.phoneNumber.replace("+91", "");
@@ -159,9 +163,13 @@ onAuthStateChanged(auth, (user) => {
       }
       userNumberDisplay.style.display = "inline-block";
     }
+    
   } else {
-    // 2. User Logged Out Hai -> Default Guest Mode
+    // ========================================================
+    // Case B: User LOGGED OUT Hai
+    // ========================================================
     console.log("No active user session.");
+    
     if (loginText) {
       loginText.style.display = "inline-block";
       loginText.innerText = "Login";
@@ -171,14 +179,25 @@ onAuthStateChanged(auth, (user) => {
       userNumberDisplay.innerText = "";
     }
 
-    // Agar confirm ho gaya ki koi user nahi hai, tabhi modal ko 'flex' karo
-    if (loginModal) {
-      loginModal.style.display = "flex"; 
+    // 🔥 SIDE-EFFECT KA ILAJ HERE:
+    if (isAccountPage) {
+      // 1. Agar user bina login ke direct 'account.html' par aane ki koshish kare, 
+      // toh use jhatke se index page par bhej do.
+      console.log("Unauthorized access to account page. Redirecting to home...");
+      window.location.href = "index.html"; 
+    } else {
+      // 2. Agar wo main page (index.html) par hi hai, tabhi use login modal dikhao.
+      // Isse account button par click karte hi galti se modal popup nahi marega.
+      if (loginModal) {
+        loginModal.style.display = "flex"; 
+      }
     }
   }
 });
 
-// ROUTING CONTROLS (Yeh ab ekdum sahi chalenge)
+// ==========================================================================
+// 🕹️ BUTTON CLICK ROUTING CONTROLS
+// ==========================================================================
 window.handleLoginClick = () => {
   if (!auth.currentUser) {
     if (window.openLoginModal) window.openLoginModal();
@@ -186,5 +205,12 @@ window.handleLoginClick = () => {
 };
 
 window.handleAccountClick = () => {
-  window.location.href = "account.html";
+  // Agar user logged in hai, toh account page par jaane do
+  if (auth.currentUser) {
+    window.location.href = "account.html";
+  } else {
+    // Agar nahi hai, toh pehle login modal kholo
+    alert("Please login first to view your account!");
+    if (window.openLoginModal) window.openLoginModal();
+  }
 };
