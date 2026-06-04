@@ -42,18 +42,19 @@ setPersistence(auth, browserLocalPersistence)
 
 let confirmationResultGlobal = null; // Sirf ek baar
 // ==========================================================================
-// 🚀 1. AUTH STATE WATCHER (🔒 FIXED: Prevent Automatic Logout on Back/Refresh)
+// 🚀 1. AUTH STATE WATCHER (🔒 FIXED: Strictly Maintain State on Return/Back)
 // ==========================================================================
 onAuthStateChanged(auth, (user) => {
   const loginText = document.getElementById("loginText");
   const userNumberDisplay = document.getElementById("userNumberDisplay");
   const loginModal = document.getElementById("loginModal");
   
-  // Isse pata chalega ki user kis page par hai
   const isAccountPage = window.location.pathname.includes("account.html");
-  const isIndexPage = window.location.pathname.includes("index.html") || window.location.pathname === "/";
+  // Index page ko har tarah se catch karne ke liye URL checks
+  const isIndexPage = window.location.pathname.includes("index.html") || 
+                      window.location.pathname === "/" || 
+                      window.location.pathname === "";
 
-  // Agar user successfully login milta hai
   if (user) {
     console.log("Active Session Verified:", user.uid);
     if (loginModal) loginModal.style.display = "none"; 
@@ -70,19 +71,22 @@ onAuthStateChanged(auth, (user) => {
       }
       userNumberDisplay.style.display = "inline-block";
     }
-  } 
-  // Agar user login nahi hai (Ya abhi Firebase check kar raha hai)
-  else {
-    console.log("Checking session / No Active Session.");
+  } else {
+    console.log("No Session Active / Loading Auth State...");
     
-    // 🛡️ SAFE GUARD: Agar user index page par wapas aaya hai, toh galti se bhi automatic logout UI mat dikhao
+    // 🛡️ REFTURN FIX: Agar user index page par return aaya hai, toh galti se jaldbazi me logout mat dikhao
+    // Jab tak Firebase completely confirm nahi karta, UI ko lock rakho
     if (isIndexPage) {
-      if (loginText) loginText.style.display = "inline-block";
-      if (userNumberDisplay) userNumberDisplay.style.display = "none";
-      if (loginModal) loginModal.style.display = "none"; 
+      // 200ms ka chota sa delay taaki Firebase apna store dhoondh sake
+      setTimeout(() => {
+        if (!auth.currentUser) {
+          if (loginText) loginText.style.display = "inline-block";
+          if (userNumberDisplay) userNumberDisplay.style.display = "none";
+          if (loginModal) loginModal.style.display = "none"; 
+        }
+      }, 200);
     }
 
-    // Agar user bina login ke jabardasti account page ke andar ghusne ki koshish kare, tabhi bahar pheko
     if (isAccountPage) {
       console.log("Unauthorized access to account page! Redirecting...");
       window.location.href = "index.html"; 
@@ -220,5 +224,17 @@ window.addEventListener('pageshow', (event) => {
   if (event.persisted || (window.performance && window.performance.navigation.type === 2)) {
     console.log("Mobile Back Detected - Refreshing page for fresh login state...");
     window.location.reload(); // Page ko automatic refresh kar dega taaki login maintain rahe
+  }
+});
+// ==========================================================================
+// 📱 MOBILE RETURNING CACHE BUSTER (🔒 FIXED: Force Reload on Return Action)
+// ==========================================================================
+window.addEventListener('pageshow', function (event) {
+  var historyTraversal = event.persisted || 
+                         (typeof window.performance != 'undefined' && 
+                          window.performance.navigation.type === 2);
+  if (historyTraversal) {
+    console.log("Mobile Return Detected - Reloading for fresh active tokens...");
+    window.location.reload(true); // True matlab hard refresh from server data
   }
 });
