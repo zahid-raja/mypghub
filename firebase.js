@@ -1,5 +1,5 @@
 // ==========================================================================
-// UNIVERSAL COMPATIBLE FIREBASE SETUP FOR LAPTOP (POPUP) & MOBILE (REDIRECT)
+// FINAL BULLETPROOF FIREBASE SETUP (LAPTOP UNTOUCHED + MOBILE POPUP FIX)
 // ==========================================================================
 import { initializeApp } from "https://www.gstatic.com/firebasejs/12.12.1/firebase-app.js";
 import { 
@@ -8,9 +8,7 @@ import {
   signInWithPhoneNumber, 
   onAuthStateChanged, 
   GoogleAuthProvider, 
-  signInWithPopup,
-  signInWithRedirect,
-  getRedirectResult
+  signInWithPopup
 } from "https://www.gstatic.com/firebasejs/12.12.1/firebase-auth.js";
 
 const firebaseConfig = {
@@ -28,15 +26,19 @@ export const auth = getAuth(app);
 window.auth = auth;
 
 const googleProvider = new GoogleAuthProvider();
+// Google screen har baar account choose karne ka option degi
 googleProvider.setCustomParameters({ prompt: 'select_account' });
 
 let confirmationResult = null;
 
+// Invisible reCAPTCHA setup
 function setupRecaptcha() {
   if (!window.recaptchaVerifier) {
     window.recaptchaVerifier = new RecaptchaVerifier(auth, 'recaptcha-container', {
       'size': 'invisible',
-      'callback': (response) => { console.log("reCAPTCHA verified!"); }
+      'callback': (response) => {
+        console.log("reCAPTCHA verified automatically!");
+      }
     });
   }
 }
@@ -63,8 +65,8 @@ window.sendOTPCode = () => {
       alert("OTP sent successfully!");
     })
     .catch((error) => {
-      console.error("Error sending OTP:", error);
-      alert("Error: " + error.message);
+      console.error("Error during sendOTP:", error);
+      alert("Error sending OTP: " + error.message);
     });
 };
 
@@ -90,85 +92,88 @@ window.verifyOTP = () => {
       if (window.closeLoginModal) window.closeLoginModal();
     })
     .catch((error) => {
+      console.error("Verification Error:", error);
       alert("Invalid OTP! Please try again.");
     });
 };
 
-// 3. GOOGLE LOGIN FUNCTION
+// 3. GOOGLE LOGIN FUNCTION (💻 Laptop jaisa chal raha tha waisa hi rahega, 📱 Mobile me Redirect band karke Popup lagaya)
 window.loginWithGoogle = () => {
   if (window.innerWidth < 768) {
-    console.log("Mobile redirect standard processing initiated...");
-    // Redirect karne se pehle lock laga dete hain taaki modal galti se na khule
-    sessionStorage.setItem("isAuthProcessing", "true");
-    signInWithRedirect(auth, googleProvider);
+    console.log("Mobile detected: Using Safe Popup Method to break the redirect loop...");
   } else {
-    console.log("Desktop popup initiated...");
-    signInWithPopup(auth, googleProvider)
-      .then((result) => {
-        alert("Logged in successfully!");
-        if (window.closeLoginModal) window.closeLoginModal();
-      })
-      .catch((error) => {
-        console.error("Popup Error:", error);
-      });
+    console.log("Laptop detected: Using original Popup Method (No change)...");
   }
+
+  // Universal Popup login - Yeh GitHub pages par redirect loop ko jad se khatam kar dega
+  signInWithPopup(auth, googleProvider)
+    .then((result) => {
+      console.log("Google Login Successful:", result.user);
+      alert("Logged in successfully with Google!");
+      if (window.closeLoginModal) window.closeLoginModal();
+    })
+    .catch((error) => {
+      console.error("Google Auth Error:", error);
+      if (error.code === "auth/popup-blocked") {
+        alert("Please allow popups for this site in your browser settings or try again!");
+      } else {
+        alert("Google Login Failed: " + error.message);
+      }
+    });
 };
 
-// 🔥 HANDLE MOBILE REDIRECT RESULT
-getRedirectResult(auth)
-  .then((result) => {
-    sessionStorage.removeItem("isAuthProcessing"); // Lock hatao
-    if (result && result.user) {
-      console.log("Mobile login success!", result.user);
-      if (window.closeLoginModal) window.closeLoginModal();
-    }
-  })
-  .catch((error) => {
-    sessionStorage.removeItem("isAuthProcessing");
-    console.error("Redirect handler error:", error);
-  });
-
 // ==========================================================================
-// 🚀 SMART STATE MONITOR (LOOP BREAK LOGIC)
+// 🚀 CLEAN & LAG-FREE STATE MONITOR
 // ==========================================================================
 onAuthStateChanged(auth, (user) => {
   const loginText = document.getElementById("loginText");
   const userNumberDisplay = document.getElementById("userNumberDisplay");
   const loginModal = document.getElementById("loginModal");
 
+  // 🎬 SKELETON REMOVER
   const skeleton = document.getElementById("youtubeSkeleton");
   const realContent = document.getElementById("realContent");
   
-  if (skeleton) skeleton.remove(); 
-  if (realContent) realContent.classList.remove("hidden-content"); 
+  if (skeleton) {
+    skeleton.remove(); 
+  }
+  if (realContent) {
+    realContent.classList.remove("hidden-content"); 
+  }
 
   if (user) {
-    // User login ho chuka hai
-    sessionStorage.removeItem("isAuthProcessing");
+    // 1. User Login Hai -> Modal Hatao aur Details Dikhao
+    console.log("User active session found:", user.uid);
     if (loginModal) loginModal.style.display = "none"; 
     if (loginText) loginText.style.display = "none";
 
     if (userNumberDisplay) {
-      let shortName = user.displayName ? user.displayName.split(" ")[0] : "User";
-      userNumberDisplay.innerText = user.phoneNumber ? user.phoneNumber.replace("+91", "").substring(0, 4) + "..." : shortName;
+      if (user.phoneNumber) {
+        let rawNumber = user.phoneNumber.replace("+91", "");
+        userNumberDisplay.innerText = rawNumber.substring(0, 4) + "...";
+      } else if (user.displayName) {
+        let shortName = user.displayName.split(" ")[0];
+        userNumberDisplay.innerText = shortName;
+      } else {
+        userNumberDisplay.innerText = "User";
+      }
       userNumberDisplay.style.display = "inline-block";
     }
   } else {
-    // User logged out hai
+    // 2. User Logged Out Hai -> Default Guest Mode
+    console.log("No active user session.");
     if (loginText) {
       loginText.style.display = "inline-block";
       loginText.innerText = "Login";
     }
     if (userNumberDisplay) {
       userNumberDisplay.style.display = "none";
+      userNumberDisplay.innerText = "";
     }
 
-    // 🔥 LOOP LOCK CHECK: Agar background me redirect ka kaam chal raha hai, toh modal ko hide rakho
-    const isProcessing = sessionStorage.getItem("isAuthProcessing");
-    if (isProcessing === "true") {
-      if (loginModal) loginModal.style.display = "none";
-    } else {
-      if (loginModal) loginModal.style.display = "flex"; 
+    // Agar koi user logged in nahi hai toh modal display hoga
+    if (loginModal) {
+      loginModal.style.display = "flex"; 
     }
   }
 });
