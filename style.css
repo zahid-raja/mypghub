@@ -339,13 +339,11 @@ body{
 /* BOTTOM NAV */
 .bottom-nav {
   display: none;
-
-  /* 🔥 Yeh lines add kar do, Chrome ka glitch hamesha ke liye khatam */
-  -webkit-user-select: none;  /* Mobile Chrome/Safari me text select hona rokega */
-  -moz-user-select: none;     /* Firefox ke liye */
+  -webkit-user-select: none;
+  -moz-user-select: none;
   -ms-user-select: none;
-  user-select: none;          /* Standard selection block */
-  -webkit-tap-highlight-color: transparent; /* Click karne par jo annoying grey shadow aati hai use hatayega */
+  user-select: none;
+  -webkit-tap-highlight-color: transparent;
 }
 
 /* MOBILE */
@@ -456,11 +454,8 @@ body{
     text-align:center;
   }
 }
-/* ==========================================================================
-   PREMIUM MODAL DESIGN (FLIPKART STYLE MODERN LOOK)
-   ========================================================================== */
 
-/* Background Overlay */
+/* Background Overlay (🔒 FIXED: Locked display none for initial state) */
 .modal-overlay {
   position: fixed;
   top: 0;
@@ -468,11 +463,11 @@ body{
   width: 100%;
   height: 100%;
   background: rgba(0, 0, 0, 0.6);
-  display: flex;
+  display: none; 
   align-items: center;
   justify-content: center;
-  z-index: 1000;
-  backdrop-filter: blur(4px); /* Background halka blur hoga premium look ke liye */
+  z-index: 10000; /* Map and Nav ke upar rakhne ke liye higher z-index */
+  backdrop-filter: blur(4px);
 }
 
 /* Main Modal Card */
@@ -484,7 +479,7 @@ body{
   border-radius: 16px;
   box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
   position: relative;
-  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  font-family: Arial, sans-serif;
   box-sizing: border-box;
 }
 
@@ -530,7 +525,7 @@ body{
 }
 
 .phone-input-row:focus-within {
-  border-bottom-color: #ff9f00; /* Orange color focused par */
+  border-bottom-color: #ff9f00;
 }
 
 .country-code {
@@ -570,7 +565,7 @@ body{
   box-sizing: border-box;
 }
 
-/* Send OTP Button (Flipkart Dark Orange) */
+/* Send OTP Button */
 .send-otp-btn {
   background: #ff9f00;
   color: #ffffff;
@@ -593,7 +588,7 @@ body{
   position: relative;
 }
 
-/* Google Button (Clean, White & Responsive) */
+/* Google Button */
 .google-btn {
   background: #ffffff;
   color: #212121;
@@ -614,7 +609,7 @@ body{
   object-fit: contain;
 }
 
-/* Footer / Terms Section */
+/* Footer Section */
 .modal-footer-text {
   font-size: 11px;
   color: #878787;
