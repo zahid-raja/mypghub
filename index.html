@@ -14,13 +14,9 @@
 
   <div class="header">
     <div class="logo-row">
-      <div class="box logo-box">
-        MyPGHub
-      </div>
+      <div class="box logo-box">MyPGHub</div>
       <div class="nav-links">
-        <div onclick="goBack()" style="cursor: pointer;">
-          Home
-        </div>
+        <div onclick="goBack()" style="cursor: pointer;">Home</div>
         <div id="accountBtn" class="action-box" onclick="window.handleAccountClick()">Account</div>
       </div>
     </div>
@@ -31,12 +27,9 @@
       </div>
 
       <div id="loginText" class="action-box" onclick="window.handleLoginClick()">Login</div>
-      
       <div id="userNumberDisplay" class="action-box" style="display: none; font-weight: bold; color: #2874f0;"></div>
 
-      <div class="box action-box">
-        ❤️
-      </div>
+      <div class="box action-box">❤️</div>
     </div>
   </div>
 
@@ -55,106 +48,59 @@
 
 </div>
 
-<div id="detailPage">
-  <button class="back-btn" onclick="goBack()">
-    ⬅ Back
-  </button>
+<div id="detailPage" style="display: none;">
+  <button class="back-btn" onclick="goBack()">⬅ Back</button>
 
   <div class="detail-layout">
     <div class="left-side">
       <div class="slider">
-        <img class="slide active" src="https://images.unsplash.com/photo-1560448204-e02f11c3d0e2">
-        <img class="slide" src="https://images.unsplash.com/photo-1560185127-6ed189bf02f4">
-        <img class="slide" src="https://images.unsplash.com/photo-1505693416388-ac5ce068fe85">
-        <button class="prev" onclick="prevSlide()">❮</button>
-        <button class="next" onclick="nextSlide()">❯</button>
-      </div>
-      <div class="dots">
-        <span class="dot active"></span>
-        <span class="dot"></span>
-        <span class="dot"></span>
+        <img id="detMainImage" class="slide active" src="https://via.placeholder.com/400x300?text=Loading+Image...">
       </div>
     </div>
 
     <div class="right-side">
-      <div class="main-price">₹6500/month</div>
-      <div class="top-info">Boys PG • Double Sharing • 1.5 km from Rungta College</div>
+      <div class="main-price" id="detPrice">₹0/month</div>
+      <div class="top-info" id="detTopInfo">Loading specifications...</div>
 
-      <div class="highlights">
-        <div class="highlight-box">⏰ 24×7 Entry</div>
-        <div class="highlight-box">📹 CCTV</div>
-        <div class="highlight-box">🛏 2 Beds</div>
-        <div class="highlight-box">❄ Cooler</div>
-        <div class="highlight-box">📶 WiFi</div>
-        <div class="highlight-box">🍴 Mess</div>
-        <div class="highlight-box">🅿 Parking</div>
-        <div class="highlight-box">🚫 Cooking Not Allowed</div>
+      <div class="highlights" id="detHighlights"></div>
+
+      <div class="section">
+        <h3>Description</h3>
+        <p id="detDescription" style="color: #555; line-height: 1.5;"></p>
       </div>
 
       <div class="section">
-        <h3>Facilities</h3>
-        <div class="facility">WiFi</div>
-        <div class="facility">Cooler</div>
-        <div class="facility">AC</div>
-        <div class="facility">Bed</div>
-        <div class="facility">Table</div>
-        <div class="facility">Chair</div>
-        <div class="facility">Cupboard</div>
-        <div class="facility">Washing Machine</div>
-        <div class="facility">RO Water</div>
-        <div class="facility">Power Backup</div>
-        <div class="facility">Mattress</div>
-        <div class="facility">Pillow</div>
-        <div class="facility">Refrigerator</div>
+        <h3>Room & Property Details</h3>
+        <p id="detAddress">📍 Landmark: </p>
+        <p id="detSharing">👥 Sharing: </p>
+        <div id="detRoomSpecs"></div>
+      </div>
+
+      <div class="section" id="detMessSection">
+        <h3>Mess & Food Details</h3>
+        <p id="detMessStatus">🍴 Food Facility: </p>
+        <p id="detMessMeals" style="display:none;"></p>
       </div>
 
       <div class="section">
-        <h3>Room Details</h3>
-        <p>✔ Attached Bathroom</p>
-        <p>✔ Balcony Available</p>
-        <p>✔ Fully Furnished</p>
-        <p>✔ Double Sharing</p>
-      </div>
-
-      <div class="section">
-        <h3>Mess Details</h3>
-        <p>🍴 Breakfast Included</p>
-        <p>🍴 Dinner Included</p>
-        <p>🥗 Veg & Non-Veg Available</p>
-      </div>
-
-      <div class="section">
-        <h3>Rules</h3>
-        <p>🚫 No Smoking</p>
-        <p>🔇 No Loud Music After 10 PM</p>
-        <p>⏰ Gate Closes at 11 PM</p>
+        <h3>Rules & Gate Timings</h3>
+        <p id="detGateTime">⏰ Gate Closing Time: </p>
+        <div id="detRulesList"></div>
       </div>
 
       <div class="more-details" id="moreDetails">
         <div class="section">
           <h3>Owner Details</h3>
-          <p>👤 Rahul Verma</p>
-          <p>📞 9876543210</p>
-          <p>💬 WhatsApp Available</p>
-        </div>
-        <div class="section">
-          <h3>Location</h3>
-          <p>📍 Near Rungta College, Bhilai</p>
-          <p>📍 Walking Distance from Main Road</p>
+          <p id="detOwnerName">👤 Name: </p>
+          <p id="detOwnerPhone">📞 Phone: </p>
         </div>
       </div>
 
-      <button class="show-btn" onclick="toggleDetails()">
-        Show More
-      </button>
+      <button class="show-btn" onclick="toggleDetails()">Show More</button>
 
       <div class="action-buttons">
-        <button class="call-btn" onclick="window.location.href='tel:9876543210'">
-          📞 Call
-        </button>
-        <button class="map-btn" onclick="window.open('https://maps.google.com')">
-          📍 Location
-        </button>
+        <button class="call-btn" id="detCallBtn">📞 Call Owner</button>
+        <button class="map-btn" id="detMapBtn">📍 View on Map</button>
       </div>
     </div>
   </div>
@@ -164,11 +110,11 @@
   <div onclick="window.location.href='index.html'" style="cursor: pointer;">🏠<br>Home</div>
   <div>❤️<br>Favourite</div>
   <a href="add-room.html" style="text-decoration: none; color: inherit;">
-  <div class="nav-item" style="text-align: center; cursor: pointer;">
-    <span class="icon" style="display: block; font-size: 20px;">➕</span>
-    <span style="font-size: 12px; font-weight: bold;">Add Room</span>
-  </div>
-</a>
+    <div class="nav-item" style="text-align: center; cursor: pointer;">
+      <span class="icon" style="display: block; font-size: 20px;">➕</span>
+      <span style="font-size: 12px; font-weight: bold;">Add Room</span>
+    </div>
+  </a>
   <div onclick="window.handleAccountClick()" style="cursor: pointer;">👤<br>Account</div>
 </div>
 
@@ -178,17 +124,14 @@
 <div id="loginModal" class="modal-overlay">
   <div class="modal-card">
     <span class="close-modal-btn" onclick="window.closeLoginModal()">×</span>
-    
     <h3 class="modal-title">Login / Sign Up</h3>
     
     <div id="phoneStage">
       <p class="modal-subtitle">Enter your mobile number to receive OTP</p>
-      
       <div class="phone-input-row">
         <input type="text" value="+91" disabled class="country-code">
         <input type="tel" id="phoneNumber" placeholder="10 Digit Mobile Number" class="main-phone-input">
       </div>
-      
       <button class="modal-btn send-otp-btn" onclick="window.sendOTPCode()">Send OTP</button>
 
       <div class="or-divider">─ OR ─</div>
@@ -197,10 +140,6 @@
         <img src="https://upload.wikimedia.org/wikipedia/commons/c/c1/Google_%22G%22_logo.svg" width="18" height="18" alt="Google">
         Continue with Google
       </button>
-
-      <p class="modal-footer-text">
-        By continuing, you agree to MyPGHub's Terms of Use and Privacy Policy.
-      </p>
     </div>
 
     <div id="otpStage" style="display: none;">
@@ -213,5 +152,4 @@
 
 <div id="recaptcha-container"></div>
 </body>
-
 </html>
