@@ -4,193 +4,12 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Add Property - MyPGHub</title>
-  <style>
-    body {
-      font-family: 'Segoe UI', Arial, sans-serif;
-      background-color: #f4f6f9;
-      margin: 0;
-      padding: 0;
-      color: #333;
-    }
-    
-    /* Header Bar with Relative Position */
-    .header-bar {
-      position: relative;
-      background: #2874f0;
-      padding: 15px;
-      color: white;
-      text-align: center;
-      font-weight: bold;
-      font-size: 20px;
-      box-shadow: 0 2px 5px rgba(0,0,0,0.1);
-    }
-
-    /* ⬅️ Top Left Fixed Back Button Styling */
-    .back-btn {
-      position: absolute;
-      left: 15px;
-      top: 50%;
-      transform: translateY(-50%); /* Vertically center align karne ke liye */
-      background: #1e5cc4; 
-      color: white;
-      text-decoration: none;
-      padding: 6px 14px;
-      border-radius: 4px;
-      font-size: 14px;
-      font-weight: bold;
-      display: inline-flex;
-      align-items: center;
-      gap: 5px;
-      cursor: pointer;
-      border: none;
-      box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-      transition: background 0.2s;
-    }
-    .back-btn:hover {
-      background: #154696;
-    }
-
-    .main-container {
-      max-width: 650px;
-      margin: 30px auto;
-      background: white;
-      padding: 25px;
-      border-radius: 12px;
-      box-shadow: 0 4px 15px rgba(0,0,0,0.05);
-      box-sizing: border-box;
-    }
-    .step-title {
-      color: #2874f0;
-      margin-top: 0;
-      border-bottom: 2px solid #f0f0f0;
-      padding-bottom: 10px;
-    }
-    .section-subtitle {
-      color: #2c3e50;
-      font-size: 16px;
-      margin-top: 25px;
-      margin-bottom: 15px;
-      padding-bottom: 5px;
-      border-bottom: 1px dashed #ccc;
-    }
-    .form-group {
-      margin-bottom: 20px;
-    }
-    .form-group label {
-      display: block;
-      font-weight: 600;
-      margin-bottom: 8px;
-      font-size: 14px;
-    }
-    .form-control {
-      width: 100%;
-      padding: 12px;
-      border: 1px solid #ccc;
-      border-radius: 6px;
-      box-sizing: border-box;
-      font-size: 15px;
-    }
-    .form-control:required {
-      border-left: 3px solid #d32f2f;
-    }
-    .form-control:focus {
-      border-color: #ff9f00;
-      outline: none;
-    }
-    
-    /* Location Box Styling */
-    .location-box {
-      background: #fff5f5;
-      border: 1px dashed #d32f2f;
-      padding: 15px;
-      border-radius: 8px;
-      margin-top: 10px;
-    }
-    .location-success {
-      background: #f0fcf4 !important;
-      border-color: #27ae60 !important;
-      color: #27ae60;
-    }
-    
-    /* Buttons */
-    .btn {
-      padding: 12px 20px;
-      border: none;
-      border-radius: 6px;
-      cursor: pointer;
-      font-weight: bold;
-      font-size: 14px;
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      gap: 5px;
-    }
-    .btn-primary { background: #2874f0; color: white; }
-    .btn-success { background: #27ae60; color: white; }
-    .btn-secondary { background: #7f8c8d; color: white; }
-    .btn-block { width: 100%; }
-
-    /* Aadhaar Optional Box */
-    .upload-zone {
-      border: 2px dashed #bbb;
-      padding: 20px;
-      text-align: center;
-      background: #fafafa;
-      border-radius: 8px;
-    }
-    .preview-img {
-      max-width: 100%;
-      max-height: 150px;
-      margin-top: 10px;
-      border-radius: 6px;
-      display: none;
-    }
-
-    /* Checkbox Grid for Facilities */
-    .checkbox-grid {
-      display: grid;
-      grid-template-columns: repeat(2, 1fr);
-      gap: 12px;
-      background: #fdfdfd;
-      padding: 15px;
-      border: 1px solid #eee;
-      border-radius: 6px;
-    }
-    .checkbox-item {
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      font-size: 14px;
-      cursor: pointer;
-      padding: 6px;
-      background: #f8fafc;
-      border-radius: 4px;
-      border: 1px solid #e2e8f0;
-    }
-    .checkbox-item input {
-      transform: scale(1.2);
-    }
-
-    /* Dynamic Nested Mess Box */
-    .nested-mess-box {
-      background: #f0f7ff;
-      border: 1px solid #bcd7ff;
-      padding: 15px;
-      border-radius: 6px;
-      margin-top: 10px;
-    }
-
-    /* Section Control (Hide/Show) */
-    .hidden-section {
-      display: none;
-    }
-  </style>
+  <link rel="stylesheet" href="add-room-style.css">
 </head>
 <body>
 
   <div class="header-bar">
-    <button type="button" class="back-btn" onclick="handleSmartBack()">⬅️ Back</button>
-    
+    <button type="button" class="back-btn" onclick="window.handleSmartBack()">⬅️ Back</button>
     MyPGHub — List Your Property
   </div>
 
@@ -215,21 +34,20 @@
       </div>
 
       <div class="form-group">
-        <label>Live Property Location <span style="color:red;">* (Required for Google Maps Navigation)</span></label>
-        <button type="button" class="btn btn-primary btn-block" onclick="fetchLiveLocation()">
+        <label>Live Property Location <span style="color:red;">*</span></label>
+        <button type="button" class="btn btn-primary btn-block" onclick="window.fetchLiveLocation()">
           📍 Click Here to Lock Live GPS Location
         </button>
-        
         <div id="locationConfirmationBox" class="location-box">
-          <p id="locationStatusText" style="margin:0 0 8px 0; font-size:13px; font-weight:bold; color:#c0392b;">
+          <p id="locationStatusText" style="margin:0; font-size:13px; font-weight:bold; color:#c0392b;">
             ⚠️ Live GPS Location missing! Clicking the button above is mandatory.
           </p>
         </div>
       </div>
 
       <div class="form-group">
-        <label>Detailed Address / Landmark <span style="color:red;">* (Visible to Students)</span></label>
-        <input type="text" id="manualAddress" class="form-control" placeholder="E.g., Lane No. 3, Right behind Science College, Near Hanuman Mandir" required>
+        <label>Detailed Address / Landmark <span style="color:red;">*</span></label>
+        <input type="text" id="manualAddress" class="form-control" placeholder="E.g., Lane No. 3, Near Hanuman Mandir" required>
       </div>
 
       <div class="form-group">
@@ -238,63 +56,58 @@
       </div>
 
       <div class="form-group">
-        <label>🔒 Aadhaar Card Verification (Optional - Upload to get a Verified Badge)</label>
+        <label>🔒 Aadhaar Card Verification (Optional)</label>
         <div class="upload-zone">
           <div style="display:flex; gap:10px; justify-content:center;">
             <label class="btn btn-secondary" style="cursor:pointer;">
               📸 Open Camera
-              <input type="file" accept="image/*" capture="camera" style="display:none;" onchange="validateAadhaarPhoto(this)">
+              <input type="file" accept="image/*" capture="camera" style="display:none;" onchange="window.validateAadhaarPhoto(this)">
             </label>
             <label class="btn btn-secondary" style="cursor:pointer;">
               📁 Upload File
-              <input type="file" accept="image/*" style="display:none;" onchange="validateAadhaarPhoto(this)">
+              <input type="file" accept="image/*" style="display:none;" onchange="window.validateAadhaarPhoto(this)">
             </label>
           </div>
-          <p id="aadhaarStatusText" style="font-size:12px; margin-top:8px; color:#7f8c8d;">Aadhaar is not mandatory to list your property.</p>
+          <p id="aadhaarStatusText" style="font-size:12px; margin-top:8px; color:#7f8c8d;">Aadhaar is not mandatory.</p>
           <img id="aadhaarPreviewImg" class="preview-img" alt="Aadhaar Preview">
         </div>
       </div>
 
       <div class="form-group">
-        <label>Mobile Number <span style="color:red;">* (OTP Verification Mandatory 🔒)</span></label>
+        <label>Mobile Number <span style="color:red;">*</span></label>
         <div style="display: flex; gap: 10px;">
           <input type="tel" id="ownerPhone" class="form-control" placeholder="10 Digit Mobile Number" maxlength="10" required>
-          <button type="button" class="btn btn-primary" style="white-space:nowrap;" onclick="simulateOTPSend()">Send OTP</button>
+          <button type="button" class="btn btn-primary" style="white-space:nowrap;" onclick="window.simulateOTPSend()">Send OTP</button>
         </div>
-        
         <div id="otpInputBox" style="display: none; margin-top: 10px;">
           <div style="display: flex; gap: 10px;">
             <input type="text" id="otpCode" class="form-control" placeholder="Enter 6-Digit OTP" maxlength="6">
-            <button type="button" class="btn btn-success" onclick="verifyOTPAndProceed()">Verify & Next ➔</button>
+            <button type="button" class="btn btn-success" onclick="window.verifyOTPAndProceed()">Verify & Next ➔</button>
           </div>
         </div>
       </div>
     </div>
-
 
     <div id="part2-roomDetails" class="hidden-section">
       <h2 class="step-title" style="color: #27ae60;">Step 2: Room, Facilities & Rules Details</h2>
       
       <div class="form-group">
         <label>🏠 Main Front/Building Image <span style="color:red;">*</span></label>
-        <input type="file" id="mainPhoto" accept="image/*" class="form-control" required>
-        <small style="color:#7f8c8d;">(Note: This main image will be automatically enhanced by AI backend)</small>
+        <input type="file" id="mainPhotoInput" accept="image/*" class="form-control" required>
       </div>
 
       <div class="form-group">
-        <label>📸 Gallery Images (Rooms, Interior, Washroom) <span style="color:red;">*</span></label>
+        <label>📸 Gallery Images <span style="color:red;">*</span></label>
         <input type="file" id="galleryPhotos" accept="image/*" class="form-control" multiple required>
       </div>
 
-      <div class="section-subtitle">🏠 PG Type & Sharing Configuration</div>
-      
       <div class="form-group">
         <label>PG Categorization <span style="color:red;">*</span></label>
         <select id="pgType" class="form-control" required>
           <option value="">-- Select Target Gender --</option>
           <option value="Boys">Boys PG</option>
           <option value="Girls">Girls PG</option>
-          <option value="CoEd">Co-Ed / Unisex</option>
+          <option value="CoEd">Co-Ed</option>
         </select>
       </div>
 
@@ -302,15 +115,15 @@
         <label>Allowed Sharing Type <span style="color:red;">*</span></label>
         <select id="sharingType" class="form-control" required>
           <option value="">-- Select Sharing Configuration --</option>
-          <option value="Single">Single Sharing Only</option>
-          <option value="Double">Double Sharing Only</option>
-          <option value="Triple">Triple Sharing Only</option>
-          <option value="Multiple">Multiple Options Available</option>
+          <option value="Single">Single Sharing</option>
+          <option value="Double">Double Sharing</option>
+          <option value="Triple">Triple Sharing</option>
+          <option value="Multiple">Multiple Options</option>
         </select>
       </div>
 
       <div class="form-group">
-        <label>Room Specifications (Check all that apply):</label>
+        <label>Room Specifications:</label>
         <div class="checkbox-grid">
           <label class="checkbox-item"><input type="checkbox" id="roomAttachedBathroom"> 🚿 Attached Bathroom</label>
           <label class="checkbox-item"><input type="checkbox" id="roomBalcony"> 🌅 Balcony Available</label>
@@ -318,8 +131,8 @@
         </div>
       </div>
 
-      <div class="section-subtitle">⚡ Available Amenities / Facilities (Tick = YES, Empty = NO)</div>
       <div class="form-group">
+        <label>Available Amenities:</label>
         <div class="checkbox-grid">
           <label class="checkbox-item"><input type="checkbox" id="facWiFi"> 🌐 Wi-Fi</label>
           <label class="checkbox-item"><input type="checkbox" id="facCooler"> ❄️ Cooler</label>
@@ -337,52 +150,47 @@
         </div>
       </div>
 
-      <div class="section-subtitle">🍽️ Mess & Food Details</div>
       <div class="form-group">
         <label>Is Food/Mess Service Provided? <span style="color:red;">*</span></label>
-        <select id="foodService" class="form-control" onchange="toggleMessOptions(this.value)" required>
+        <select id="foodService" class="form-control" onchange="window.toggleMessOptions(this.value)" required>
           <option value="">-- Choose Option --</option>
-          <option value="No">No (Food Not Included)</option>
-          <option value="Yes">Yes (Food Facility Available)</option>
+          <option value="No">No</option>
+          <option value="Yes">Yes</option>
         </select>
-        
         <div id="messOptionsPanel" class="nested-mess-box" style="display: none;">
-          <label style="margin-bottom: 8px; display: block;">Meals Included:</label>
+          <label>Meals Included:</label>
           <div style="display: flex; gap: 15px; margin-bottom: 12px;">
             <label><input type="checkbox" id="messBreakfast"> Breakfast</label>
             <label><input type="checkbox" id="messLunch"> Lunch</label>
             <label><input type="checkbox" id="messDinner"> Dinner</label>
           </div>
-          <label>Food Category Selection:</label>
+          <label>Food Category:</label>
           <select id="foodCategory" class="form-control" style="background: white;">
             <option value="Veg">Pure Vegetarian</option>
-            <option value="Both">Veg & Non-Veg Available</option>
+            <option value="Both">Veg & Non-Veg</option>
           </select>
         </div>
       </div>
 
-      <div class="section-subtitle">🚫 House Rules & Restrictions</div>
-      
       <div class="form-group">
         <label>Night Gate Closing Time <span style="color:red;">*</span></label>
         <select id="gateTime" class="form-control" required>
-          <option value="10 PM">Gate Closes at 10:00 PM</option>
-          <option value="11 PM" selected>Gate Closes at 11:00 PM</option>
-          <option value="12 AM">Gate Closes at 12:00 Midnight</option>
-          <option value="24x7">24x7 Open Entry Allowed</option>
+          <option value="10 PM">10:00 PM</option>
+          <option value="11 PM" selected>11:00 PM</option>
+          <option value="12 AM">12:00 Midnight</option>
+          <option value="24x7">24x7 Open</option>
         </select>
       </div>
 
       <div class="form-group">
         <label>Strict Rules Enforcement:</label>
         <div class="checkbox-grid">
-          <label class="checkbox-item"><input type="checkbox" id="ruleNoSmoking" checked> 🚭 No Smoking Allowed</label>
-          <label class="checkbox-item"><input type="checkbox" id="ruleNoMusic" checked> 🔇 No Loud Music After 10 PM</label>
-          <label class="checkbox-item"><input type="checkbox" id="ruleNoCooking"> 🍳 Cooking Inside Room Not Allowed</label>
+          <label class="checkbox-item"><input type="checkbox" id="ruleNoSmoking" checked> 🚭 No Smoking</label>
+          <label class="checkbox-item"><input type="checkbox" id="ruleNoMusic" checked> 🔇 No Loud Music</label>
+          <label class="checkbox-item"><input type="checkbox" id="ruleNoCooking"> 🍳 No Cooking In Room</label>
         </div>
       </div>
 
-      <div class="section-subtitle">💰 Pricing Structure</div>
       <div class="form-group">
         <label>Monthly Room/Bed Rent (INR) <span style="color:red;">*</span></label>
         <input type="number" id="roomPrice" class="form-control" placeholder="E.g., 6500" required>
@@ -390,155 +198,16 @@
 
       <div class="form-group">
         <label>Short Description / Rules <span style="color:red;">*</span></label>
-        <textarea id="description" class="form-control" rows="3" placeholder="Write any specific terms, security deposits, or nearby landmarks..." required></textarea>
+        <textarea id="description" class="form-control" rows="3" placeholder="Write terms..." required></textarea>
       </div>
 
-      <button type="button" class="btn btn-success btn-block" style="padding:15px; font-size:16px;" onclick="finalSubmitForm()">
+      <button type="button" class="btn btn-success btn-block" style="padding:15px; font-size:16px;" onclick="window.finalSubmitForm()">
         🚀 Final Submit Property
       </button>
     </div>
 
   </div>
 
-  <script>
-    let isLiveLocationCaptured = false;
-    let savedLatitude = "";
-    let savedLongitude = "";
-    let currentStep = 1; // Track keeping current page state
-
-    // 🧠 1. Smart Back Button Logic Control Engine
-    function handleSmartBack() {
-      if (currentStep === 2) {
-        // Agar owner Step 2 par hai, toh wapas Step 1 par bhejo
-        document.getElementById('part2-roomDetails').style.display = 'none';
-        document.getElementById('part1-verification').style.display = 'block';
-        currentStep = 1;
-        window.scrollTo(0, 0);
-      } else {
-        // Agar owner bilkul shuruat (Step 1) me hai, toh browser history se wapas pichle panel par bhejo
-        window.history.back();
-      }
-    }
-
-    // 2. Live Location Satellite Sync Lock
-    function fetchLiveLocation() {
-      const box = document.getElementById('locationConfirmationBox');
-      const statusText = document.getElementById('locationStatusText');
-      
-      if (navigator.geolocation) {
-        statusText.innerText = "⏳ Status: Syncing with satellites... Please wait...";
-        
-        navigator.geolocation.getCurrentPosition((position) => {
-          savedLatitude = position.coords.latitude;
-          savedLongitude = position.coords.longitude;
-          isLiveLocationCaptured = true;
-          
-          box.className = "location-box location-success";
-          statusText.innerHTML = `✅ Live GPS Location Locked Successfully!<br><span style="font-size:11px; color:#7f8c8d;">(Coordinates saved in background: Lat ${savedLatitude.toFixed(4)}, Lon ${savedLongitude.toFixed(4)})</span>`;
-        }, () => {
-          statusText.innerText = "❌ Location Failed! Please switch ON your device GPS settings and retry.";
-          isLiveLocationCaptured = false;
-        });
-      }
-    }
-
-    // 3. Manage Dynamic Food Options View Selector
-    function toggleMessOptions(value) {
-      const panel = document.getElementById('messOptionsPanel');
-      if(value === 'Yes') {
-        panel.style.display = 'block';
-      } else {
-        panel.style.display = 'none';
-      }
-    }
-
-    // 4. Aadhaar Upload Validation Filter
-    function validateAadhaarPhoto(input) {
-      const file = input.files[0];
-      const statusText = document.getElementById('aadhaarStatusText');
-      const previewImg = document.getElementById('aadhaarPreviewImg');
-
-      if (file) {
-        const sizeKB = file.size / 1024;
-        if (sizeKB < 100) {
-          alert("❌ Upload Rejected! Image quality is too low (under 100KB). Please take a clearer photo.");
-          input.value = "";
-          previewImg.style.display = 'none';
-          statusText.innerText = "Status: Rejected due to poor quality.";
-          statusText.style.color = "red";
-          return;
-        }
-        statusText.innerText = `Perfect Quality Approved! Size: ${sizeKB.toFixed(1)} KB ✅`;
-        statusText.style.color = "green";
-        
-        const reader = new FileReader();
-        reader.onload = function(e) {
-          previewImg.src = e.target.result;
-          previewImg.style.display = 'block';
-        }
-        reader.readAsDataURL(file);
-      }
-    }
-
-    // 5. Strict Validation Checks Before Dispatching Simulated Test OTP
-    function simulateOTPSend() {
-      const name = document.getElementById('ownerName').value.trim();
-      const house = document.getElementById('houseName').value.trim();
-      const email = document.getElementById('ownerEmail').value.trim();
-      const manualAddr = document.getElementById('manualAddress').value.trim();
-      const pinCity = document.getElementById('pincodeCity').value.trim();
-      const phone = document.getElementById('ownerPhone').value.trim();
-
-      if (!name || !house || !email || !manualAddr || !pinCity) {
-        alert("❌ Validation Error: Please fill in all the required identity and address fields first!");
-        return;
-      }
-
-      if (!isLiveLocationCaptured) {
-        alert("❌ Validation Error: Live GPS Location lock is mandatory! Please click the blue button above.");
-        return;
-      }
-
-      if (phone.length !== 10) {
-        alert("❌ Validation Error: Please enter a valid 10-digit mobile number!");
-        return;
-      }
-
-      document.getElementById('otpInputBox').style.display = 'block';
-      alert(`System Notice: Test OTP dispatched. Use mock code: 123456`);
-    }
-
-    // 6. Verify Target OTP and Unlock Step 2 Content View Panel
-    function verifyOTPAndProceed() {
-      const code = document.getElementById('otpCode').value;
-      if (code === "123456") {
-        alert("✅ Mobile Number Successfully Verified!");
-        document.getElementById('part1-verification').style.display = 'none';
-        document.getElementById('part2-roomDetails').style.display = 'block';
-        currentStep = 2; // State updated to step 2 page status
-        window.scrollTo(0, 0);
-      } else {
-        alert("❌ Verification Failed: Invalid OTP code. Please retry.");
-      }
-    }
-
-    // 7. Step 2 Master Submission Handler Engine
-    function finalSubmitForm() {
-      const mainPhoto = document.getElementById('mainPhoto').value;
-      const gallery = document.getElementById('galleryPhotos').value;
-      const pgType = document.getElementById('pgType').value;
-      const sharingType = document.getElementById('sharingType').value;
-      const foodService = document.getElementById('foodService').value;
-      const price = document.getElementById('roomPrice').value;
-      const desc = document.getElementById('description').value.trim();
-
-      if (!mainPhoto || !gallery || !pgType || !sharingType || !foodService || !price || !desc) {
-        alert("❌ Validation Error: Please fill all mandatory fields marked with a red star (*).");
-        return;
-      }
-
-      alert("🎉 Success! Your highly detailed property listing matching all display criteria has been submitted for admin approval.");
-    }
-  </script>
+  <script type="module" src="add-room-firebase.js"></script>
 </body>
 </html>
