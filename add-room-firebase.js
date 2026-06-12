@@ -1,7 +1,7 @@
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
 import { getFirestore, collection, addDoc } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
-// ☁️ Firebase Storage module ko import kiya photo upload ke liye
-import { getStorage, ref, uploadBytes, getDownloadURL } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-storage.js";
+// ☁️ Firebase Storage module
+import { getStorage } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-storage.js";
 
 // ⚙️ Firebase Configuration
 const firebaseConfig = {
@@ -16,7 +16,7 @@ const firebaseConfig = {
 
 const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
-const storage = getStorage(app); // Storage initialize kiya
+const storage = getStorage(app); 
 
 let isLiveLocationCaptured = false;
 let savedLatitude = "";
@@ -35,13 +35,13 @@ window.handleSmartBack = () => {
   }
 };
 
-// 🛰️ 2. Live GPS Location Lock
+// 🛰️ 2. Live GPS Location Lock (HIGH ACCURACY SATELLITE MODE ENABLED)
 window.fetchLiveLocation = () => {
   const box = document.getElementById('locationConfirmationBox');
   const statusText = document.getElementById('locationStatusText');
   
   if (navigator.geolocation) {
-    statusText.innerText = "⏳ Status: Satellites se connect ho raha hai...";
+    statusText.innerText = "⏳ Status: Satellites se direct connection bana rhe hain...";
     
     navigator.geolocation.getCurrentPosition((position) => {
       savedLatitude = position.coords.latitude;
@@ -51,9 +51,12 @@ window.fetchLiveLocation = () => {
       box.className = "location-box location-success";
       statusText.innerHTML = `✅ GPS Location Locked!<br><span style="font-size:11px; color:#7f8c8d;">(Lat ${savedLatitude.toFixed(4)}, Lon ${savedLongitude.toFixed(4)})</span>`;
     }, () => {
-      statusText.innerText = "❌ Location Failed! GPS ON karke firse try karein.";
+      statusText.innerText = "❌ Location Failed! Phone GPS ON karke firse try karein.";
       isLiveLocationCaptured = false;
-    });
+    }, 
+    { enableHighAccuracy: true, timeout: 15000, maximumAge: 0 }); // Pinpoint accurate settings
+  } else {
+    statusText.innerText = "❌ Browser GPS support nahi karta.";
   }
 };
 
@@ -122,7 +125,47 @@ window.verifyOTPAndProceed = () => {
   }
 };
 
-// 🚀 7. Firestore Submit (CORS-FREE BASE64 ENGINE)
+// ⚡ IMAGE COMPRESSION HELPER FUNCTION (Background Canvas Engine)
+function compressMainImageEngine(file) {
+  return new Promise((resolve, reject) => {
+    const reader = new FileReader();
+    reader.readAsDataURL(file);
+    reader.onload = (event) => {
+      const img = new Image();
+      img.src = event.target.result;
+      img.onload = () => {
+        const canvas = document.createElement('canvas');
+        let width = img.width;
+        let height = img.height;
+
+        // Auto Resize Dimensions (Max 800px width/height)
+        const max_size = 800;
+        if (width > height) {
+          if (width > max_size) {
+            height *= max_size / width;
+            width = max_size;
+          }
+        } else {
+          if (height > max_size) {
+            width *= max_size / height;
+            height = max_size;
+          }
+        }
+
+        canvas.width = width;
+        canvas.height = height;
+        const ctx = canvas.getContext('2d');
+        ctx.drawImage(img, 0, 0, width, height);
+        
+        // 0.7 means 70% high quality but extremely low size string
+        resolve(canvas.toDataURL('image/jpeg', 0.7));
+      };
+    };
+    reader.onerror = (error) => reject(error);
+  });
+}
+
+// 🚀 7. Firestore Submit (COMPRESSED & CORS-FREE ENGINE)
 window.finalSubmitForm = async () => {
   const pgType = document.getElementById('pgType').value;
   const sharingType = document.getElementById('sharingType').value;
@@ -142,27 +185,13 @@ window.finalSubmitForm = async () => {
   }
 
   try {
-    alert("⏳ Processing Photo & Registering Property... Please wait.");
+    alert("⏳ Photo ko background me compress aur compress karke register kar rhe hain... Kripya thoda wait karein.");
 
-    // 🔄 File ko Base64 Text String me convert karne ka function
-    const convertToBase64 = (file) => {
-      return new Promise((resolve, reject) => {
-        const fileReader = new FileReader();
-        fileReader.readAsDataURL(file);
-        fileReader.onload = () => {
-          resolve(fileReader.result);
-        };
-        fileReader.onerror = (error) => {
-          reject(error);
-        };
-      });
-    };
+    // 🔥 DYNAMIC EXTRA COMPRESSION: Badi string ko small base64 me badla
+    const compressedBase64PhotoUrl = await compressMainImageEngine(mainPhotoFile);
+    console.log("✅ Heavy photo optimized and compressed successfully!");
 
-    // Photo ko text string banaya (No Firebase Storage needed, direct bypass)
-    const base64PhotoUrl = await convertToBase64(mainPhotoFile);
-    console.log("✅ Photo converted to CORS-free string successfully!");
-
-    // 🚀 Data direct Firestore me save ho raha hai
+    // 🚀 Data direct Firestore ke usi purane dabbe 'pghub_properties' me save ho raha hai
     const propertyData = {
       ownerName: document.getElementById('ownerName').value.trim(),
       houseName: document.getElementById('houseName').value.trim(),
@@ -170,7 +199,7 @@ window.finalSubmitForm = async () => {
       manualAddress: document.getElementById('manualAddress').value.trim(),
       pincodeCity: document.getElementById('pincodeCity').value.trim(),
       ownerPhone: document.getElementById('ownerPhone').value.trim(),
-      location: { latitude: savedLatitude, longitude: savedLongitude },
+      location: { latitude: Number(savedLatitude), longitude: Number(savedLongitude) },
       pgType: pgType,
       sharingType: sharingType,
       roomPrice: Number(price),
@@ -200,7 +229,7 @@ window.finalSubmitForm = async () => {
         noMusic: document.getElementById('ruleNoMusic').checked,
         noCooking: document.getElementById('ruleNoCooking').checked
       },
-      mainPhotoUrl: base64PhotoUrl, // 👈 text format photo string
+      mainPhotoUrl: compressedBase64PhotoUrl, // 👈 Compressed super light text format string
       createdAt: new Date()
     };
 
