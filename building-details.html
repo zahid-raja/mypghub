@@ -1,0 +1,313 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Advanced Property Editor - PG Hub</title>
+  <style>
+    body { margin: 0; font-family: 'Segoe UI', Arial, sans-serif; background: #f1f3f6; color: #333; }
+    .header { background: white; padding: 15px 20px; display: flex; align-items: center; justify-content: space-between; box-shadow: 0 2px 5px rgba(0,0,0,0.08); position: sticky; top: 0; z-index: 1000; }
+    .back-btn { background: #2874f0; color: white; border: none; padding: 10px 16px; border-radius: 8px; cursor: pointer; font-weight: 600; }
+    .title { font-size: 18px; font-weight: bold; }
+    .main-layout { max-width: 1200px; margin: 20px auto; padding: 0 15px; display: flex; gap: 20px; }
+    .left-panel { flex: 1.2; }
+    .right-panel { flex: 1; background: white; border-radius: 15px; padding: 24px; box-shadow: 0 3px 12px rgba(0,0,0,0.05); height: fit-content; }
+    @media (max-width: 850px) { .main-layout { flex-direction: column; } }
+    .image-box { width: 100%; border-radius: 15px; overflow: hidden; background: #ddd; }
+    .property-img { width: 100%; display: block; object-fit: cover; max-height: 450px; }
+    .config-badge { display: inline-block; margin-top: 15px; background: white; color: #2874f0; border: 1px solid #2874f0; padding: 8px 16px; border-radius: 8px; font-weight: 600; font-size: 14px; }
+    .editable-field { display: flex; align-items: center; justify-content: space-between; margin-bottom: 12px; padding: 6px 0; border-bottom: 1px dashed #eee; }
+    .edit-pencil { color: #2874f0; cursor: pointer; margin-left: 8px; font-size: 15px; opacity: 0.6; }
+    .delete-trash { color: #e53935; cursor: pointer; margin-left: auto; font-size: 14px; font-weight: bold; opacity: 0.7; }
+    .edit-pencil:hover, .delete-trash:hover { opacity: 1; }
+    .price-text { font-size: 28px; color: #24963e; font-weight: bold; }
+    .sub-info { color: #666; font-size: 14px; margin-top: 5px; margin-bottom: 20px; display: flex; align-items: center; gap: 5px; }
+    .section-title-row { display: flex; align-items: center; justify-content: space-between; margin: 25px 0 12px 0; border-bottom: 2px solid #2874f0; padding-bottom: 6px; }
+    .section-title { font-size: 18px; font-weight: bold; color: #111; }
+    .add-btn { background: #2874f0; color: white; border: none; padding: 6px 12px; font-size: 12px; border-radius: 5px; cursor: pointer; font-weight: bold; }
+    .data-text { font-size: 15px; color: #444; line-height: 1.5; }
+    .amenities-grid { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 10px; }
+    .amenity-tag { padding: 8px 14px; border-radius: 20px; font-size: 13px; display: inline-flex; align-items: center; gap: 8px; background: #f1f3f6; color: #444; cursor: pointer; border: 1px solid #ced4da; transition: all 0.2s; user-select: none; }
+    .amenity-tag.active { background: #e3f2fd; color: #2874f0; border-color: #2874f0; }
+    .amenity-tag .cut-btn { color: #e53935; font-weight: bold; font-size: 14px; padding: 0 4px; cursor: pointer; transition: transform 0.1s; }
+    .amenity-tag .cut-btn:hover { transform: scale(1.3); }
+    .fixed-footer { background: white; padding: 15px; position: fixed; bottom: 0; left: 0; width: 100%; box-shadow: 0 -3px 10px rgba(0,0,0,0.1); display: flex; justify-content: center; z-index: 1000; }
+    .save-global-btn { width: 90%; max-width: 500px; background: #24963e; color: white; border: none; padding: 14px; border-radius: 10px; font-size: 16px; font-weight: bold; cursor: pointer; }
+    .status-msg { text-align: center; padding: 50px; font-size: 16px; color: #666; }
+  </style>
+</head>
+<body>
+
+  <div class="header">
+    <button class="back-btn" onclick="window.location.href='buildings-list.html'">⬅ Back</button>
+    <div class="title">Property Editor Dashboard</div>
+    <div style="width: 50px;"></div>
+  </div>
+
+  <div id="contentWrapper">
+    <div class="status-msg">Fetching database configurations... ⏳</div>
+  </div>
+
+  <div class="fixed-footer" id="footerActions" style="display:none;">
+    <button class="save-global-btn" id="saveBtn" onclick="window.saveAllData()">💾 Push Changes Live</button>
+  </div>
+
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+    import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
+    import { getFirestore, doc, getDoc, updateDoc } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+
+    const firebaseConfig = {
+      apiKey: "AIzaSyCxP405IU4nljGIF9LzA4WeVLVk2kb8OEU",
+      authDomain: "mypghub-68a0f.firebaseapp.com",
+      projectId: "mypghub-68a0f",
+      storageBucket: "mypghub-68a0f.firebasestorage.app",
+      messagingSenderId: "128487472086",
+      appId: "1:128487472086:web:6e4daabb527b0f2abb4277"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const auth = getAuth(app);
+    const db = getFirestore(app);
+
+    const urlParams = new URLSearchParams(window.location.search);
+    const propertyId = urlParams.get('id');
+
+    let propertyData = {};
+    let customDetails = [];
+
+    onAuthStateChanged(auth, async (user) => {
+      if(!user) { window.location.href = "account.html"; return; }
+      if(!propertyId) { document.getElementById("contentWrapper").innerHTML = "<div class='status-msg'>Invalid Property URL!</div>"; return; }
+
+      try {
+        const docRef = doc(db, "pghub_properties", propertyId);
+        const docSnap = await getDoc(docRef);
+
+        if(docSnap.exists()){
+          propertyData = docSnap.data();
+          
+          customDetails = propertyData.customDetailsList || [
+            { label: "📍 Address", value: propertyData.exactAddress || "road no 25" },
+            { label: "👥 Type", value: propertyData.pgType || "Full Private 1 BHK FLAT" },
+            { label: "🍴 Food Facility", value: propertyData.foodFacility || "" },
+            { label: "⏰ Gate Closing Time", value: propertyData.gateClosingTime || "11:00 PM" }
+          ];
+
+          renderUI();
+        } else {
+          document.getElementById("contentWrapper").innerHTML = "<div class='status-msg'>Property Not Found!</div>";
+        }
+      } catch(err) {
+        document.getElementById("contentWrapper").innerHTML = `<div class='status-msg'>Error: ${err.message}</div>`;
+      }
+    });
+
+    function renderUI() {
+      const wrapper = document.getElementById("contentWrapper");
+      
+      wrapper.innerHTML = `
+        <div class="main-layout" style="margin-bottom: 120px;">
+          <div class="left-panel">
+            <div class="image-box">
+              <img class="property-img" src="${propertyData.mainPhotoUrl || 'https://via.placeholder.com/600x400'}" alt="Preview">
+            </div>
+            <div class="config-badge" id="badgeLabel">${propertyData.pgType || '1 BHK FLAT'}</div>
+          </div>
+
+          <div class="right-panel">
+            <div class="editable-field">
+              <div class="price-text">₹<span id="txtRent">${propertyData.expectedRent || "5000"}</span>/month</div>
+              <span class="edit-pencil" onclick="window.editDirectField('expectedRent', 'txtRent', 'Enter Rent')">✏️</span>
+            </div>
+
+            <div class="sub-info">
+              <span>🛏️ <span id="txtVacant">${propertyData.vacantCount ?? "2"}</span> Vacant</span>
+              <span class="edit-pencil" onclick="window.editCounter('vacantCount', 'txtVacant')">✏️</span>
+              &nbsp;|&nbsp;
+              <span>Total: <span id="txtTotal">${propertyData.totalCount ?? "5"}</span></span>
+              <span class="edit-pencil" onclick="window.editCounter('totalCount', 'txtTotal')">✏️</span>
+            </div>
+
+            <div class="section-title-row">
+              <span class="section-title">Amenities (Click to Enable/Disable)</span>
+              <button class="add-btn" onclick="window.addCustomAmenity()">➕ Add Custom (e.g. Chair)</button>
+            </div>
+            <div class="amenities-grid" id="amenitiesGrid"></div>
+
+            <div class="section-title-row">
+              <span class="section-title">Description</span>
+            </div>
+            <div class="editable-field">
+              <div class="data-text" id="txtDesc" style="font-style: italic;">"${propertyData.description || "No description provided."}"</div>
+              <span class="edit-pencil" onclick="window.editDirectField('description', 'txtDesc', 'Update Description')">✏️</span>
+            </div>
+
+            <div class="section-title-row">
+              <span class="section-title">Room & Property Details</span>
+              <button class="add-btn" onclick="window.addCustomRow()">➕ Add New Detail Row</button>
+            </div>
+            <div id="specificationsBox"></div>
+          </div>
+        </div>
+      `;
+
+      renderAmenities();
+      renderSpecifications();
+      document.getElementById("footerActions").style.display = "flex";
+    }
+
+    // FIXED AMENITIES ENGINE (Adds Dynamic/Static UI and Delete System)
+    function renderAmenities() {
+      const grid = document.getElementById("amenitiesGrid");
+      grid.innerHTML = "";
+
+      if (!propertyData.amenities) propertyData.amenities = {};
+
+      const defaultLabels = {
+        wifi: "📶 WiFi", ac: "❄️ Air Conditioner (AC)", cooler: "🌀 Air Cooler",
+        bed: "🛏️ Wooden Bed", mattress: "💤 Mattress", parking: "🚗 Parking Space",
+        washroom: "🧼 Attached Washroom", balcony: "🌅 Private Balcony"
+      };
+
+      const allKeys = Array.from(new Set([...Object.keys(defaultLabels), ...Object.keys(propertyData.amenities)]));
+
+      allKeys.forEach(key => {
+        // Exclude labels from key loops
+        if (key.endsWith("_label")) return;
+
+        const isActive = propertyData.amenities[key] === true || typeof propertyData.amenities[key] === 'string';
+        const displayLabel = defaultLabels[key] || propertyData.amenities[key + "_label"] || key;
+        
+        const tag = document.createElement("div");
+        tag.className = `amenity-tag ${isActive ? 'active' : ''}`;
+        
+        // Content wrapper with dynamic Cut Option
+        tag.innerHTML = `
+          <span class="tag-label-text">${displayLabel}</span>
+          <span class="cut-btn" title="Delete Amenity">×</span>
+        `;
+        
+        // Active Toggle on Tag click
+        tag.onclick = (e) => {
+          if (e.target.classList.contains('cut-btn')) return; // Prevent bubble click on close triggers
+          propertyData.amenities[key] = !isActive;
+          tag.className = `amenity-tag ${!isActive ? 'active' : ''}`;
+        };
+
+        // Complete permanent data drop handler
+        tag.querySelector(".cut-btn").onclick = (e) => {
+          e.stopPropagation();
+          if (confirm(`Kya aap "${displayLabel}" ko dashboard se permanent hatana chahte hain?`)) {
+            delete propertyData.amenities[key];
+            delete propertyData.amenities[key + "_label"];
+            tag.remove();
+          }
+        };
+
+        grid.appendChild(tag);
+      });
+    }
+
+    window.addCustomAmenity = () => {
+      const name = prompt("Enter custom amenity name (e.g., 🪑 Chair, 🧼 Geyser):");
+      if(name && name.trim() !== "") {
+        const cleanKey = "custom_" + Date.now(); // Generates stable dynamic timestamp id
+        if (!propertyData.amenities) propertyData.amenities = {};
+        
+        propertyData.amenities[cleanKey] = true; 
+        propertyData.amenities[cleanKey + "_label"] = name.trim(); 
+        renderAmenities();
+      }
+    };
+
+    // SPECIFICATIONS DETAIL ROWS
+    function renderSpecifications() {
+      const container = document.getElementById("specificationsBox");
+      container.innerHTML = "";
+
+      customDetails.forEach((row, idx) => {
+        const div = document.createElement("div");
+        div.className = "editable-field";
+        div.innerHTML = `
+          <div class="data-text"><strong>${row.label}:</strong> <span id="val_${idx}">${row.value}</span></div>
+          <div style="display:flex; gap:10px; align-items:center;">
+            <span class="edit-pencil" onclick="window.editRowValue(${idx})">✏️</span>
+            <span class="delete-trash" onclick="window.deleteRow(${idx})">🗑️ Delete</span>
+          </div>
+        `;
+        container.appendChild(div);
+      });
+    }
+
+    window.editRowValue = (idx) => {
+      const current = customDetails[idx].value;
+      const res = prompt(`Update value for ${customDetails[idx].label}:`, current);
+      if(res !== null) {
+        customDetails[idx].value = res.trim();
+        renderSpecifications();
+      }
+    };
+
+    window.deleteRow = (idx) => {
+      customDetails.splice(idx, 1);
+      renderSpecifications();
+    };
+
+    window.addCustomRow = () => {
+      const label = prompt("Enter new detail label (e.g., 🧹 Cleaning, 🍽️ Mess Timing):");
+      if(label && label.trim() !== "") {
+        const val = prompt(`Enter value for ${label}:`);
+        customDetails.push({ label: label.trim(), value: val ? val.trim() : "" });
+        renderSpecifications();
+      }
+    };
+
+    window.editDirectField = (key, elId, msg) => {
+      const current = document.getElementById(elId).innerText.replace(/"/g, "");
+      const res = prompt(msg, current);
+      if(res && res.trim() !== "") {
+        propertyData[key] = res.trim();
+        document.getElementById(elId).innerText = key === 'description' ? `"${res.trim()}"` : res.trim();
+        if(key === 'pgType') document.getElementById('badgeLabel').innerText = res.trim();
+      }
+    };
+
+    window.editCounter = (key, elId) => {
+      const res = prompt("Enter count:", document.getElementById(elId).innerText);
+      if(res && res.trim() !== "") {
+        const num = parseInt(res.trim()) || 0;
+        propertyData[key] = num;
+        document.getElementById(elId).innerText = num;
+      }
+    };
+
+    async function saveAllData() {
+      const btn = document.getElementById("saveBtn");
+      btn.innerText = "Saving matrix live... ⏳";
+      btn.disabled = true;
+
+      try {
+        const docRef = doc(db, "pghub_properties", propertyId);
+        
+        propertyData.customDetailsList = customDetails;
+        customDetails.forEach(row => {
+          if(row.label.includes("Address")) propertyData.exactAddress = row.value;
+          if(row.label.includes("Type")) propertyData.pgType = row.value;
+          if(row.label.includes("Food")) propertyData.foodFacility = row.value;
+          if(row.label.includes("Closing Time")) propertyData.gateClosingTime = row.value;
+        });
+
+        await updateDoc(docRef, propertyData);
+        alert("🎉 Saved successfully!");
+        window.location.href = "buildings-list.html?refresh=" + Date.now();
+      } catch(err) {
+        alert("Update Failed: " + err.message);
+        btn.disabled = false;
+        btn.innerText = "💾 Push Changes Live";
+      }
+    }
+    window.saveAllData = saveAllData;
+  </script>
+</body>
+</html>

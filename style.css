@@ -1,0 +1,702 @@
+body{
+  margin:0;
+  font-family:Arial;
+  background:#f1f3f6;
+}
+
+/* HEADER */
+.header{
+  background:white;
+  padding:15px;
+  box-shadow:0 1px 5px rgba(0,0,0,0.1);
+  position:sticky;
+  top:0;
+  z-index:1000;
+}
+
+.logo-row{
+  margin-bottom:12px;
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+}
+
+.box{
+  background:#f0f5ff;
+  border-radius:12px;
+  padding:12px 15px;
+}
+
+.logo-box{
+  display:inline-block;
+  font-size:22px;
+  font-weight:bold;
+  color:#2874f0;
+}
+.nav-links{
+  display:none;
+  gap:20px;
+}
+
+.nav-links div{
+  cursor:pointer;
+  font-weight:bold;
+  color:#555;
+}
+
+.nav-links div:hover{
+  color:#2874f0;
+}
+
+@media(min-width:769px){
+  .nav-links{
+    display:flex;
+  }
+}
+
+.header-row{
+  display:flex;
+  align-items:center;
+  gap:15px;
+}
+
+.search-box{
+  flex:1;
+}
+
+.search-box input{
+  width:100%;
+  border:none;
+  outline:none;
+  background:transparent;
+  font-size:15px;
+}
+
+.action-box{
+  cursor:pointer;
+  min-width:80px;
+  text-align:center;
+  font-size:15px;
+}
+
+/* CATEGORY */
+.categories{
+  display:flex;
+  gap:10px;
+  padding:12px;
+  overflow-x:auto;
+}
+
+.categories::-webkit-scrollbar{
+  display:none;
+}
+
+.cat-btn{
+  background:white;
+  padding:10px 15px;
+  border-radius:20px;
+  white-space:nowrap;
+  box-shadow:0 1px 4px rgba(0,0,0,0.1);
+  font-size:14px;
+  font-weight:bold;
+}
+
+/* GRID */
+.grid{
+  display:grid;
+  grid-template-columns:repeat(4,1fr);
+  gap:15px;
+  padding:15px;
+}
+
+.card{
+  background:white;
+  border-radius:12px;
+  overflow:hidden;
+  box-shadow:0 1px 5px rgba(0,0,0,0.1);
+  cursor:pointer;
+}
+
+.card img{
+  width:100%;
+  height:180px;
+  object-fit:cover;
+}
+
+.card-content{
+  padding:10px;
+}
+
+.price{
+  color:green;
+  font-size:18px;
+  font-weight:bold;
+}
+
+.pg-type{
+  color:#555;
+  margin-top:5px;
+  font-size:13px;
+}
+
+.distance{
+  color:gray;
+  margin-top:5px;
+  font-size:12px;
+}
+
+/* DETAIL PAGE */
+#detailPage{
+  display:none;
+  padding:20px;
+}
+
+.back-btn{
+  margin-bottom:15px;
+  padding:10px 15px;
+  border:none;
+  border-radius:8px;
+  background:#2874f0;
+  color:white;
+  cursor:pointer;
+}
+
+@media(min-width:769px){
+  .back-btn{
+    position:sticky;
+    top:40px;
+    z-index:1000;
+  }
+}
+
+.detail-layout{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:25px;
+}
+
+/* LEFT */
+.left-side{
+  position:sticky;
+  top:90px;
+  height:fit-content;
+}
+
+.slider{
+  background:white;
+  border-radius:15px;
+  overflow:hidden;
+  position:relative;
+  box-shadow:0 1px 5px rgba(0,0,0,0.1);
+}
+
+.slide{
+  width:100%;
+  height:420px;
+  object-fit:cover;
+  display:none;
+}
+
+.slide.active{
+  display:block;
+}
+
+/* LAPTOP BUTTONS */
+.prev,
+.next{
+  position:absolute;
+  top:50%;
+  transform:translateY(-50%);
+  border:none;
+  background:rgba(0,0,0,0.6);
+  color:white;
+  padding:12px;
+  border-radius:50%;
+  cursor:pointer;
+  z-index:10;
+}
+
+.prev{
+  left:10px;
+}
+
+.next{
+  right:10px;
+}
+
+/* DOTS */
+.dots{
+  text-align:center;
+  margin-top:10px;
+}
+
+.dot{
+  width:10px;
+  height:10px;
+  border-radius:50%;
+  background:#ccc;
+  display:inline-block;
+  margin:5px;
+}
+
+.dot.active{
+  background:#2874f0;
+}
+
+/* RIGHT */
+.right-side{
+  background:white;
+  border-radius:15px;
+  padding:20px;
+  box-shadow:0 1px 5px rgba(0,0,0,0.1);
+}
+
+.main-price{
+  color:rgb(0, 128, 17);
+  font-size:30px;
+  font-weight:bold;
+}
+
+.top-info{
+  color:#555;
+  margin-top:10px;
+  line-height:24px;
+}
+
+/* HIGHLIGHTS */
+.highlights{
+  display:flex;
+  flex-wrap:wrap;
+  gap:10px;
+  margin-top:20px;
+}
+
+.highlight-box{
+  background:#f0f5ff;
+  padding:10px 14px;
+  border-radius:20px;
+  font-size:14px;
+}
+
+/* SECTION */
+.section{
+  margin-top:25px;
+}
+
+.section h3{
+  margin-bottom:12px;
+}
+
+.facility{
+  display:inline-block;
+  background:#f0f5ff;
+  padding:8px 12px;
+  border-radius:20px;
+  margin:5px;
+  font-size:14px;
+}
+
+/* BUTTONS */
+.action-buttons{
+  display:flex;
+  gap:10px;
+  margin-top:25px;
+}
+
+.action-buttons button{
+  flex:1;
+  border:none;
+  padding:14px;
+  border-radius:10px;
+  color:white;
+  font-size:15px;
+  cursor:pointer;
+}
+
+.call-btn{
+  background:#2874f0;
+}
+
+.map-btn{
+  background:green;
+}
+
+/* SHOW MORE */
+.more-details{
+  display:none;
+}
+
+.show-btn{
+  margin-top:20px;
+  padding:12px 18px;
+  border:none;
+  border-radius:10px;
+  background:#2874f0;
+  color:white;
+  cursor:pointer;
+}
+
+/* BOTTOM NAV */
+.bottom-nav {
+  display: none;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+  -webkit-tap-highlight-color: transparent;
+}
+
+/* MOBILE */
+@media(max-width:768px){
+  .header{
+    padding:12px;
+  }
+
+  .logo-box{
+    font-size:18px;
+  }
+
+  .header-row{
+    gap:8px;
+  }
+
+  .box{
+    padding:10px;
+  }
+
+  .action-box{
+    min-width:55px;
+    font-size:13px;
+  }
+
+  .grid{
+    grid-template-columns:repeat(2,1fr);
+    gap:10px;
+    padding:10px;
+    padding-bottom:90px;
+  }
+
+  .card img{
+    height:120px;
+  }
+
+  .price{
+    font-size:15px;
+  }
+
+  .pg-type{
+    font-size:11px;
+  }
+
+  .distance{
+    font-size:10px;
+  }
+
+  /* MOBILE DETAILS */
+  .detail-layout{
+    grid-template-columns:1fr;
+  }
+
+  .left-side{
+    position:static;
+  }
+
+  .slide{
+    height:240px;
+  }
+
+  /* HIDE LAPTOP BUTTONS */
+  .prev,
+  .next{
+    display:none;
+  }
+
+  .right-side{
+    margin-top:15px;
+    padding:15px;
+  }
+
+  .main-price{
+    font-size:24px;
+  }
+
+  .highlight-box{
+    font-size:12px;
+    padding:8px 10px;
+  }
+
+  .facility{
+    font-size:12px;
+  }
+
+  .action-buttons button{
+    font-size:13px;
+    padding:12px;
+  }
+
+  /* MOBILE NAV */
+  .bottom-nav{
+    display:flex;
+    justify-content:space-around;
+    align-items:center;
+    position:fixed;
+    bottom:0;
+    width:100%;
+    background:white;
+    padding:12px 0;
+    border-top:1px solid #ddd;
+    box-shadow:0 -1px 5px rgba(0,0,0,0.1);
+    z-index:9999;
+  }
+
+  .bottom-nav div{
+    font-size:13px;
+    text-align:center;
+  }
+}
+
+/* Background Overlay (🔒 FIXED: Locked display none for initial state) */
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.6);
+  display: none; 
+  align-items: center;
+  justify-content: center;
+  z-index: 10000; /* Map and Nav ke upar rakhne ke liye higher z-index */
+  backdrop-filter: blur(4px);
+}
+
+/* Main Modal Card */
+.modal-card {
+  background: #ffffff;
+  width: 100%;
+  max-width: 400px;
+  padding: 40px 30px;
+  border-radius: 16px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+  position: relative;
+  font-family: Arial, sans-serif;
+  box-sizing: border-box;
+}
+
+/* Close (X) Button */
+.close-modal-btn {
+  position: absolute;
+  top: 20px;
+  right: 20px;
+  font-size: 28px;
+  color: #878787;
+  cursor: pointer;
+  transition: color 0.2s ease;
+  line-height: 1;
+}
+
+.close-modal-btn:hover {
+  color: #212121;
+}
+
+/* Typography */
+.modal-title {
+  font-size: 24px;
+  font-weight: 600;
+  color: #212121;
+  margin: 0 0 8px 0;
+}
+
+.modal-subtitle {
+  font-size: 14px;
+  color: #878787;
+  margin-bottom: 30px;
+  line-height: 1.4;
+}
+
+/* Input Row Section */
+.phone-input-row {
+  display: flex;
+  align-items: center;
+  border-bottom: 2px solid #e0e0e0;
+  margin-bottom: 30px;
+  padding-bottom: 5px;
+  transition: border-color 0.2s ease;
+}
+
+.phone-input-row:focus-within {
+  border-bottom-color: #ff9f00;
+}
+
+.country-code {
+  font-size: 16px;
+  font-weight: 600;
+  color: #212121;
+  width: 40px;
+  border: none;
+  background: transparent;
+  outline: none;
+  padding: 0;
+}
+
+.main-phone-input {
+  flex: 1;
+  border: none;
+  background: transparent;
+  outline: none;
+  font-size: 16px;
+  color: #212121;
+  padding: 5px 0;
+}
+
+.main-phone-input::placeholder {
+  color: #c2c2c2;
+}
+
+/* Universal Button Style */
+.modal-btn {
+  width: 100%;
+  padding: 14px;
+  font-size: 16px;
+  font-weight: 600;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  box-sizing: border-box;
+}
+
+/* Send OTP Button */
+.send-otp-btn {
+  background: #ff9f00;
+  color: #ffffff;
+  border: none;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.send-otp-btn:hover {
+  background: #f39200;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+}
+
+/* OR Divider Line */
+.or-divider {
+  text-align: center;
+  margin: 20px 0;
+  color: #878787;
+  font-size: 12px;
+  font-weight: 500;
+  position: relative;
+}
+
+/* Google Button */
+.google-btn {
+  background: #ffffff;
+  color: #212121;
+  border: 1px solid #d4d4d4;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+}
+
+.google-btn:hover {
+  background: #f7f9fa;
+  border-color: #a0a0a0;
+}
+
+.google-btn img {
+  display: block;
+  object-fit: contain;
+}
+
+/* Footer Section */
+.modal-footer-text {
+  font-size: 11px;
+  color: #878787;
+  text-align: center;
+  margin-top: 25px;
+  line-height: 1.5;
+}
+/* ==========================================
+   📦 DYNAMIC PLAIN TEXT BOXES ROW SYSTEM 
+========================================== */
+
+/* Base Container (Dono screens par horizontal scrolling setup) */
+.boxes-row-container {
+  display: flex;
+  overflow-x: auto;
+  white-space: nowrap;
+  gap: 12px;
+  padding: 5px 2px;
+  scrollbar-width: none; /* Modern browsers scrollbar hide */
+}
+
+.boxes-row-container::-webkit-scrollbar {
+  display: none; /* Chrome/Safari scrollbar hide */
+}
+
+/* Clear Writing Plain Boxes (No Logos/Icons) */
+.summary-box {
+  display: inline-block;
+  padding: 12px 20px;
+  background: #ffffff;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  font-size: 14px;
+  font-weight: bold;
+  color: #555;
+  cursor: pointer;
+  text-align: center;
+  transition: all 0.2s ease;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+}
+
+/* Selected Active Box Style (Jab clicked ho) */
+.summary-box.active {
+  background: #f0f5ff;
+  border-color: #2874f0;
+  color: #2874f0;
+}
+
+/* Mobile Wrapper Space Settings */
+.row-gap-space {
+  height: 15px; /* Photo aur pricing ke beech ka controlled space (gap) */
+  width: 100%;
+  display: block;
+}
+
+
+/* 💻 LAPTOP / DESKTOP RESPONSIVE CONFIGURATION (Screens > 768px) */
+@media (min-width: 769px) {
+  /* Laptop me Left side photo ke theek niche dikhega */
+  .desktop-boxes-wrapper {
+    display: block !important;
+    margin-top: 15px;
+  }
+  
+  /* Laptop me right side wala area automatic hide rahega */
+  .mobile-boxes-wrapper {
+    display: none !important;
+  }
+}
+
+
+/* 📱 MOBILE RESPONSIVE CONFIGURATION (Screens <= 768px) */
+@media (max-width: 768px) {
+  /* Mobile me Left side (photo ke niche) wala block hide ho jayega */
+  .desktop-boxes-wrapper {
+    display: none !important;
+  }
+  
+  /* Mobile me Right side pricing ke upar double gap ke sath show hoga */
+  .mobile-boxes-wrapper {
+    display: block !important;
+    margin-bottom: 5px;
+  }
+  
+  /* Mobile me elements thode chote aur precise rahenge */
+  .summary-box {
+    padding: 10px 16px;
+    font-size: 13px;
+  }
+}

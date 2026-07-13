@@ -1,0 +1,284 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Your Buildings - PG Hub</title>
+  <style>
+    body {
+      margin: 0;
+      font-family: 'Segoe UI', Arial, sans-serif;
+      background: #f1f3f6;
+      color: #333;
+    }
+
+    /* HEADER */
+    .header {
+      background: white;
+      padding: 15px 20px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.08);
+      position: sticky;
+      top: 0;
+      z-index: 1000;
+    }
+
+    .back-btn {
+      background: #2874f0;
+      color: white;
+      border: none;
+      padding: 10px 16px;
+      border-radius: 8px;
+      cursor: pointer;
+      font-weight: 600;
+    }
+
+    .title {
+      font-size: 20px;
+      font-weight: bold;
+    }
+
+    .add-new-btn {
+      background: #24a0ed;
+      color: white;
+      border: none;
+      padding: 10px 16px;
+      border-radius: 8px;
+      cursor: pointer;
+      font-weight: 600;
+    }
+
+    /* CONTAINER & GRID */
+    .container {
+      max-width: 1200px;
+      margin: 20px auto;
+      padding: 0 15px;
+    }
+
+    .grid-title {
+      font-size: 22px;
+      font-weight: bold;
+      margin-bottom: 20px;
+      color: #222;
+    }
+
+    .buildings-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+      gap: 20px;
+    }
+
+    /* BUILDING CARD */
+    .building-card {
+      background: white;
+      border-radius: 15px;
+      overflow: hidden;
+      box-shadow: 0 3px 10px rgba(0,0,0,0.06);
+      transition: transform 0.2s, box-shadow 0.2s;
+      cursor: pointer;
+      display: flex;
+      flex-direction: column;
+      position: relative;
+    }
+
+    .building-card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 5px 15px rgba(0,0,0,0.12);
+    }
+
+    .card-img-box {
+      width: 100%;
+      height: 180px;
+      background: #e0e0e0;
+      position: relative;
+    }
+
+    .card-img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+
+    .status-badge {
+      position: absolute;
+      top: 12px;
+      right: 12px;
+      background: #4caf50;
+      color: white;
+      padding: 5px 10px;
+      border-radius: 20px;
+      font-size: 12px;
+      font-weight: bold;
+    }
+
+    .card-content {
+      padding: 15px;
+      display: flex;
+      flex-direction: column;
+      flex-grow: 1;
+    }
+
+    .b-name {
+      font-size: 18px;
+      font-weight: bold;
+      margin-bottom: 5px;
+      color: #111;
+    }
+
+    .b-type {
+      font-size: 13px;
+      color: #2874f0;
+      font-weight: 600;
+      text-transform: uppercase;
+      margin-bottom: 8px;
+    }
+
+    .b-address {
+      font-size: 14px;
+      color: #666;
+      margin-bottom: 12px;
+      line-height: 1.4;
+    }
+
+    .card-footer {
+      border-top: 1px solid #eee;
+      padding-top: 12px;
+      margin-top: auto;
+      display: flex;
+      justify-content: space-between;
+      font-size: 13px;
+      color: #555;
+    }
+
+    /* STATUS STATES */
+    .loading-box, .empty-box {
+      grid-column: 1 / -1;
+      text-align: center;
+      padding: 40px;
+      background: white;
+      border-radius: 15px;
+      color: #777;
+      font-size: 16px;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+    }
+
+    .empty-box button {
+      margin-top: 15px;
+      background: #2874f0;
+      color: white;
+      border: none;
+      padding: 10px 20px;
+      border-radius: 8px;
+      cursor: pointer;
+      font-weight: bold;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- HEADER -->
+  <div class="header">
+    <button class="back-btn" onclick="window.location.href='account.html'">⬅ Back to Profile</button>
+    <div class="title">Manage Properties</div>
+    <button class="add-new-btn" onclick="window.location.href='add-room.html'">+ Add New</button>
+  </div>
+
+  <!-- MAIN BODY CONTAINER -->
+  <div class="container">
+    <div class="grid-title">Your Registered Buildings</div>
+    
+    <div class="buildings-grid" id="buildingsGrid">
+      <div class="loading-box" id="loadingState">Loading your properties... Live system syncing ⏳</div>
+    </div>
+  </div>
+
+  <!-- FIREBASE DATA FETCHING SCRIPT -->
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+    import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
+    import { getFirestore, collection, query, where, getDocs } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+
+    const firebaseConfig = {
+      apiKey: "AIzaSyCxP405IU4nljGIF9LzA4WeVLVk2kb8OEU",
+      authDomain: "mypghub-68a0f.firebaseapp.com",
+      projectId: "mypghub-68a0f",
+      storageBucket: "mypghub-68a0f.firebasestorage.app",
+      messagingSenderId: "128487472086",
+      appId: "1:128487472086:web:6e4daabb527b0f2abb4277",
+      measurementId: "G-EV19LWYTZ3"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const auth = getAuth(app);
+    const db = getFirestore(app);
+
+    onAuthStateChanged(auth, async (user) => {
+      const grid = document.getElementById("buildingsGrid");
+      
+      if (user) {
+        try {
+          // 🔥 FIXED: Removing 'orderBy' parameter entirely to bypass composite indexing errors
+          const q = query(
+            collection(db, "pghub_properties"), 
+            where("ownerUid", "==", user.uid)
+          );
+          
+          const querySnapshot = await getDocs(q);
+          grid.innerHTML = ""; // Clear loading state
+
+          if (querySnapshot.empty) {
+            grid.innerHTML = `
+              <div class="empty-box">
+                <p>No buildings registered under this account yet.</p>
+                <button onclick="window.location.href='add-room.html'">Register Your First Building</button>
+              </div>
+            `;
+            return;
+          }
+
+          querySnapshot.forEach((doc) => {
+            const data = doc.data();
+            const buildingId = doc.id;
+            
+            // Inventory validation check
+            let inventorySummary = "";
+            if(data.inventory && data.inventory.flats) inventorySummary += "🏢 Flats ";
+            if(data.inventory && data.inventory.rooms) inventorySummary += "🛏️ Rooms ";
+            if(!inventorySummary) inventorySummary = "No Inventory Added";
+
+            const card = document.createElement("div");
+            card.className = "building-card";
+            card.onclick = () => {
+              window.location.href = `building-details.html?id=${buildingId}`;
+            };
+
+            card.innerHTML = `
+              <div class="card-img-box">
+                <img class="card-img" src="${data.mainPhotoUrl || 'https://via.placeholder.com/400x250?text=No+Image'}" alt="Building Image">
+                <span class="status-badge">${data.status || 'Active'}</span>
+              </div>
+              <div class="card-content">
+                <div class="b-type">${data.pgType || 'Property'}</div>
+                <div class="b-name">${data.houseName || 'Unnamed Property'}</div>
+                <div class="b-address">📍 ${data.exactAddress || 'Address not provided'}, ${data.cityStateInfo || ''}</div>
+                <div class="card-footer">
+                  <span>Type: <strong>${inventorySummary}</strong></span>
+                  <span>Pin: <strong>${data.pincode || '------'}</strong></span>
+                </div>
+              </div>
+            `;
+            grid.appendChild(card);
+          });
+
+        } catch (error) {
+          console.error("Error fetching properties:", error);
+          grid.innerHTML = `<div class="empty-box" style="color:red;">Failed to load properties. Database connection error: ${error.message}</div>`;
+        }
+      } else {
+        window.location.href = "account.html";
+      }
+    });
+  </script>
+</body>
+</html>

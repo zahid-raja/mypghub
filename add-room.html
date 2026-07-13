@@ -1,0 +1,257 @@
+<!DOCTYPE html> 
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Add Property - MyPGHub</title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght=400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="add-room-style.css">
+</head>
+<body>
+  <div class="app-bar">
+    <button type="button" id="backBtn" class="back-btn">⬅ Back</button>
+    <span class="app-title">MyPGHub Property Registration</span>
+  </div>
+  <div class="form-container">
+    
+    <!-- STEP 1: OWNER PROFILE SETUP -->
+    <div id="part1-form" class="form-part active">
+      <h2 class="section-title">👨‍💼 Step 1: Owner Profile Setup</h2>
+      <div class="input-group">
+        <label>Owner Full Name <span class="req">*</span></label>
+        <input type="text" id="ownerName" placeholder="Enter your full legal name">
+      </div>
+      <div class="input-group">
+        <label>Mobile Number <span class="req">*</span></label>
+        <input type="tel" id="ownerPhone" maxlength="10" placeholder="Enter 10-digit mobile number">
+      </div>
+      <div class="input-group">
+        <label>Email ID <span class="req">*</span></label>
+        <input type="email" id="ownerEmail" placeholder="example@gmail.com">
+      </div>
+      <div class="input-group">
+        <label>Aadhaar Card Photo <span class="opt">(Optional)</span></label>
+        <input type="file" id="aadhaarPhoto" accept="image/*">
+      </div>
+      <div class="tc-container">
+        <div class="tc-box">
+          <p class="tc-bold">Terms & Conditions:</p>
+          <p>1. All registered property information must be 100% accurate and authentic.</p>
+          <p>2. Listing unauthorized properties without consent is strictly prohibited; legal liabilities lie completely with the owner.</p>
+          <p>3. Owners must update availability, rules, and rental pricing promptly on the platform when changes occur.</p>
+        </div>
+        <div class="checkbox-row">
+          <input type="checkbox" id="tcCheckbox">
+          <label for="tcCheckbox">I have carefully read and I agree to the Terms & Conditions.</label>
+        </div>
+      </div>
+      <button type="button" id="nextBtn" class="btn btn-primary">Next Step ➡️</button>
+    </div>
+
+    <!-- STEP 2: PROPERTY & INVENTORY -->
+    <div id="part2-form" class="form-part">
+      <h2 class="section-title">🏡 Step 2: Property & Room Inventory</h2>
+      <div class="input-group">
+        <label>Property / PG Name <span class="req">*</span></label>
+        <input type="text" id="houseName" placeholder="e.g., Sharma Niwas, Durga PG">
+      </div>
+      <div class="input-group">
+        <label>House Type <span class="req">*</span></label>
+        <select id="pgType">
+          <option value="">-- Select Category --</option>
+          <option value="Boys PG">Boys PG 👦</option>
+          <option value="Girls PG">Girls PG 👧</option>
+          <option value="Living">Living (Family/Both) 👨‍👩‍👧‍👦</option>
+        </select>
+      </div>
+
+      <div class="matrix-box">
+        <label class="matrix-label">🎭 Select Available Categories</label>
+        <div class="toggle-buttons-row">
+          <label class="toggle-card"><input type="checkbox" id="chkFlat"> <span>🏢 Flat System</span></label>
+          <label class="toggle-card"><input type="checkbox" id="chkRoom"> <span>🛏️ Room System</span></label>
+        </div>
+
+        <div class="two-column-grid">
+          <!-- Flats Selection -->
+          <div id="flatPanel" class="sub-panel">
+            <p class="panel-heading">Flats Selection:</p>
+            <div class="sub-cat-item">
+              <label class="sub-cat-label"><input type="checkbox" id="chk1BHK"> 1 BHK Flat</label>
+              <div id="fields1BHK" class="inventory-fields">
+                <div class="compact-row"><input type="number" id="tot1BHK" placeholder="Total" class="num-box"><input type="number" id="vac1BHK" placeholder="Vacant" class="num-box"><input type="number" id="rent1BHK" placeholder="Rent (₹/Mo)" class="rent-box"></div>
+                <div class="file-row mt-1"><input type="file" id="img1BHK" accept="image/*"></div>
+              </div>
+            </div>
+            <div class="sub-cat-item">
+              <label class="sub-cat-label"><input type="checkbox" id="chk2BHK"> 2 BHK Flat</label>
+              <div id="fields2BHK" class="inventory-fields">
+                <div class="compact-row"><input type="number" id="tot2BHK" placeholder="Total" class="num-box"><input type="number" id="vac2BHK" placeholder="Vacant" class="num-box"><input type="number" id="rent2BHK" placeholder="Rent (₹/Mo)" class="rent-box"></div>
+                <div class="file-row mt-1"><input type="file" id="img2BHK" accept="image/*"></div>
+              </div>
+            </div>
+            <div class="sub-cat-item">
+              <label class="sub-cat-label"><input type="checkbox" id="chk3BHK"> 3 BHK Flat</label>
+              <div id="fields3BHK" class="inventory-fields">
+                <div class="compact-row"><input type="number" id="tot3BHK" placeholder="Total" class="num-box"><input type="number" id="vac3BHK" placeholder="Vacant" class="num-box"><input type="number" id="rent3BHK" placeholder="Rent (₹/Mo)" class="rent-box"></div>
+                <div class="file-row mt-1"><input type="file" id="img3BHK" accept="image/*"></div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Rooms Selection -->
+          <div id="roomPanel" class="sub-panel">
+            <p class="panel-heading">Rooms Selection:</p>
+            <div class="sub-cat-item">
+              <label class="sub-cat-label"><input type="checkbox" id="chkSingle"> Single Room</label>
+              <div id="fieldsSingle" class="inventory-fields">
+                <div class="compact-row"><input type="number" id="totSingle" placeholder="Total" class="num-box"><input type="number" id="vacSingle" placeholder="Vacant" class="num-box"><input type="number" id="rentSingle" placeholder="Rent (₹/Mo)" class="rent-box"></div>
+                <div class="file-row mt-1"><input type="file" id="imgSingle" accept="image/*"></div>
+              </div>
+            </div>
+            <div class="sub-cat-item">
+              <label class="sub-cat-label"><input type="checkbox" id="chkDouble"> Double / Sharing</label>
+              <div id="fieldsDouble" class="inventory-fields">
+                <div class="compact-row"><input type="number" id="totDouble" placeholder="Total" class="num-box"><input type="number" id="vacDouble" placeholder="Vacant" class="num-box"><input type="number" id="rentDouble" placeholder="Rent (₹/Mo)" class="rent-box"></div>
+                <div class="file-row mt-1"><input type="file" id="imgDouble" accept="image/*"></div>
+              </div>
+            </div>
+            <div class="sub-cat-item">
+              <label class="sub-cat-label"><input type="checkbox" id="chktriple"> Triple / Sharing</label>
+              <div id="fieldsTriple" class="inventory-fields">
+                <div class="compact-row"><input type="number" id="totTriple" placeholder="Total" class="num-box"><input type="number" id="vacTriple" placeholder="Vacant" class="num-box"><input type="number" id="rentTriple" placeholder="Rent (₹/Mo)" class="rent-box"></div>
+                <div class="file-row mt-1"><input type="file" id="imgTriple" accept="image/*"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 🔥 100% DATABASE MATCHED AMENITIES MATRIX TABLE -->
+      <div class="amenities-matrix-container">
+        <label class="matrix-label">🛠️ Property Amenities & Rules Matrix</label>
+        
+        <div class="both-apply-wrapper">
+          <input type="checkbox" id="applyBothMaster">
+          <label for="applyBothMaster">Apply selected amenities to both Flat and Room categories</label>
+        </div>
+        
+        <div class="matrix-tables-grid">
+          <!-- Set A Table -->
+          <table class="matrix-table">
+            <thead>
+              <tr>
+                <th>Amenities (Set A)</th>
+                <th class="center-col">Flat</th>
+                <th class="center-col">Room</th>
+              </tr>
+            </thead>
+            <tbody class="amenities-group-body">
+              <tr data-amenity="WiFi"><td>📶 High-Speed WiFi</td><td class="center-col"><input type="checkbox" class="flat-amenity"></td><td class="center-col"><input type="checkbox" class="room-amenity"></td></tr>
+              <tr data-amenity="AC"><td>❄️ Air Conditioner (AC)</td><td class="center-col"><input type="checkbox" class="flat-amenity"></td><td class="center-col"><input type="checkbox" class="room-amenity"></td></tr>
+              <tr data-amenity="Cooler"><td>🌬️ Air Cooler</td><td class="center-col"><input type="checkbox" class="flat-amenity"></td><td class="center-col"><input type="checkbox" class="room-amenity"></td></tr>
+              <tr data-amenity="Bed"><td>🛏️ Wooden Bed</td><td class="center-col"><input type="checkbox" class="flat-amenity"></td><td class="center-col"><input type="checkbox" class="room-amenity"></td></tr>
+              <tr data-amenity="mattress"><td>🛏️ Mattress</td><td class="center-col"><input type="checkbox" class="flat-amenity"></td><td class="center-col"><input type="checkbox" class="room-amenity"></td></tr>
+              <tr data-amenity="Parking"><td>🚗 Parking Space</td><td class="center-col"><input type="checkbox" class="flat-amenity"></td><td class="center-col"><input type="checkbox" class="room-amenity"></td></tr>
+              <tr data-amenity="Bathroom"><td>🚽 Attached Washroom</td><td class="center-col"><input type="checkbox" class="flat-amenity"></td><td class="center-col"><input type="checkbox" class="room-amenity"></td></tr>
+              <tr data-amenity="Balcony"><td>🌅 Private Balcony</td><td class="center-col"><input type="checkbox" class="flat-amenity"></td><td class="center-col"><input type="checkbox" class="room-amenity"></td></tr>
+            </tbody>
+          </table>
+
+          <!-- Set B Table -->
+          <table class="matrix-table">
+            <thead>
+              <tr>
+                <th>Amenities & Rules (Set B)</th>
+                <th class="center-col">Flat</th>
+                <th class="center-col">Room</th>
+              </tr>
+            </thead>
+            <tbody class="amenities-group-body">
+              <tr data-amenity="Furnished"><td>🛋️ Fully Furnished</td><td class="center-col"><input type="checkbox" class="flat-amenity"></td><td class="center-col"><input type="checkbox" class="room-amenity"></td></tr>
+              <tr data-amenity="Food"><td>🍲 Food / Mess Facility</td><td class="center-col"><input type="checkbox" class="flat-amenity"></td><td class="center-col"><input type="checkbox" class="room-amenity"></td></tr>
+              <tr data-amenity="Power"><td>⚡ 24/7 Power Backup</td><td class="center-col"><input type="checkbox" class="flat-amenity"></td><td class="center-col"><input type="checkbox" class="room-amenity"></td></tr>
+              <tr data-amenity="Laundry"><td>🧼 Washing Machine</td><td class="center-col"><input type="checkbox" class="flat-amenity"></td><td class="center-col"><input type="checkbox" class="room-amenity"></td></tr>
+              <tr data-amenity="Laundry"><td>🛏️ Laundry Service</td><td class="center-col"><input type="checkbox" class="flat-amenity"></td><td class="center-col"><input type="checkbox" class="room-amenity"></td></tr>
+              <tr data-amenity="No Smoking"><td>🚭 No Smoking Rule</td><td class="center-col"><input type="checkbox" class="flat-amenity"></td><td class="center-col"><input type="checkbox" class="room-amenity"></td></tr>
+              <tr data-amenity="No loud music"><td>🎵 No Loud Music Rule</td><td class="center-col"><input type="checkbox" class="flat-amenity"></td><td class="center-col"><input type="checkbox" class="room-amenity"></td></tr>
+              <tr data-amenity="Gym"><td>🏋️ In-house Gym Access</td><td class="center-col"><input type="checkbox" class="flat-amenity"></td><td class="center-col"><input type="checkbox" class="room-amenity"></td></tr>
+            </tbody>
+          </table>
+        </div>
+
+        <div class="input-group matrix-extra-fields">
+          <label>⏰ Gate Closing Time Constraint <span class="req">*</span></label>
+          <select id="gateClosingTime">
+            <option value="10:00 PM">10:00 PM</option>
+            <option value="11:00 PM" selected>11:00 PM (Default)</option>
+            <option value="12:00 AM">12:00 AM (Midnight)</option>
+            <option value="Always Open">Always Open (No Restrictions) 🟢</option>
+          </select>
+        </div>
+
+        <!-- 🔥 NEW: MESS & RULES SECTIONS (Gate Closing ke niche) -->
+<div class="input-group matrix-extra-fields">
+  <label>🍲 Mess & Food Facility</label>
+  <div style="margin: 10px 0; display: flex; gap: 20px;">
+    <label style="cursor: pointer;"><input type="radio" name="foodOpt" id="foodAvailable" value="Yes"> Available ✅</label>
+    <label style="cursor: pointer;"><input type="radio" name="foodOpt" id="foodNotAvailable" value="No" checked> Not Available ❌</label>
+  </div>
+  
+  <!-- Yeh meals wala box tabhi dikhega jab 'Available' par click hoga -->
+  <div id="mealsSelectionBox" style="display: none; background: #f9f9f9; padding: 12px; border-radius: 6px; border: 1px dashed #ccc; margin-top: 10px;">
+    <p style="margin-bottom: 8px; font-weight: 600; font-size: 14px; color: #333;">Select Included Meals:</p>
+    <div style="display: flex; gap: 20px; flex-wrap: wrap;">
+      <label style="cursor: pointer;"><input type="checkbox" id="chkBreakfast"> 🍳 Breakfast</label>
+      <label style="cursor: pointer;"><input type="checkbox" id="chkLunch"> 🍛 Lunch</label>
+      <label style="cursor: pointer;"><input type="checkbox" id="chkDinner"> 🍽️ Dinner</label>
+    </div>
+  </div>
+</div>
+
+<div class="input-group matrix-extra-fields" style="margin-top: 15px;">
+  <label>🚫 Property Restrictions & Rules</label>
+  <div style="margin-top: 8px;">
+    <label style="cursor: pointer; display: flex; align-items: center; gap: 8px; font-weight: 500;">
+      <input type="checkbox" id="chkNoSmoking"> 🚭 Strictly No Smoking Allowed in the Premises
+    </label>
+  </div>
+</div>
+
+        <div class="input-group matrix-extra-fields">
+          <label>📝 About Your Building / Additional Description</label>
+          <textarea id="buildingDescription" rows="3" placeholder="Write anything unique about your building structure, nearby locations, or premium benefits..."></textarea>
+        </div>
+      </div>
+
+      <!-- LOCATION & FOOTER SETUP -->
+      <div class="pincode-grid">
+        <div class="pin-box">
+          <label>Pincode <span class="req">*</span></label>
+          <input type="text" id="pincode" maxlength="6" placeholder="Pincode">
+        </div>
+        <div class="city-box">
+          <label>City & State Info <span class="req">*</span></label>
+          <input type="text" id="cityState" placeholder="Auto-fills from pincode" readonly>
+        </div>
+      </div>
+      <div class="input-group">
+        <label>Exact Address <span class="req">*</span></label>
+        <textarea id="exactAddress" rows="2" placeholder="House No., Street Name, Sector, Landmark..."></textarea>
+      </div>
+      <div class="search-engine-box">
+        <label class="se-label">🎓 Nearby Landmark / College Name <span class="req">*</span></label>
+        <p class="se-note">Note: Students will search and discover your property using this mapping tag.</p>
+        <input type="text" id="famousCollege" placeholder="e.g., IIT Patna, Patna Science College">
+      </div>
+      <div class="input-group upload-card">
+        <label>📸 Main Building Front Image <span class="req">*</span></label>
+        <p class="upload-note">Main exterior elevation capture (Mandatory field)</p>
+        <input type="file" id="mainBuildingImg" accept="image/*">
+      </div>
+      <button type="button" id="submitBtn" class="btn btn-success">🎉 Save & Complete Verification</button>
+    </div>
+  </div>
+  <script type="module" src="add-room-firebase.js"></script>
+</body>
+</html>

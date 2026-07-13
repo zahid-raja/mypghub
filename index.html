@@ -1,0 +1,271 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>MyPGHub</title>
+  <link rel="stylesheet" href="style.css">
+  <style>
+    /* Naye custom elements ke liye styling taaki look bhatke nahi */
+    .dynamic-amenities-flex {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-top: 10px;
+    }
+    .dynamic-tag {
+      padding: 6px 12px;
+      border-radius: 15px;
+      background: #e3f2fd;
+      color: #2874f0;
+      border: 1px solid #2874f0;
+      font-size: 13px;
+      font-weight: 500;
+    }
+    .dynamic-row-item {
+      margin: 8px 0;
+      font-size: 14px;
+      color: #444;
+      line-height: 1.5;
+    }
+  </style>
+</head>
+
+<body>
+
+<div id="homePage">
+
+  <div class="header">
+    <div class="logo-row">
+      <div class="box logo-box">MyPGHub</div>
+      <div class="nav-links">
+        <div onclick="goBack()" style="cursor: pointer;">Home</div>
+        <div id="accountBtn" class="action-box" onclick="window.handleAccountClick()">Account</div>
+      </div>
+    </div>
+
+    <div class="header-row">
+      <div class="box search-box">
+        <input type="text" placeholder="Search PG, room...">
+      </div>
+
+      <div id="loginText" class="action-box" onclick="window.handleLoginClick()">Login</div>
+      <div id="userNumberDisplay" class="action-box" style="display: none; font-weight: bold; color: #2874f0;"></div>
+
+      <div class="box action-box">❤️</div>
+    </div>
+  </div>
+
+  <div class="categories">
+    <div class="cat-btn">Boys PG</div>
+    <div class="cat-btn">Girls PG</div>
+    <div class="cat-btn">Living PG</div>
+    <div class="cat-btn">Single Bed</div>
+    <div class="cat-btn">Double Bed</div>
+    <div class="cat-btn">1BHK Flat</div>
+    <div class="cat-btn">2BHK Flat</div>
+    <div class="cat-btn">3BHK Flat</div>
+  </div>
+
+  <div class="grid" id="roomList"></div>
+
+</div>
+
+<div id="detailPage" style="display: none;">
+  <button class="back-btn" onclick="goBack()">⬅ Back</button>
+
+  <div class="detail-layout">
+    
+    <!-- 🖼️ LEFT SIDE -->
+    <div class="left-side">
+      <div class="slider">
+        <img id="detMainImage" class="slide active" src="https://via.placeholder.com/400x300?text=Loading+Image...">
+      </div>
+      
+      <!-- 💻 Laptop View Wrapper -->
+      <div class="desktop-boxes-wrapper">
+        <div id="desktop-boxes-row" class="boxes-row-container"></div>
+      </div>
+    </div>
+
+    <!-- 💰 RIGHT SIDE -->
+    <div class="right-side">
+      
+      <!-- 📱 Mobile View Wrapper -->
+      <div class="mobile-boxes-wrapper">
+        <div class="row-gap-space"></div>
+        <div id="mobile-boxes-row" class="boxes-row-container"></div>
+        <div class="row-gap-space"></div>
+      </div>
+
+      <div class="main-price" id="detPrice">₹0/month</div>
+      <div class="top-info" id="detTopInfo">Loading specifications...</div>
+
+      <!-- 🪑 NEW DYNAMIC AMENITIES LOOP PLACEHOLDER (Chair etc. yahan automatic render honge) -->
+      <div class="highlights" id="detHighlights" style="display:none;"></div>
+      <div class="section">
+        <h3>Facilities & Amenities</h3>
+        <div id="detDynamicAmenities" class="dynamic-amenities-flex">
+          <span style="color:#888; font-size:13px;">No amenities listed.</span>
+        </div>
+      </div>
+
+      <div class="section">
+        <h3>Description</h3>
+        <p id="detDescription" style="color: #555; line-height: 1.5;"></p>
+      </div>
+
+      <!-- 📑 DYNAMIC DETAILS AND SPECIFICATIONS CONTAINER -->
+      <div class="section">
+        <h3>Room & Property Details</h3>
+        <p id="detAddress" style="display:none;">📍 Landmark: </p>
+        <p id="detSharing" style="display:none;">👥 Sharing: </p>
+        <div id="detRoomSpecs"></div>
+        
+        <!-- Yahan aapka add/delete kiya hua har ek custom detail row automatic loop chalakar dikhega -->
+        <div id="detDynamicDetailsContainer"></div>
+      </div>
+
+      <div class="section" id="detMessSection" style="display:none;">
+        <h3>Mess & Food Details</h3>
+        <p id="detMessStatus">🍴 Food Facility: </p>
+        <p id="detMessMeals" style="display:none;"></p>
+      </div>
+
+      <div class="section" id="detRulesSection" style="display:none;">
+        <h3>Rules & Gate Timings</h3>
+        <p id="detGateTime">⏰ Gate Closing Time: </p>
+        <div id="detRulesList"></div>
+      </div>
+
+      <div class="more-details" id="moreDetails">
+        <div class="section">
+          <h3>Owner Details</h3>
+          <p id="detOwnerName">👤 Name: </p>
+          <p id="detOwnerPhone">📞 Phone: </p>
+        </div>
+      </div>
+
+      <button class="show-btn" onclick="toggleDetails()">Show More</button>
+
+      <div class="action-buttons">
+        <button class="call-btn" id="detCallBtn">📞 Call Owner</button>
+        <button class="map-btn" id="detMapBtn">📍 View on Map</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="bottom-nav">
+  <div onclick="window.location.href='index.html'" style="cursor: pointer;">🏠<br>Home</div>
+  <div>❤️<br>Favourite</div>
+  <a href="add-room.html" style="text-decoration: none; color: inherit;">
+    <div class="nav-item" style="text-align: center; cursor: pointer;">
+      <span class="icon" style="display: block; font-size: 20px;">➕</span>
+      <span style="font-size: 12px; font-weight: bold;">Add Room</span>
+    </div>
+  </a>
+  <div onclick="window.handleAccountClick()" style="cursor: pointer;">👤<br>Account</div>
+</div>
+
+<script type="module" src="firebase.js"></script>
+<!-- Firebase listener handle connectivity script injection to handle dynamic map arrays -->
+<script>
+  // Is master hook standard script.js render logic ko override kar ke custom loops chala degi
+  document.addEventListener("DOMContentLoaded", () => {
+    const originalRender = window.showPropertyDetails || null;
+    
+    // Global interval check jab bhi script.js active property load karega
+    setInterval(() => {
+      const targetBox = document.getElementById("detDynamicDetailsContainer");
+      if(window.currentSelectedPropertyData && !targetBox.getAttribute("data-populated")) {
+        const data = window.currentSelectedPropertyData;
+        
+        // 1. Render Custom Loop Amenities (Chair, Table, Geyser etc.)
+        const amGrid = document.getElementById("detDynamicAmenities");
+        if(data.amenities) {
+          amGrid.innerHTML = "";
+          const defaultLabels = {
+            wifi: "📶 WiFi", ac: "❄️ Air Conditioner (AC)", cooler: "🌀 Air Cooler",
+            bed: "🛏️ Wooden Bed", mattress: "💤 Mattress", parking: "🚗 Parking Space",
+            washroom: "🧼 Attached Washroom", balcony: "🌅 Private Balcony"
+          };
+          
+          Object.keys(data.amenities).forEach(key => {
+            // Label standard key se nikalo ya custom save key se
+            if(data.amenities[key] === true && !key.endsWith("_label")) {
+              const displayLabel = defaultLabels[key] || data.amenities[key + "_label"] || key;
+              const span = document.createElement("span");
+              span.className = "dynamic-tag";
+              span.innerText = displayLabel;
+              amGrid.appendChild(span);
+            }
+          });
+          if(amGrid.innerHTML === "") amGrid.innerHTML = "<span style='color:#888;font-size:13px;'>No specific active facility tags.</span>";
+        }
+
+        // 2. Render Custom Dynamic Specification Rows
+        if(data.customDetailsList && Array.isArray(data.customDetailsList)) {
+          targetBox.innerHTML = "";
+          data.customDetailsList.forEach(row => {
+            if(row.value && row.value.trim() !== "") {
+              const p = document.createElement("p");
+              p.className = "dynamic-row-item";
+              p.innerHTML = `<strong>${row.label}:</strong> ${row.value}`;
+              targetBox.appendChild(p);
+            }
+          });
+        } else {
+          // Fallback legacy system map values render if matrix missing
+          targetBox.innerHTML = `
+            <p class="dynamic-row-item"><strong>📍 Landmark/Address:</strong> ${data.exactAddress || 'N/A'}</p>
+            <p class="dynamic-row-item"><strong>🍴 Food Facility:</strong> ${data.foodFacility || 'Not Available'}</p>
+            <p class="dynamic-row-item"><strong>⏰ Gate Time:</strong> ${data.gateClosingTime || 'No restriction'}</p>
+          `;
+        }
+        
+        targetBox.setAttribute("data-populated", "true");
+      }
+      
+      // Reset trigger monitor when details page hides/shows new property
+      if(document.getElementById("detailPage").style.display === "none") {
+        targetBox.removeAttribute("data-populated");
+      }
+    }, 500);
+  });
+</script>
+<script src="script.js"></script>
+
+<div id="loginModal" class="modal-overlay">
+  <div class="modal-card">
+    <span class="close-modal-btn" onclick="window.closeLoginModal()">×</span>
+    <h3 class="modal-title">Login / Sign Up</h3>
+    
+    <div id="phoneStage">
+      <p class="modal-subtitle">Enter your mobile number to receive OTP</p>
+      <div class="phone-input-row">
+        <input type="text" value="+91" disabled class="country-code">
+        <input type="tel" id="phoneNumber" placeholder="10 Digit Mobile Number" class="main-phone-input">
+      </div>
+      <button class="modal-btn send-otp-btn" onclick="window.sendOTPCode()">Send OTP</button>
+
+      <div class="or-divider">─ OR ─</div>
+
+      <button class="modal-btn google-btn" onclick="window.loginWithGoogle()">
+        <img src="https://upload.wikimedia.org/wikipedia/commons/c/c1/Google_%22G%22_logo.svg" width="18" height="18" alt="Google">
+        Continue with Google
+      </button>
+    </div>
+
+    <div id="otpStage" style="display: none;">
+      <p class="modal-subtitle">Enter the 6-digit OTP sent to your phone</p>
+      <input type="text" id="otpCode" placeholder="Enter 6 Digit OTP" class="otp-input" style="width: 100%; padding: 12px; margin-bottom: 20px; border: 1px solid #ccc; border-radius: 8px; box-sizing: border-box; font-size: 16px;">
+      <button class="modal-btn verify-btn" onclick="window.verifyOTP()" style="background: #2874f0; color: #fff; border: none;">Verify & Login</button>
+    </div>
+  </div>
+</div>
+
+<div id="recaptcha-container"></div>
+</body>
+</html>
