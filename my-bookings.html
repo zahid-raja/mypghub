@@ -1,0 +1,799 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Smart Booking Ledger - PG Hub</title>
+  <style>
+    :root {
+      --primary: #1e3a8a;
+      --primary-light: #3b82f6;
+      --success: #10b981;
+      --danger: #ef4444;
+      --warning: #f59e0b;
+      --background: #f8fafc;
+      --surface: #ffffff;
+      --text: #0f172a;
+      --text-muted: #64748b;
+      --border: #e2e8f0;
+    }
+
+    body { margin: 0; font-family: 'Inter', 'Segoe UI', Arial, sans-serif; background: var(--background); color: var(--text); -webkit-font-smoothing: antialiased; }
+    
+    /* Premium Header */
+    .header { background: var(--surface); padding: 16px 24px; display: flex; align-items: center; justify-content: space-between; box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.05); position: sticky; top: 0; z-index: 1000; border-bottom: 1px solid var(--border); }
+    .back-btn { background: transparent; color: var(--text-muted); border: 1px solid var(--border); padding: 10px 18px; border-radius: 8px; cursor: pointer; font-weight: 500; transition: all 0.2s; }
+    .back-btn:hover { background: #f1f5f9; color: var(--text); }
+    .add-booking-btn { background: var(--primary); color: white; border: none; padding: 10px 22px; border-radius: 8px; cursor: pointer; font-weight: 600; font-size: 14px; box-shadow: 0 4px 6px -1px rgba(30, 58, 138, 0.2); transition: all 0.2s; }
+    .add-booking-btn:hover { background: #172554; transform: translateY(-1px); }
+    .title { font-size: 22px; font-weight: 700; color: var(--text); letter-spacing: -0.5px; }
+    
+    .container { max-width: 1050px; margin: 40px auto; padding: 0 20px; padding-bottom: 60px; }
+    .ledger-card { background: var(--surface); border-radius: 16px; padding: 24px; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -1px rgba(0, 0, 0, 0.03); border: 1px solid var(--border); }
+    
+    /* 📋 Booking Table Rows */
+    .booking-list { display: flex; flex-direction: column; margin-top: 20px; border: 1px solid var(--border); border-radius: 12px; overflow: hidden; background: var(--surface); }
+    .booking-row { display: flex; align-items: center; padding: 20px 24px; border-bottom: 1px solid var(--border); font-size: 15px; transition: background 0.2s; }
+    .booking-row:last-child { border-bottom: none; }
+    .booking-row:hover { background-color: #f8fafc; }
+    
+    .col-name { flex: 2.5; font-weight: 600; color: var(--primary-light); cursor: pointer; text-transform: capitalize; font-size: 16px; }
+    .col-name:hover { color: var(--primary); text-decoration: underline; }
+    .col-room { flex: 1.5; font-weight: 500; color: var(--text-muted); }
+    
+    .col-rent-details { flex: 2.5; display: flex; flex-direction: column; justify-content: center; font-size: 14px; gap: 4px; }
+    .rent-line { color: var(--text); font-weight: 500; }
+    .dues-line { color: var(--danger); font-weight: 600; }
+    .no-dues-line { color: var(--success); font-weight: 600; }
+
+    .col-status { width: 110px; text-align: center; }
+    .status-btn { border: none; padding: 9px 18px; border-radius: 8px; cursor: pointer; font-weight: 600; font-size: 13px; width: 100%; text-align: center; letter-spacing: 0.3px; transition: all 0.2s; }
+    .status-btn.pay-action { background: #eff6ff; color: var(--primary-light); border: 1px solid #bfdbfe; }
+    .status-btn.pay-action:hover { background: var(--primary-light); color: white; }
+    .status-btn.paid-badge { background: #ecfdf5; color: var(--success); border: 1px solid #a7f3d0; cursor: default; }
+    
+    .col-delete { width: 40px; text-align: right; color: #cbd5e1; cursor: pointer; font-size: 16px; transition: color 0.2s; }
+    .col-delete:hover { color: var(--danger); }
+
+    /* Modals CSS Styling */
+    .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(15, 23, 42, 0.6); backdrop-filter: blur(4px); z-index: 2000; align-items: center; justify-content: center; }
+    .modal-content { background: var(--surface); border-radius: 20px; padding: 32px; width: 90%; max-width: 500px; box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25); max-height: 85vh; overflow-y: auto; border: 1px solid var(--border); }
+    .modal-title { font-size: 20px; font-weight: 700; margin-bottom: 24px; color: var(--text); padding-bottom: 10px; border-bottom: 2px solid #f1f5f9; position: relative; }
+    .modal-title::after { content: ''; position: absolute; bottom: -2px; left: 0; width: 60px; height: 2px; background: var(--primary-light); }
+    
+    /* Monthwise Collection rows */
+    .pending-collect-container { display: flex; flex-direction: column; gap: 16px; margin-bottom: 10px; }
+    .collect-month-row { border: 1px solid var(--border); border-radius: 12px; padding: 16px; background: #f8fafc; }
+    .collect-month-header { display: flex; justify-content: space-between; align-items: center; }
+    .collect-month-info { display: flex; flex-direction: column; gap: 4px; }
+    .collect-month-name { font-weight: 700; color: var(--text); font-size: 15px; }
+    .collect-month-dueamt { font-size: 13.5px; color: var(--danger); font-weight: 600; }
+    
+    .collect-input-wrapper { display: none; margin-top: 14px; padding-top: 14px; border-top: 1px dashed var(--border); }
+    .collect-field-group { display: flex; gap: 10px; align-items: center; }
+    .collect-field-group input { flex: 1; padding: 10px; border: 1px solid var(--border); border-radius: 8px; font-size: 14px; font-weight: 600; }
+    
+    .btn-action-pay { background: var(--primary-light); color: white; border: none; padding: 8px 16px; border-radius: 8px; cursor: pointer; font-weight: 600; font-size: 13px; transition: all 0.2s; }
+    .btn-action-pay:hover { background: var(--primary); }
+    .btn-action-submit { background: var(--success); color: white; border: none; padding: 10px 16px; border-radius: 8px; cursor: pointer; font-weight: 600; font-size: 13px; transition: all 0.2s; }
+
+    /* Advance Section Trigger */
+    .btn-future-trigger { background: #f1f5f9; color: var(--text); border: 1px solid var(--border); width: 100%; padding: 12px; border-radius: 10px; font-weight: 600; cursor: pointer; text-align: center; font-size: 13.5px; transition: all 0.2s; margin-top: 10px; }
+    .btn-future-trigger:hover { background: #e2e8f0; }
+    .future-months-panel { display: none; margin-top: 12px; display: flex; flex-direction: column; gap: 12px; padding-top: 12px; border-top: 1px dashed var(--border); }
+
+    /* Form Design elements */
+    .form-group { margin-bottom: 20px; }
+    .form-group label { display: block; font-size: 13px; font-weight: 600; margin-bottom: 8px; color: var(--text); text-transform: uppercase; letter-spacing: 0.5px; }
+    .form-group input, .form-group select { width: 100%; padding: 12px; border: 1px solid var(--border); border-radius: 8px; box-sizing: border-box; font-size: 14px; transition: all 0.2s; background: #fff; }
+    .form-group input:focus, .form-group select:focus { outline: none; border-color: var(--primary-light); box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.15); }
+    .form-group input:disabled, .form-group select:disabled { background: #f1f5f9; color: var(--text-muted); cursor: not-allowed; }
+    
+    .phone-input-container { display: flex; border: 1px solid var(--border); border-radius: 8px; overflow: hidden; }
+    .phone-prefix { background: #f1f5f9; border-right: 1px solid var(--border); padding: 12px 14px; font-size: 14px; font-weight: 600; color: var(--text-muted); }
+    .phone-input-container input { border: none; flex: 1; }
+
+    .modal-actions { display: flex; justify-content: flex-end; gap: 12px; margin-top: 24px; }
+    .btn-cancel { background: #f1f5f9; color: var(--text-muted); border: none; padding: 12px 20px; border-radius: 8px; cursor: pointer; font-weight: 600; font-size: 14px; transition: background 0.2s; }
+    .btn-cancel:hover { background: #e2e8f0; color: var(--text); }
+    .btn-submit { color: white; border: none; padding: 12px 20px; border-radius: 8px; font-weight: 600; cursor: pointer; transition: all 0.2s; }
+    
+    /* History Window Section */
+    .btn-history-trigger { background: transparent; color: var(--primary-light); border: 1px dashed var(--primary-light); width: 100%; padding: 12px; border-radius: 10px; font-weight: 600; cursor: pointer; text-align: center; font-size: 14px; transition: all 0.2s; margin-top: 15px; margin-bottom: 5px; }
+    .btn-history-trigger:hover { background: #eff6ff; color: var(--primary); }
+    
+    .history-dropdown-panel { display: none; margin-top: 15px; background: #f8fafc; border: 1px solid var(--border); border-radius: 12px; padding: 16px; animation: slideDown 0.25s ease-out; }
+    @keyframes slideDown { from { opacity: 0; transform: translateY(-8px); } to { opacity: 1; transform: translateY(0); } }
+
+    .breakdown-box { display: flex; flex-direction: column; gap: 10px; margin-bottom: 20px; }
+    .month-status-card { background: var(--surface); border: 1px solid var(--border); border-radius: 10px; padding: 14px 18px; display: flex; justify-content: space-between; align-items: center; }
+    .month-status-card.unpaid-card { border-left: 4px solid var(--danger); background: #fef2f2; }
+    .month-status-card.paid-card { border-left: 4px solid var(--success); background: #f0fdf4; }
+    .month-status-card.partial-card { border-left: 4px solid var(--warning); background: #fffbeb; }
+    
+    .month-badge { font-size: 11px; font-weight: 700; padding: 4px 10px; border-radius: 6px; text-transform: uppercase; }
+    .month-badge.unpaid { background: #fee2e2; color: #991b1b; }
+    .month-badge.paid { background: #d1fae5; color: #065f46; }
+    .month-badge.partial { background: #fef3c7; color: #92400e; }
+
+    .history-card-box { background: var(--surface); border: 1px solid var(--border); border-radius: 10px; padding: 12px; max-height: 180px; overflow-y: auto; }
+    .history-item { font-size: 13px; padding: 10px; border-bottom: 1px solid #f1f5f9; display: flex; justify-content: space-between; align-items: center; background: var(--surface); margin-bottom: 6px; border-radius: 6px; border: 1px solid #f8fafc; }
+    .history-item:last-child { margin-bottom: 0; border-bottom: none; }
+    
+    .empty-msg { text-align: center; padding: 40px; color: var(--text-muted); font-style: italic; }
+    .security-lock-display { background: #f0fdfa; border: 1px dashed #5eead4; color: #0f766e; padding: 14px; border-radius: 10px; font-weight: 700; display: flex; justify-content: space-between; margin-bottom: 20px; font-size: 14px; }
+    .custom-occ-group { display: none; margin-top: 10px; }
+  </style>
+</head>
+<body>
+
+  <!-- Top Bar Layout -->
+  <div class="header">
+    <button class="back-btn" onclick="window.history.back();">← Back</button>
+    <div class="title">Rent Ledger Matrix</div>
+    <button class="add-booking-btn" onclick="window.openAddModal()">+ Add New Record</button>
+  </div>
+
+  <!-- Central Register Log Box -->
+  <div class="container">
+    <div class="ledger-card">
+      <div style="font-weight: 700; border-bottom: 2px solid var(--primary-light); padding-bottom: 14px; color: var(--text); font-size: 17px;" id="ledgerHeaderTitle">📋 Rent Register Log</div>
+      
+      <div class="booking-list" id="bookingListHolder">
+        <div class="empty-msg">Syncing database statements... ⏳</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- MODAL 1: Create Profile Form -->
+  <div class="modal" id="addModal">
+    <div class="modal-content">
+      <div class="modal-title">Create Tenant Profile</div>
+      <form id="addForm" onsubmit="window.saveNewBooking(event)">
+        <div class="form-group">
+          <label>Renter Full Name</label>
+          <input type="text" id="addName" placeholder="John Doe" required>
+        </div>
+        <div class="form-group">
+          <label>Mobile Contact Number</label>
+          <div class="phone-input-container">
+            <span class="phone-prefix">+91</span>
+            <input type="tel" id="addMobile" pattern="[0-9]{10}" maxlength="10" placeholder="9876543210" oninput="this.value = this.value.replace(/[^0-9]/g, '').slice(0, 10);" required>
+          </div>
+        </div>
+        <div style="display: flex; gap: 12px;">
+          <div class="form-group" style="flex:1;">
+            <label>Accommodation Type</label>
+            <select id="addRoomTypeSelect" required>
+              <option value="">-- Select --</option>
+              <option value="Flat">Flat</option>
+              <option value="Room">Room</option>
+            </select>
+          </div>
+          <div class="form-group" style="flex:1;">
+            <label>Designation No.</label>
+            <input type="text" id="addRoomNumberInput" placeholder="e.g. 302" required>
+          </div>
+        </div>
+        <div class="form-group">
+          <label>Contractual Rent Per Month (₹)</label>
+          <input type="number" id="addRent" placeholder="Monthly rent price" required>
+        </div>
+        <div class="form-group">
+          <label>Occupation Status</label>
+          <select id="addOccupationSelect" onchange="window.onOccupationChanged()" required>
+            <option value="">-- Choose Profession --</option>
+            <option value="Student">Student</option>
+            <option value="Teacher">Teacher</option>
+            <option value="Business">Business</option>
+            <option value="custom">+ Custom Profession...</option>
+          </select>
+          <div class="custom-occ-group" id="customOccWrapper">
+            <input type="text" id="addCustomOccupation" placeholder="Type custom occupation">
+          </div>
+        </div>
+        <div class="form-group">
+          <label>Escrow Security Deposit (₹) [Locked Vault]</label>
+          <input type="number" id="addSecurityDeposit" min="0" placeholder="Security fee amount" required>
+        </div>
+        <div class="form-group">
+          <label>Move-in / Joining Date</label>
+          <input type="date" id="addJoiningDate" required>
+        </div>
+        <div class="modal-actions">
+          <button type="button" class="btn-cancel" onclick="window.closeModal('addModal')">Cancel</button>
+          <button type="submit" class="btn-submit" style="background:var(--primary-light);">Register Record</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- MODAL 2: 💳 Dynamic Monthwise Collector Box -->
+  <div class="modal" id="rentModal">
+    <div class="modal-content">
+      <div class="modal-title">Collect Rental Payment</div>
+      <div style="font-size: 14px; font-weight: 600; color: var(--text-muted); margin-bottom: 16px;">
+        Tenant: <span id="popRentName" style="color: var(--primary); font-weight: 700;">-</span>
+      </div>
+      
+      <!-- Current & Past Backlog Months Box -->
+      <div id="currentMonthContainer" class="pending-collect-container"></div>
+      
+      <!-- Trigger Button for Future Months Extension -->
+      <button type="button" class="btn-future-trigger" id="futureMonthsTriggerBtn" onclick="window.toggleFutureMonthsPanel()">➕ Pay for Future Months (Next 5 Months)</button>
+      
+      <!-- Collapsible Future Months Container -->
+      <div class="future-months-panel" id="futureMonthsPanel">
+        <div id="futureMonthsContainer" class="pending-collect-container"></div>
+      </div>
+
+      <div class="modal-actions">
+        <button type="button" class="btn-cancel" onclick="window.closeModal('rentModal')">Close Window</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- MODAL 3: Audit View -->
+  <div class="modal" id="detailModal">
+    <div class="modal-content">
+      <div class="modal-title">Tenant Audit Summary</div>
+      <form id="editForm" onsubmit="window.saveEditedDetails(event)">
+        <input type="hidden" id="detailTenantId">
+        
+        <div class="security-lock-display">
+          <span>🛡️ VAULT LOCKED SECURITY DEPOSIT:</span>
+          <span id="detailSecurityDisplay">₹0</span>
+        </div>
+
+        <div class="form-group">
+          <label>Full Legal Name</label>
+          <input type="text" id="detailName" required disabled>
+        </div>
+        <div class="form-group">
+          <label>Registered Mobile Number</label>
+          <div class="phone-input-container">
+            <span class="phone-prefix">+91</span>
+            <input type="tel" id="detailMobile" pattern="[0-9]{10}" maxlength="10" oninput="this.value = this.value.replace(/[^0-9]/g, '').slice(0, 10);" required disabled>
+          </div>
+        </div>
+        <div style="display:flex; gap:12px;">
+          <div class="form-group" style="flex:1;">
+            <label>Inventory Type</label>
+            <select id="detailRoomType" disabled required>
+              <option value="Flat">Flat</option>
+              <option value="Room">Room</option>
+            </select>
+          </div>
+          <div class="form-group" style="flex:1;">
+            <label>Designation Number</label>
+            <input type="text" id="detailRoomDesignation" disabled required>
+          </div>
+        </div>
+        <div class="form-group">
+          <label>Base Rent Structure (₹)</label>
+          <input type="number" id="detailRent" required disabled>
+        </div>
+        <div class="form-group">
+          <label>Professional Classification</label>
+          <input type="text" id="detailOccupation" required disabled>
+        </div>
+        <div class="form-group">
+          <label>Agreement Initiation Date</label>
+          <input type="text" id="detailJoiningDate" disabled style="background: #f1f5f9; font-weight: 600;">
+        </div>
+
+        <button type="button" class="btn-history-trigger" id="toggleHistoryBtn" onclick="window.toggleHistoryPanel()">📊 View Statement & Transaction History ↓</button>
+        
+        <div class="history-dropdown-panel" id="historyDropdownPanel">
+          <label style="font-size: 12px; font-weight: 700; color: var(--text); display:block; margin-bottom:8px; text-transform: uppercase;">📊 Cyclical Statement Balance</label>
+          <div class="breakdown-box" id="breakdownContainer"></div>
+
+          <label style="font-size: 12px; font-weight: 700; color: var(--primary-light); display:block; margin-top:15px; margin-bottom:8px; text-transform: uppercase;">💰 Verified Transaction Receipts</label>
+          <div class="history-card-box" id="historyContainer"></div>
+        </div>
+
+        <div class="modal-actions" id="detailActions">
+          <button type="button" class="btn-cancel" onclick="window.closeModal('detailModal')">Close</button>
+          <button type="button" class="btn-submit" id="editTriggerBtn" onclick="window.enableEditMode()" style="background: var(--warning);">Modify Data</button>
+          <button type="submit" class="btn-submit" id="saveEditBtn" style="display:none; background: var(--success);">Commit Changes</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+    import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
+    import { getFirestore, collection, addDoc, getDocs, doc, updateDoc, deleteDoc, query, where, orderBy } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+
+    const firebaseConfig = {
+      apiKey: "AIzaSyCxP405IU4nljGIF9LzA4WeVLVk2kb8OEU",
+      authDomain: "mypghub-68a0f.firebaseapp.com",
+      projectId: "mypghub-68a0f",
+      storageBucket: "mypghub-68a0f.firebasestorage.app",
+      messagingSenderId: "128487472086",
+      appId: "1:128487472086:web:6e4daabb527b0f2abb4277"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const auth = getAuth(app);
+    const db = getFirestore(app);
+
+    let currentOwnerUid = null;
+    let localTenantsCache = {};
+
+    const today = new Date();
+    const currentMonthYearStr = String(today.getMonth() + 1).padStart(2, '0') + "-" + today.getFullYear();
+    const currentMonthName = today.toLocaleString('default', { month: 'long' }) + " " + today.getFullYear();
+    document.getElementById("ledgerHeaderTitle").innerText = `📋 Rent Register Log: ${currentMonthName}`;
+
+    onAuthStateChanged(auth, (user) => {
+      if (!user) { window.location.href = "account.html"; } 
+      else { 
+        currentOwnerUid = user.uid; 
+        loadLedgerEngine(); 
+      }
+    });
+
+    window.openAddModal = () => {
+      document.getElementById("addModal").style.display = "flex";
+    };
+
+    window.closeModal = (id) => {
+      document.getElementById(id).style.display = "none";
+      if (id === 'detailModal') {
+        window.disableEditMode();
+      }
+    };
+
+    // Everywhere screen overlay click logic to close models instantly
+    window.onclick = function(event) {
+      if (event.target.classList.contains('modal')) {
+        window.closeModal(event.target.id);
+      }
+    };
+
+    window.onOccupationChanged = () => {
+      const val = document.getElementById("addOccupationSelect").value;
+      document.getElementById("customOccWrapper").style.display = (val === 'custom') ? 'block' : 'none';
+    };
+
+    function calculateStartingMonthRent(joiningDateStr, fullRent) {
+      const jd = new Date(joiningDateStr);
+      if (isNaN(jd.getTime())) return fullRent;
+      const year = jd.getFullYear();
+      const month = jd.getMonth();
+      const totalDaysInMonth = new Date(year, month + 1, 0).getDate();
+      const joiningDay = jd.getDate();
+      if (joiningDay === 1) return fullRent;
+      const billableDays = totalDaysInMonth - joiningDay + 1;
+      return Math.round((billableDays / totalDaysInMonth) * fullRent);
+    }
+
+    function getMonthYearStrFromDate(dateStr) {
+      const d = new Date(dateStr);
+      if (isNaN(d.getTime())) return "";
+      return String(d.getMonth() + 1).padStart(2, '0') + "-" + d.getFullYear();
+    }
+
+    function parseLabelToFormat(mKey) {
+      const [m, y] = mKey.split("-");
+      const mDate = new Date(y, parseInt(m) - 1, 1);
+      return mDate.toLocaleString('default', { month: 'long' }) + " " + y;
+    }
+
+    // Dynamic timeline loop: Generates months from Joining Date all the way up to Present Month + 5 Future Months
+    function ensureFutureMonthsPopulated(monthlyAccounts, baseRent, joiningDateStr) {
+      let isChanged = false;
+      const jd = new Date(joiningDateStr);
+      if (isNaN(jd.getTime())) return isChanged;
+
+      let loopDate = new Date(jd.getFullYear(), jd.getMonth(), 1);
+      let endDate = new Date(today.getFullYear(), today.getMonth() + 5, 1);
+      const joiningMonthKey = String(jd.getMonth() + 1).padStart(2, '0') + "-" + jd.getFullYear();
+
+      while (loopDate <= endDate) {
+        let mKey = String(loopDate.getMonth() + 1).padStart(2, '0') + "-" + loopDate.getFullYear();
+        
+        if (!monthlyAccounts[mKey]) {
+          let isFirstMonth = (joiningMonthKey === mKey);
+          let monthBillAmount = isFirstMonth ? calculateStartingMonthRent(joiningDateStr, baseRent) : baseRent;
+          
+          monthlyAccounts[mKey] = {
+            totalPayable: monthBillAmount,
+            paid: 0,
+            baki: monthBillAmount
+          };
+          isChanged = true;
+        }
+        loopDate.setMonth(loopDate.getMonth() + 1);
+      }
+      return isChanged;
+    }
+
+    async function loadLedgerEngine() {
+      const holder = document.getElementById("bookingListHolder");
+      try {
+        const q = query(collection(db, "pghub_manual_bookings"), where("ownerId", "==", currentOwnerUid), orderBy("createdAt", "asc"));
+        const snapshot = await getDocs(q);
+        holder.innerHTML = "";
+        localTenantsCache = {};
+
+        if(snapshot.empty) {
+          holder.innerHTML = `<div class="empty-msg">No tenant archives documented yet. Click '+ Add New Record' to log a file.</div>`;
+          return;
+        }
+
+        let index = 1;
+        for (const docSnap of snapshot.docs) {
+          const id = docSnap.id;
+          const data = docSnap.data();
+          localTenantsCache[id] = data;
+
+          let monthlyAccounts = data.monthlyAccounts || {};
+          
+          let detectionStatus = ensureFutureMonthsPopulated(monthlyAccounts, data.rent, data.joiningDate);
+          if (detectionStatus) {
+            await updateDoc(doc(db, "pghub_manual_bookings", id), { monthlyAccounts: monthlyAccounts });
+          }
+
+          let totalBacklogOutstanding = 0;
+          Object.keys(monthlyAccounts).forEach(mKey => {
+            const [m, y] = mKey.split("-").map(Number);
+            const mDate = new Date(y, m - 1, 1);
+            const curDateBoundary = new Date(today.getFullYear(), today.getMonth(), 1);
+            
+            // Front UI logic: Ignores pure future months from calculation
+            if (mDate <= curDateBoundary) {
+              totalBacklogOutstanding += (monthlyAccounts[mKey].baki || 0);
+            }
+          });
+
+          const activeRent = monthlyAccounts[currentMonthYearStr] ? monthlyAccounts[currentMonthYearStr].totalPayable : data.rent;
+          const curMonthShort = today.toLocaleString('default', { month: 'long' });
+
+          const row = document.createElement("div");
+          row.className = "booking-row";
+          
+          row.innerHTML = `
+            <div class="col-name" onclick="window.openDetailModal('${id}')">${index}. ${data.name}</div>
+            <div class="col-room">${data.roomType}: ${data.roomDesignation}</div>
+            <div class="col-rent-details">
+              <div class="rent-line">${curMonthShort} Rent: ₹${activeRent}</div>
+              <div class="${totalBacklogOutstanding > 0 ? 'dues-line' : 'no-dues-line'}">
+                ${totalBacklogOutstanding > 0 ? 'Dues Outstanding: ₹' + totalBacklogOutstanding : 'Fully Settled 🟢'}
+              </div>
+            </div>
+            <div class="col-status">
+              <button class="status-btn pay-action" onclick="window.openRentModal('${id}')">Collect</button>
+            </div>
+            <div class="col-delete" onclick="window.deleteTenant('${id}')">🗑️</div>
+          `;
+          holder.appendChild(row);
+          index++;
+        }
+      } catch(err) { holder.innerHTML = `<div class="empty-msg" style="color:red;">Error: ${err.message}</div>`; }
+    }
+
+    window.saveNewBooking = async (e) => {
+      e.preventDefault();
+      let finalOccupation = document.getElementById("addOccupationSelect").value;
+      if(finalOccupation === "custom") {
+        finalOccupation = document.getElementById("addCustomOccupation").value.trim() || "Other";
+      }
+
+      const designationNum = document.getElementById("addRoomNumberInput").value.trim() || "Custom";
+      const baseRent = parseInt(document.getElementById("addRent").value) || 0;
+      const securityDeposit = parseInt(document.getElementById("addSecurityDeposit").value) || 0;
+      const joiningDateVal = document.getElementById("addJoiningDate").value;
+
+      let initialMonthlyAccounts = {};
+      const joiningMonthKey = getMonthYearStrFromDate(joiningDateVal);
+      initialMonthlyAccounts[joiningMonthKey] = {
+        totalPayable: calculateStartingMonthRent(joiningDateVal, baseRent),
+        paid: 0,
+        baki: calculateStartingMonthRent(joiningDateVal, baseRent)
+      };
+
+      const record = {
+        ownerId: currentOwnerUid,
+        name: document.getElementById("addName").value.trim(),
+        mobile: document.getElementById("addMobile").value.trim(),
+        roomType: document.getElementById("addRoomTypeSelect").value,
+        roomDesignation: designationNum,
+        propertyId: "",
+        rent: baseRent,
+        securityDeposit: securityDeposit,
+        occupation: finalOccupation,
+        joiningDate: joiningDateVal,
+        monthlyAccounts: initialMonthlyAccounts,
+        paymentHistory: [],
+        createdAt: Date.now()
+      };
+
+      ensureFutureMonthsPopulated(record.monthlyAccounts, baseRent, joiningDateVal);
+
+      try {
+        await addDoc(collection(db, "pghub_manual_bookings"), record);
+        window.closeModal('addModal');
+        document.getElementById("addForm").reset();
+        loadLedgerEngine();
+      } catch(err) { alert("Error: " + err.message); }
+    };
+
+    window.toggleFutureMonthsPanel = () => {
+      const panel = document.getElementById("futureMonthsPanel");
+      const btn = document.getElementById("futureMonthsTriggerBtn");
+      if(panel.style.display === "flex") {
+        panel.style.display = "none";
+        btn.innerText = "➕ Pay for Future Months (Next 5 Months)";
+      } else {
+        panel.style.display = "flex";
+        btn.innerText = "➖ Hide Future Months";
+      }
+    };
+
+    window.openRentModal = (id) => {
+      const tenant = localTenantsCache[id];
+      document.getElementById("popRentName").innerText = tenant.name;
+      
+      const currentContainer = document.getElementById("currentMonthContainer");
+      const futureContainer = document.getElementById("futureMonthsContainer");
+      
+      currentContainer.innerHTML = "";
+      futureContainer.innerHTML = "";
+      
+      document.getElementById("futureMonthsPanel").style.display = "none";
+      document.getElementById("futureMonthsTriggerBtn").innerText = "➕ Pay for Future Months (Next 5 Months)";
+
+      let monthlyAccounts = tenant.monthlyAccounts || {};
+      let hasCurrentOrPastDues = false;
+
+      Object.keys(monthlyAccounts).sort((a,b) => {
+        const [mA, yA] = a.split("-").map(Number);
+        const [mB, yB] = b.split("-").map(Number);
+        return yA !== yB ? yA - yB : mA - mB;
+      }).forEach(mKey => {
+        const acc = monthlyAccounts[mKey];
+        if (acc.baki <= 0) return;
+
+        const monthLabel = parseLabelToFormat(mKey);
+        const [m, y] = mKey.split("-").map(Number);
+        const mDate = new Date(y, m - 1, 1);
+        const curDateBoundary = new Date(today.getFullYear(), today.getMonth(), 1);
+
+        const rowDiv = document.createElement("div");
+        rowDiv.className = "collect-month-row";
+        rowDiv.id = `row-${id}-${mKey}`;
+        rowDiv.innerHTML = `
+          <div class="collect-month-header" id="header-${id}-${mKey}">
+            <div class="collect-month-info">
+              <span class="collect-month-name">📅 ${monthLabel}</span>
+              <span class="collect-month-dueamt">Outstanding: ₹${acc.baki}</span>
+            </div>
+            <button type="button" class="btn-action-pay" onclick="window.triggerMonthPayInput('${id}', '${mKey}', ${acc.baki})">💳 Pay Month</button>
+          </div>
+          <div class="collect-input-wrapper" id="inputWrapper-${id}-${mKey}">
+            <div class="collect-field-group">
+              <input type="number" id="amtInput-${id}-${mKey}" min="1" max="${acc.baki}" value="${acc.baki}">
+              <button type="button" class="btn-action-submit" onclick="window.submitSingleMonthReceipt('${id}', '${mKey}')">Process Payment</button>
+            </div>
+          </div>
+        `;
+
+        // Splits display dynamically: Current or past history vs advance dropdown
+        if (mDate <= curDateBoundary) {
+          hasCurrentOrPastDues = true;
+          currentContainer.appendChild(rowDiv);
+        } else {
+          futureContainer.appendChild(rowDiv);
+        }
+      });
+
+      if (!hasCurrentOrPastDues) {
+        currentContainer.innerHTML = `<div style="text-align:center; padding:15px; color:var(--success); font-weight:700;">Current Month Status: Fully Settled 🟢</div>`;
+      }
+      if(futureContainer.children.length === 0) {
+        futureContainer.innerHTML = `<div style="text-align:center; padding:10px; color:var(--text-muted); font-style:italic;">No future months registered framework.</div>`;
+      }
+
+      document.getElementById("rentModal").style.display = "flex";
+    };
+
+    window.triggerMonthPayInput = (id, mKey, balance) => {
+      document.getElementById(`inputWrapper-${id}-${mKey}`).style.display = "block";
+      const payBtn = document.querySelector(`#header-${id}-${mKey} .btn-action-pay`);
+      if(payBtn) payBtn.style.display = "none";
+    };
+
+    window.submitSingleMonthReceipt = async (id, mKey) => {
+      const tenant = localTenantsCache[id];
+      const enteredAmt = parseInt(document.getElementById(`amtInput-${id}-${mKey}`).value) || 0;
+      
+      let monthlyAccounts = tenant.monthlyAccounts || {};
+      let currentAcc = monthlyAccounts[mKey];
+
+      if (enteredAmt <= 0 || enteredAmt > currentAcc.baki) {
+        alert("Please enter a valid amount between 1 and " + currentAcc.baki);
+        return;
+      }
+
+      currentAcc.paid += enteredAmt;
+      currentAcc.baki -= enteredAmt;
+
+      const monthLabel = parseLabelToFormat(mKey);
+      const stamp = new Date().toLocaleDateString('en-IN');
+      let updatedHistory = tenant.paymentHistory || [];
+      updatedHistory.push(`Received ₹${enteredAmt} on ${stamp} for ${monthLabel}`);
+
+      try {
+        await updateDoc(doc(db, "pghub_manual_bookings", id), {
+          monthlyAccounts: monthlyAccounts,
+          paymentHistory: updatedHistory
+        });
+
+        alert(`Payment of ₹${enteredAmt} successfully recorded for ${monthLabel}!`);
+        window.closeModal('rentModal');
+        await loadLedgerEngine();
+        window.openRentModal(id);
+      } catch(err) { alert("Transaction Failure: " + err.message); }
+    };
+
+    window.toggleHistoryPanel = () => {
+      const panel = document.getElementById("historyDropdownPanel");
+      const btn = document.getElementById("toggleHistoryBtn");
+      if (panel.style.display === "block") {
+        panel.style.display = "none";
+        btn.innerText = "📊 View Statement & Transaction History ↓";
+      } else {
+        panel.style.display = "block";
+        btn.innerText = "📊 Hide Statement & Transaction History ↑";
+      }
+    };
+
+    window.openDetailModal = (id) => {
+      const tenant = localTenantsCache[id];
+      document.getElementById("detailTenantId").value = id;
+      document.getElementById("detailName").value = tenant.name;
+      document.getElementById("detailMobile").value = tenant.mobile;
+      document.getElementById("detailRoomType").value = tenant.roomType || "Room";
+      document.getElementById("detailRoomDesignation").value = tenant.roomDesignation || "";
+      document.getElementById("detailRent").value = tenant.rent;
+      document.getElementById("detailOccupation").value = tenant.occupation;
+      
+      document.getElementById("detailSecurityDisplay").innerText = tenant.securityDeposit ? `₹${tenant.securityDeposit}` : "₹0";
+      
+      const jd = new Date(tenant.joiningDate);
+      document.getElementById("detailJoiningDate").value = isNaN(jd.getTime()) ? tenant.joiningDate : jd.toLocaleDateString('en-IN', {day: 'numeric', month: 'short', year: 'numeric'});
+
+      document.getElementById("historyDropdownPanel").style.display = "none";
+      document.getElementById("toggleHistoryBtn").innerText = "📊 View Statement & Transaction History ↓";
+
+      const breakdownBox = document.getElementById("breakdownContainer");
+      breakdownBox.innerHTML = "";
+      
+      let monthlyAccounts = tenant.monthlyAccounts || {};
+
+      Object.keys(monthlyAccounts).sort((a,b) => {
+        const [mA, yA] = a.split("-").map(Number);
+        const [mB, yB] = b.split("-").map(Number);
+        return yB !== yA ? yB - yA : mB - mA;
+      }).forEach(mKey => {
+        const mLabel = parseLabelToFormat(mKey);
+        const acc = monthlyAccounts[mKey];
+        
+        let statusClass = "unpaid";
+        let cardTheme = "unpaid-card";
+        let labelText = "Settlement Pending";
+        
+        if(acc.baki === 0) {
+          statusClass = "paid";
+          cardTheme = "paid-card";
+          labelText = "Fully Settled";
+        } else if (acc.baki < acc.totalPayable) {
+          statusClass = "partial";
+          cardTheme = "partial-card";
+          labelText = "Partially Settled";
+        }
+
+        const card = document.createElement("div");
+        card.className = `month-status-card ${cardTheme}`;
+        card.innerHTML = `
+          <div>
+            <div style="font-weight:700; font-size:14px;">${mLabel}</div>
+            <div style="font-size:12px; color:var(--text-muted); margin-top:2px;">Bill: ₹${acc.totalPayable} | Paid: ₹${acc.paid}</div>
+          </div>
+          <div style="text-align:right;">
+            <span class="month-badge ${statusClass}">${labelText}</span>
+            <div style="font-size:12px; font-weight:700; color: ${acc.baki > 0 ? 'var(--danger)' : 'var(--success)'}; margin-top:4px;">
+              ${acc.baki > 0 ? 'Due: ₹' + acc.baki : 'No Dues'}
+            </div>
+          </div>
+        `;
+        breakdownBox.appendChild(card);
+      });
+
+      const histBox = document.getElementById("historyContainer");
+      histBox.innerHTML = "";
+      let logs = tenant.paymentHistory || [];
+      if(logs.length === 0) {
+        histBox.innerHTML = `<div style="font-size:12px; color:var(--text-muted); text-align:center; padding:15px; font-style:italic;">No transactions logged yet.</div>`;
+      } else {
+        logs.forEach(logText => {
+          const div = document.createElement("div");
+          div.className = "history-item";
+          div.innerHTML = `<span>🟢 ${logText.split(" for ")[0]}</span> <b style="color:var(--text-muted); font-size:11px;">${logText.includes(" for ") ? logText.split(" for ")[1] : ""}</b>`;
+          histBox.appendChild(div);
+        });
+      }
+
+      document.getElementById("detailModal").style.display = "flex";
+    };
+
+    window.enableEditMode = () => {
+      document.getElementById("detailName").disabled = false;
+      document.getElementById("detailMobile").disabled = false;
+      document.getElementById("detailRoomType").disabled = false;
+      document.getElementById("detailRoomDesignation").disabled = false;
+      document.getElementById("detailRent").disabled = false;
+      document.getElementById("detailOccupation").disabled = false;
+      
+      document.getElementById("editTriggerBtn").style.display = "none";
+      document.getElementById("saveEditBtn").style.display = "block";
+    };
+
+    window.disableEditMode = () => {
+      document.getElementById("detailName").disabled = true;
+      document.getElementById("detailMobile").disabled = true;
+      document.getElementById("detailRoomType").disabled = true;
+      document.getElementById("detailRoomDesignation").disabled = true;
+      document.getElementById("detailRent").disabled = true;
+      document.getElementById("detailOccupation").disabled = true;
+      
+      document.getElementById("editTriggerBtn").style.display = "block";
+      document.getElementById("saveEditBtn").style.display = "none";
+    };
+
+    window.saveEditedDetails = async (e) => {
+      e.preventDefault();
+      const id = document.getElementById("detailTenantId").value;
+      const updatedRent = parseInt(document.getElementById("detailRent").value) || 0;
+      const tenant = localTenantsCache[id];
+
+      let monthlyAccounts = tenant.monthlyAccounts || {};
+      Object.keys(monthlyAccounts).forEach(mKey => {
+         if (monthlyAccounts[mKey].paid === 0) {
+            monthlyAccounts[mKey].totalPayable = updatedRent;
+            monthlyAccounts[mKey].baki = updatedRent;
+         }
+      });
+      
+      const updatedData = {
+        name: document.getElementById("detailName").value.trim(),
+        mobile: document.getElementById("detailMobile").value.trim(),
+        roomType: document.getElementById("detailRoomType").value,
+        roomDesignation: document.getElementById("detailRoomDesignation").value.trim(),
+        rent: updatedRent,
+        monthlyAccounts: monthlyAccounts,
+        occupation: document.getElementById("detailOccupation").value.trim()
+      };
+
+      try {
+        await updateDoc(doc(db, "pghub_manual_bookings", id), updatedData);
+        alert("Tenant details updated successfully!");
+        window.closeModal('detailModal');
+        loadLedgerEngine();
+      } catch(err) { alert("Update failed: " + err.message); }
+    };
+
+    window.deleteTenant = async (id) => {
+      if(confirm("Are you absolutely sure you want to permanently delete this tenant log? This cannot be undone.")) {
+        try {
+          await deleteDoc(doc(db, "pghub_manual_bookings", id));
+          loadLedgerEngine();
+        } catch(err) { alert("Deletion failure: " + err.message); }
+      }
+    };
+  </script>
+</body>
+</html>
