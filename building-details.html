@@ -7,7 +7,7 @@
   <style>
     body { margin: 0; font-family: 'Segoe UI', Arial, sans-serif; background: #f1f3f6; color: #333; }
     .header { background: white; padding: 15px 20px; display: flex; align-items: center; justify-content: space-between; box-shadow: 0 2px 5px rgba(0,0,0,0.08); position: sticky; top: 0; z-index: 1000; }
-    .back-btn { background: #2874f0; color: white; border: none; padding: 10px 16px; border-radius: 8px; cursor: pointer; font-weight: 600; }
+    .back-btn { background: #2874f0; color: white; border: none; padding: 10px 16px; border-radius: 8px; cursor: pointer; font-weight: 600; text-decoration: none; font-size: 14px; }
     .title { font-size: 18px; font-weight: bold; }
     .main-layout { max-width: 1200px; margin: 20px auto; padding: 0 15px; display: flex; gap: 20px; }
     .left-panel { flex: 1.2; }
@@ -15,11 +15,15 @@
     @media (max-width: 850px) { .main-layout { flex-direction: column; } }
     .image-box { width: 100%; border-radius: 15px; overflow: hidden; background: #ddd; }
     .property-img { width: 100%; display: block; object-fit: cover; max-height: 450px; }
-    .config-badge { display: inline-block; margin-top: 15px; background: white; color: #2874f0; border: 1px solid #2874f0; padding: 8px 16px; border-radius: 8px; font-weight: 600; font-size: 14px; }
+    
+    /* Dynamic Room Tabs Styles */
+    .room-tabs-container { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 15px; }
+    .room-tab-btn { background: white; color: #2874f0; border: 1px solid #2874f0; padding: 8px 16px; border-radius: 8px; font-weight: 600; font-size: 13px; cursor: pointer; transition: all 0.2s; text-transform: uppercase; }
+    .room-tab-btn.active { background: #2874f0; color: white; }
+    
     .editable-field { display: flex; align-items: center; justify-content: space-between; margin-bottom: 12px; padding: 6px 0; border-bottom: 1px dashed #eee; }
     .edit-pencil { color: #2874f0; cursor: pointer; margin-left: 8px; font-size: 15px; opacity: 0.6; }
-    .delete-trash { color: #e53935; cursor: pointer; margin-left: auto; font-size: 14px; font-weight: bold; opacity: 0.7; }
-    .edit-pencil:hover, .delete-trash:hover { opacity: 1; }
+    .edit-pencil:hover { opacity: 1; }
     .price-text { font-size: 28px; color: #24963e; font-weight: bold; }
     .sub-info { color: #666; font-size: 14px; margin-top: 5px; margin-bottom: 20px; display: flex; align-items: center; gap: 5px; }
     .section-title-row { display: flex; align-items: center; justify-content: space-between; margin: 25px 0 12px 0; border-bottom: 2px solid #2874f0; padding-bottom: 6px; }
@@ -29,8 +33,8 @@
     .amenities-grid { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 10px; }
     .amenity-tag { padding: 8px 14px; border-radius: 20px; font-size: 13px; display: inline-flex; align-items: center; gap: 8px; background: #f1f3f6; color: #444; cursor: pointer; border: 1px solid #ced4da; transition: all 0.2s; user-select: none; }
     .amenity-tag.active { background: #e3f2fd; color: #2874f0; border-color: #2874f0; }
-    .amenity-tag .cut-btn { color: #e53935; font-weight: bold; font-size: 14px; padding: 0 4px; cursor: pointer; transition: transform 0.1s; }
-    .amenity-tag .cut-btn:hover { transform: scale(1.3); }
+    .amenity-tag .cut-btn { color: #e53935; font-weight: bold; font-size: 14px; padding: 0 4px; cursor: pointer; }
+    
     .fixed-footer { background: white; padding: 15px; position: fixed; bottom: 0; left: 0; width: 100%; box-shadow: 0 -3px 10px rgba(0,0,0,0.1); display: flex; justify-content: center; z-index: 1000; }
     .save-global-btn { width: 90%; max-width: 500px; background: #24963e; color: white; border: none; padding: 14px; border-radius: 10px; font-size: 16px; font-weight: bold; cursor: pointer; }
     .status-msg { text-align: center; padding: 50px; font-size: 16px; color: #666; }
@@ -39,17 +43,18 @@
 <body>
 
   <div class="header">
-    <button class="back-btn" onclick="window.location.href='buildings-list.html'">⬅ Back</button>
+    <!-- 1 Step Back Navigation Trigger Button -->
+    <button class="back-btn" onclick="window.goBackOneStep()">⬅ Back</button>
     <div class="title">Property Editor Dashboard</div>
     <div style="width: 50px;"></div>
   </div>
 
   <div id="contentWrapper">
-    <div class="status-msg">Fetching database configurations... ⏳</div>
+    <div class="status-msg">Fetching dynamic data structures from database... ⏳</div>
   </div>
 
   <div class="fixed-footer" id="footerActions" style="display:none;">
-    <button class="save-global-btn" id="saveBtn" onclick="window.saveAllData()">💾 Push Changes Live</button>
+    <button class="save-global-btn" id="saveBtn" onclick="window.saveAllData()">🚀 Push Changes Live</button>
   </div>
 
   <script type="module">
@@ -75,6 +80,8 @@
 
     let propertyData = {};
     let customDetails = [];
+    let currentSelectedType = ""; 
+    let activePropertyInventory = {};
 
     onAuthStateChanged(auth, async (user) => {
       if(!user) { window.location.href = "account.html"; return; }
@@ -87,10 +94,15 @@
         if(docSnap.exists()){
           propertyData = docSnap.data();
           
+          if(!propertyData.inventory) {
+            propertyData.inventory = { rooms: {}, flats: {} };
+          }
+          
+          buildInventoryTabsMapping();
+
           customDetails = propertyData.customDetailsList || [
-            { label: "📍 Address", value: propertyData.exactAddress || "road no 25" },
-            { label: "👥 Type", value: propertyData.pgType || "Full Private 1 BHK FLAT" },
-            { label: "🍴 Food Facility", value: propertyData.foodFacility || "" },
+            { label: "📍 Address", value: propertyData.exactAddress || propertyData.manualAddress || "" },
+            { label: "🍴 Food Facility", value: propertyData.foodDetails?.isAvailable || propertyData.foodFacility || "Not Available" },
             { label: "⏰ Gate Closing Time", value: propertyData.gateClosingTime || "11:00 PM" }
           ];
 
@@ -103,30 +115,71 @@
       }
     });
 
+    function buildInventoryTabsMapping() {
+      activePropertyInventory = {};
+      const m = propertyData.inventory || {};
+
+      if (m.rooms) {
+        if (m.rooms.single && m.rooms.single.total > 0) activePropertyInventory["SINGLE ROOM"] = { data: m.rooms.single, key: "rooms", subKey: "single" };
+        if (m.rooms.double && m.rooms.double.total > 0) activePropertyInventory["DOUBLE ROOM"] = { data: m.rooms.double, key: "rooms", subKey: "double" };
+        if (m.rooms.triple && m.rooms.triple.total > 0) activePropertyInventory["TRIPLE ROOM"] = { data: m.rooms.triple, key: "rooms", subKey: "triple" };
+      }
+      
+      if (!m.rooms && propertyData.roomPrice) {
+        activePropertyInventory["ROOM/PG"] = { data: { rent: propertyData.roomPrice, vacant: 1, total: 1 }, key: "legacy", subKey: "single" };
+      }
+
+      if (m.flats) {
+        if (m.flats.bhk1 && m.flats.bhk1.total > 0) activePropertyInventory["1 BHK FLAT"] = { data: m.flats.bhk1, key: "flats", subKey: "bhk1" };
+        if (m.flats.bhk2 && m.flats.bhk2.total > 0) activePropertyInventory["2 BHK FLAT"] = { data: m.flats.bhk2, key: "flats", subKey: "bhk2" };
+        if (m.flats.bhk3 && m.flats.bhk3.total > 0) activePropertyInventory["3 BHK FLAT"] = { data: m.flats.bhk3, key: "flats", subKey: "bhk3" };
+      }
+
+      if (Object.keys(activePropertyInventory).length === 0) {
+        const fallbackKey = (propertyData.pgType || "SINGLE ROOM").toUpperCase();
+        propertyData.inventory = { rooms: { single: { rent: propertyData.roomPrice || "4500", vacant: 1, total: 4 } }, flats: {} };
+        activePropertyInventory[fallbackKey] = { data: propertyData.inventory.rooms.single, key: "rooms", subKey: "single" };
+      }
+
+      if(!currentSelectedType || !activePropertyInventory[currentSelectedType]) {
+        currentSelectedType = Object.keys(activePropertyInventory)[0];
+      }
+    }
+
     function renderUI() {
       const wrapper = document.getElementById("contentWrapper");
-      
+      const activeMeta = activePropertyInventory[currentSelectedType] || { data: { rent: "0", vacant: 0, total: 0 } };
+      const configTarget = activeMeta.data;
+
       wrapper.innerHTML = `
         <div class="main-layout" style="margin-bottom: 120px;">
           <div class="left-panel">
             <div class="image-box">
               <img class="property-img" src="${propertyData.mainPhotoUrl || 'https://via.placeholder.com/600x400'}" alt="Preview">
             </div>
-            <div class="config-badge" id="badgeLabel">${propertyData.pgType || '1 BHK FLAT'}</div>
+            
+            <div style="margin-top: 20px; font-weight: bold; font-size: 14px; color: #555;">Select Room/Flat Type to Edit:</div>
+            <div class="room-tabs-container" id="roomTabsContainer"></div>
           </div>
 
           <div class="right-panel">
+            <div style="background: #e3f2fd; padding: 12px; border-radius: 8px; font-weight: bold; color:#2874f0; margin-bottom: 15px; font-size: 14px; display: flex; justify-content: space-between; align-items: center;">
+              <div>Editing Configuration For: <span id="currentEditingBadge">${currentSelectedType}</span></div>
+              <!-- Delete ke badle right panel me Add New Type set kiya -->
+              <button class="add-btn" style="background:#2874f0; padding: 6px 12px;" onclick="window.addNewInventoryConfiguration()">➕ Add New Type</button>
+            </div>
+
             <div class="editable-field">
-              <div class="price-text">₹<span id="txtRent">${propertyData.expectedRent || "5000"}</span>/month</div>
-              <span class="edit-pencil" onclick="window.editDirectField('expectedRent', 'txtRent', 'Enter Rent')">✏️</span>
+              <div class="price-text">₹<span id="txtRent">${configTarget.rent || configTarget.expectedRent || "0"}</span>/month</div>
+              <span class="edit-pencil" onclick="window.editDirectField('rent', 'txtRent', 'Enter Rent Amount')">✏️</span>
             </div>
 
             <div class="sub-info">
-              <span>🛏️ <span id="txtVacant">${propertyData.vacantCount ?? "2"}</span> Vacant</span>
-              <span class="edit-pencil" onclick="window.editCounter('vacantCount', 'txtVacant')">✏️</span>
+              <span>🛏️ <span id="txtVacant">${configTarget.vacant ?? 0}</span> Vacant</span>
+              <span class="edit-pencil" onclick="window.editCounter('vacant', 'txtVacant')">✏️</span>
               &nbsp;|&nbsp;
-              <span>Total: <span id="txtTotal">${propertyData.totalCount ?? "5"}</span></span>
-              <span class="edit-pencil" onclick="window.editCounter('totalCount', 'txtTotal')">✏️</span>
+              <span>Total: <span id="txtTotal">${configTarget.total ?? 0}</span></span>
+              <span class="edit-pencil" onclick="window.editCounter('total', 'txtTotal')">✏️</span>
             </div>
 
             <div class="section-title-row">
@@ -139,7 +192,7 @@
               <span class="section-title">Description</span>
             </div>
             <div class="editable-field">
-              <div class="data-text" id="txtDesc" style="font-style: italic;">"${propertyData.description || "No description provided."}"</div>
+              <div class="data-text" id="txtDesc" style="font-style: italic;">"${propertyData.buildingDescription || propertyData.description || "No description provided."}"</div>
               <span class="edit-pencil" onclick="window.editDirectField('description', 'txtDesc', 'Update Description')">✏️</span>
             </div>
 
@@ -152,16 +205,57 @@
         </div>
       `;
 
+      renderTabs();
       renderAmenities();
       renderSpecifications();
       document.getElementById("footerActions").style.display = "flex";
     }
 
-    // FIXED AMENITIES ENGINE (Adds Dynamic/Static UI and Delete System)
+    function renderTabs() {
+      const container = document.getElementById("roomTabsContainer");
+      container.innerHTML = "";
+      
+      Object.keys(activePropertyInventory).forEach(type => {
+        const btn = document.createElement("button");
+        btn.className = `room-tab-btn ${type === currentSelectedType ? 'active' : ''}`;
+        btn.innerText = type;
+        btn.onclick = () => {
+          currentSelectedType = type;
+          renderUI();
+        };
+        container.appendChild(btn);
+      });
+    }
+
+    window.addNewInventoryConfiguration = () => {
+      const name = prompt("Enter configuration exact match (e.g. SINGLE ROOM, DOUBLE ROOM, TRIPLE ROOM, 1 BHK FLAT, 2 BHK FLAT, 3 BHK FLAT):");
+      if(name && name.trim() !== "") {
+        const upperName = name.trim().toUpperCase();
+        if(activePropertyInventory[upperName]) {
+          alert("Yeh combination database type me already linked hai!");
+          return;
+        }
+
+        let key = "rooms", subKey = "single";
+        if (upperName.includes("FLAT")) {
+          key = "flats";
+          subKey = upperName.includes("1") ? "bhk1" : upperName.includes("2") ? "bhk2" : "bhk3";
+        } else {
+          subKey = upperName.includes("SINGLE") ? "single" : upperName.includes("DOUBLE") ? "double" : "triple";
+        }
+
+        if(!propertyData.inventory[key]) propertyData.inventory[key] = {};
+        propertyData.inventory[key][subKey] = { rent: "5000", vacant: 1, total: 4 };
+        
+        currentSelectedType = upperName;
+        buildInventoryTabsMapping();
+        renderUI();
+      }
+    };
+
     function renderAmenities() {
       const grid = document.getElementById("amenitiesGrid");
       grid.innerHTML = "";
-
       if (!propertyData.amenities) propertyData.amenities = {};
 
       const defaultLabels = {
@@ -171,69 +265,55 @@
       };
 
       const allKeys = Array.from(new Set([...Object.keys(defaultLabels), ...Object.keys(propertyData.amenities)]));
-
       allKeys.forEach(key => {
-        // Exclude labels from key loops
         if (key.endsWith("_label")) return;
-
         const isActive = propertyData.amenities[key] === true || typeof propertyData.amenities[key] === 'string';
         const displayLabel = defaultLabels[key] || propertyData.amenities[key + "_label"] || key;
         
         const tag = document.createElement("div");
         tag.className = `amenity-tag ${isActive ? 'active' : ''}`;
+        tag.innerHTML = `<span class="tag-label-text">${displayLabel}</span><span class="cut-btn">×</span>`;
         
-        // Content wrapper with dynamic Cut Option
-        tag.innerHTML = `
-          <span class="tag-label-text">${displayLabel}</span>
-          <span class="cut-btn" title="Delete Amenity">×</span>
-        `;
-        
-        // Active Toggle on Tag click
         tag.onclick = (e) => {
-          if (e.target.classList.contains('cut-btn')) return; // Prevent bubble click on close triggers
+          if (e.target.classList.contains('cut-btn')) return;
           propertyData.amenities[key] = !isActive;
           tag.className = `amenity-tag ${!isActive ? 'active' : ''}`;
         };
 
-        // Complete permanent data drop handler
         tag.querySelector(".cut-btn").onclick = (e) => {
           e.stopPropagation();
-          if (confirm(`Kya aap "${displayLabel}" ko dashboard se permanent hatana chahte hain?`)) {
+          if (confirm(`Remove "${displayLabel}" permanently?`)) {
             delete propertyData.amenities[key];
             delete propertyData.amenities[key + "_label"];
             tag.remove();
           }
         };
-
         grid.appendChild(tag);
       });
     }
 
     window.addCustomAmenity = () => {
-      const name = prompt("Enter custom amenity name (e.g., 🪑 Chair, 🧼 Geyser):");
+      const name = prompt("Enter custom amenity name (e.g. Chair, Geyser):");
       if(name && name.trim() !== "") {
-        const cleanKey = "custom_" + Date.now(); // Generates stable dynamic timestamp id
+        const cleanKey = "custom_" + Date.now();
         if (!propertyData.amenities) propertyData.amenities = {};
-        
         propertyData.amenities[cleanKey] = true; 
         propertyData.amenities[cleanKey + "_label"] = name.trim(); 
         renderAmenities();
       }
     };
 
-    // SPECIFICATIONS DETAIL ROWS
     function renderSpecifications() {
       const container = document.getElementById("specificationsBox");
       container.innerHTML = "";
-
       customDetails.forEach((row, idx) => {
         const div = document.createElement("div");
         div.className = "editable-field";
         div.innerHTML = `
-          <div class="data-text"><strong>${row.label}:</strong> <span id="val_${idx}">${row.value}</span></div>
+          <div class="data-text">📍 <strong>${row.label}:</strong> <span>${row.value}</span></div>
           <div style="display:flex; gap:10px; align-items:center;">
             <span class="edit-pencil" onclick="window.editRowValue(${idx})">✏️</span>
-            <span class="delete-trash" onclick="window.deleteRow(${idx})">🗑️ Delete</span>
+            <span class="delete-trash" onclick="window.deleteRow(${idx})" style="color:#e53935; cursor:pointer;">🗑️</span>
           </div>
         `;
         container.appendChild(div);
@@ -241,8 +321,7 @@
     }
 
     window.editRowValue = (idx) => {
-      const current = customDetails[idx].value;
-      const res = prompt(`Update value for ${customDetails[idx].label}:`, current);
+      const res = prompt(`Update value for ${customDetails[idx].label}:`, customDetails[idx].value);
       if(res !== null) {
         customDetails[idx].value = res.trim();
         renderSpecifications();
@@ -255,7 +334,7 @@
     };
 
     window.addCustomRow = () => {
-      const label = prompt("Enter new detail label (e.g., 🧹 Cleaning, 🍽️ Mess Timing):");
+      const label = prompt("Enter detail label (e.g. Landmark, Food Facility, Gate Time):");
       if(label && label.trim() !== "") {
         const val = prompt(`Enter value for ${label}:`);
         customDetails.push({ label: label.trim(), value: val ? val.trim() : "" });
@@ -264,50 +343,87 @@
     };
 
     window.editDirectField = (key, elId, msg) => {
-      const current = document.getElementById(elId).innerText.replace(/"/g, "");
-      const res = prompt(msg, current);
-      if(res && res.trim() !== "") {
-        propertyData[key] = res.trim();
-        document.getElementById(elId).innerText = key === 'description' ? `"${res.trim()}"` : res.trim();
-        if(key === 'pgType') document.getElementById('badgeLabel').innerText = res.trim();
+      if(key === 'rent') {
+        const activeMeta = activePropertyInventory[currentSelectedType];
+        const res = prompt(msg, activeMeta.data.rent);
+        if(res && res.trim() !== "") {
+          activeMeta.data.rent = res.trim();
+          document.getElementById(elId).innerText = res.trim();
+        }
+      } else {
+        const current = document.getElementById(elId).innerText.replace(/"/g, "");
+        const res = prompt(msg, current);
+        if(res && res.trim() !== "") {
+          propertyData.buildingDescription = res.trim();
+          propertyData.description = res.trim();
+          document.getElementById(elId).innerText = `"${res.trim()}"`;
+        }
       }
     };
 
     window.editCounter = (key, elId) => {
-      const res = prompt("Enter count:", document.getElementById(elId).innerText);
+      const activeMeta = activePropertyInventory[currentSelectedType];
+      const res = prompt("Enter counts value:", activeMeta.data[key]);
       if(res && res.trim() !== "") {
         const num = parseInt(res.trim()) || 0;
-        propertyData[key] = num;
+        activeMeta.data[key] = num;
         document.getElementById(elId).innerText = num;
       }
     };
 
     async function saveAllData() {
       const btn = document.getElementById("saveBtn");
-      btn.innerText = "Saving matrix live... ⏳";
+      btn.innerText = "Pushing changes to database... ⏳";
       btn.disabled = true;
 
       try {
         const docRef = doc(db, "pghub_properties", propertyId);
-        
         propertyData.customDetailsList = customDetails;
+        
         customDetails.forEach(row => {
-          if(row.label.includes("Address")) propertyData.exactAddress = row.value;
-          if(row.label.includes("Type")) propertyData.pgType = row.value;
-          if(row.label.includes("Food")) propertyData.foodFacility = row.value;
-          if(row.label.includes("Closing Time")) propertyData.gateClosingTime = row.value;
+          const lowerLabel = row.label.toLowerCase();
+          if(lowerLabel.includes("address") || lowerLabel.includes("landmark")) {
+            propertyData.exactAddress = row.value;
+            propertyData.manualAddress = row.value;
+          }
+          if(lowerLabel.includes("food") || lowerLabel.includes("mess")) {
+            if(!propertyData.foodDetails) propertyData.foodDetails = {};
+            propertyData.foodFacility = row.value;
+          }
+          if(lowerLabel.includes("time") || lowerLabel.includes("gate")) {
+            propertyData.gateClosingTime = row.value;
+          }
         });
 
+        let rootPrice = "N/A";
+        const m = propertyData.inventory || {};
+        if(m.rooms) {
+          rootPrice = m.rooms.single?.rent || m.rooms.double?.rent || m.rooms.triple?.rent || rootPrice;
+        }
+        if(rootPrice === "N/A" && m.flats) {
+          rootPrice = m.flats.bhk1?.rent || m.flats.bhk2?.rent || m.flats.bhk3?.rent || rootPrice;
+        }
+        propertyData.roomPrice = rootPrice;
+
         await updateDoc(docRef, propertyData);
-        alert("🎉 Saved successfully!");
-        window.location.href = "buildings-list.html?refresh=" + Date.now();
+        alert("🎉 Inventory configs updated successfully!");
+        window.location.reload();
       } catch(err) {
-        alert("Update Failed: " + err.message);
+        alert("Save Failed: " + err.message);
         btn.disabled = false;
-        btn.innerText = "💾 Push Changes Live";
+        btn.innerText = "🚀 Push Changes Live";
       }
     }
     window.saveAllData = saveAllData;
+
+    // Step-by-Step History Back Controller
+    window.goBackOneStep = () => {
+      if (window.history.length > 1) {
+        window.history.back(); 
+      } else {
+        window.location.href = "index.html"; 
+      }
+    };
   </script>
 </body>
 </html>
