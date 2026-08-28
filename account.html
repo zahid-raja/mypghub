@@ -350,12 +350,15 @@
               <div class="item" onclick="window.location.href='buildings-list.html'" style="display: flex; align-items: center; gap: 10px;">
                 🏢 <strong>2. Manage Rooms</strong> (Your Buildings)
               </div>
+              <div class="item" onclick="window.location.href='add-room.html'" style="color: #2874f0; font-weight: bold; display: flex; align-items: center; gap: 10px;">
+                ➕ Register new Property & Add Your next building
+              </div>
             `;
           } else {
             // NEW USERS: Naye registration wale sequence page par bhejne ka clear path
             ownerPanelContent.innerHTML = `
               <div class="item" onclick="window.location.href='add-room.html'" style="color: #2874f0; font-weight: bold; display: flex; align-items: center; gap: 10px;">
-                ➕ Register Property & Add Your First Room
+                ➕ Add another building
               </div>
             `;
           }
