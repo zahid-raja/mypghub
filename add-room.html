@@ -4,8 +4,34 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Add Property - MyPGHub</title>
-  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght=400;500;600;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="add-room-style.css">
+  <style>
+    /* Dynamic Multi-Photo Gallery Preview Styles */
+    .preview-gallery {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-top: 8px;
+    }
+    .preview-thumb {
+      width: 60px;
+      height: 60px;
+      object-fit: cover;
+      border-radius: 6px;
+      border: 1px solid #ccc;
+    }
+    .file-row {
+      display: flex;
+      flex-direction: column;
+      gap: 5px;
+    }
+    .upload-label {
+      font-size: 11px;
+      color: #555;
+      font-weight: 600;
+    }
+  </style>
 </head>
 <body>
   <div class="app-bar">
@@ -80,21 +106,34 @@
               <label class="sub-cat-label"><input type="checkbox" id="chk1BHK"> 1 BHK Flat</label>
               <div id="fields1BHK" class="inventory-fields">
                 <div class="compact-row"><input type="number" id="tot1BHK" placeholder="Total" class="num-box"><input type="number" id="vac1BHK" placeholder="Vacant" class="num-box"><input type="number" id="rent1BHK" placeholder="Rent (₹/Mo)" class="rent-box"></div>
-                <div class="file-row mt-1"><input type="file" id="img1BHK" accept="image/*"></div>
+                <!-- Fixed: Upgraded to support multiple image selections + Dynamic Preview Container -->
+                <div class="file-row mt-1">
+                  <span class="upload-label">📸 Upload 1 BHK Inside Photos (Select Multiple):</span>
+                  <input type="file" id="img1BHK" accept="image/*" multiple onchange="window.previewImages(this, 'gallery1BHK')">
+                  <div class="preview-gallery" id="gallery1BHK"></div>
+                </div>
               </div>
             </div>
             <div class="sub-cat-item">
               <label class="sub-cat-label"><input type="checkbox" id="chk2BHK"> 2 BHK Flat</label>
               <div id="fields2BHK" class="inventory-fields">
                 <div class="compact-row"><input type="number" id="tot2BHK" placeholder="Total" class="num-box"><input type="number" id="vac2BHK" placeholder="Vacant" class="num-box"><input type="number" id="rent2BHK" placeholder="Rent (₹/Mo)" class="rent-box"></div>
-                <div class="file-row mt-1"><input type="file" id="img2BHK" accept="image/*"></div>
+                <div class="file-row mt-1">
+                  <span class="upload-label">📸 Upload 2 BHK Inside Photos (Select Multiple):</span>
+                  <input type="file" id="img2BHK" accept="image/*" multiple onchange="window.previewImages(this, 'gallery2BHK')">
+                  <div class="preview-gallery" id="gallery2BHK"></div>
+                </div>
               </div>
             </div>
             <div class="sub-cat-item">
               <label class="sub-cat-label"><input type="checkbox" id="chk3BHK"> 3 BHK Flat</label>
               <div id="fields3BHK" class="inventory-fields">
                 <div class="compact-row"><input type="number" id="tot3BHK" placeholder="Total" class="num-box"><input type="number" id="vac3BHK" placeholder="Vacant" class="num-box"><input type="number" id="rent3BHK" placeholder="Rent (₹/Mo)" class="rent-box"></div>
-                <div class="file-row mt-1"><input type="file" id="img3BHK" accept="image/*"></div>
+                <div class="file-row mt-1">
+                  <span class="upload-label">📸 Upload 3 BHK Inside Photos (Select Multiple):</span>
+                  <input type="file" id="img3BHK" accept="image/*" multiple onchange="window.previewImages(this, 'gallery3BHK')">
+                  <div class="preview-gallery" id="gallery3BHK"></div>
+                </div>
               </div>
             </div>
           </div>
@@ -106,28 +145,40 @@
               <label class="sub-cat-label"><input type="checkbox" id="chkSingle"> Single Room</label>
               <div id="fieldsSingle" class="inventory-fields">
                 <div class="compact-row"><input type="number" id="totSingle" placeholder="Total" class="num-box"><input type="number" id="vacSingle" placeholder="Vacant" class="num-box"><input type="number" id="rentSingle" placeholder="Rent (₹/Mo)" class="rent-box"></div>
-                <div class="file-row mt-1"><input type="file" id="imgSingle" accept="image/*"></div>
+                <div class="file-row mt-1">
+                  <span class="upload-label">📸 Upload Single Room Photos (Select Multiple):</span>
+                  <input type="file" id="imgSingle" accept="image/*" multiple onchange="window.previewImages(this, 'gallerySingle')">
+                  <div class="preview-gallery" id="gallerySingle"></div>
+                </div>
               </div>
             </div>
             <div class="sub-cat-item">
               <label class="sub-cat-label"><input type="checkbox" id="chkDouble"> Double / Sharing</label>
               <div id="fieldsDouble" class="inventory-fields">
                 <div class="compact-row"><input type="number" id="totDouble" placeholder="Total" class="num-box"><input type="number" id="vacDouble" placeholder="Vacant" class="num-box"><input type="number" id="rentDouble" placeholder="Rent (₹/Mo)" class="rent-box"></div>
-                <div class="file-row mt-1"><input type="file" id="imgDouble" accept="image/*"></div>
+                <div class="file-row mt-1">
+                  <span class="upload-label">📸 Upload Double Room Photos (Select Multiple):</span>
+                  <input type="file" id="imgDouble" accept="image/*" multiple onchange="window.previewImages(this, 'galleryDouble')">
+                  <div class="preview-gallery" id="galleryDouble"></div>
+                </div>
               </div>
             </div>
             <div class="sub-cat-item">
               <label class="sub-cat-label"><input type="checkbox" id="chktriple"> Triple / Sharing</label>
               <div id="fieldsTriple" class="inventory-fields">
                 <div class="compact-row"><input type="number" id="totTriple" placeholder="Total" class="num-box"><input type="number" id="vacTriple" placeholder="Vacant" class="num-box"><input type="number" id="rentTriple" placeholder="Rent (₹/Mo)" class="rent-box"></div>
-                <div class="file-row mt-1"><input type="file" id="imgTriple" accept="image/*"></div>
+                <div class="file-row mt-1">
+                  <span class="upload-label">📸 Upload Triple Room Photos (Select Multiple):</span>
+                  <input type="file" id="imgTriple" accept="image/*" multiple onchange="window.previewImages(this, 'galleryTriple')">
+                  <div class="preview-gallery" id="galleryTriple"></div>
+                </div>
               </div>
             </div>
           </div>
         </div>
       </div>
 
-      <!-- 🔥 100% DATABASE MATCHED AMENITIES MATRIX TABLE -->
+      <!-- AMENITIES & RULES MATRIX TABLE -->
       <div class="amenities-matrix-container">
         <label class="matrix-label">🛠️ Property Amenities & Rules Matrix</label>
         
@@ -190,33 +241,32 @@
           </select>
         </div>
 
-        <!-- 🔥 NEW: MESS & RULES SECTIONS (Gate Closing ke niche) -->
-<div class="input-group matrix-extra-fields">
-  <label>🍲 Mess & Food Facility</label>
-  <div style="margin: 10px 0; display: flex; gap: 20px;">
-    <label style="cursor: pointer;"><input type="radio" name="foodOpt" id="foodAvailable" value="Yes"> Available ✅</label>
-    <label style="cursor: pointer;"><input type="radio" name="foodOpt" id="foodNotAvailable" value="No" checked> Not Available ❌</label>
-  </div>
-  
-  <!-- Yeh meals wala box tabhi dikhega jab 'Available' par click hoga -->
-  <div id="mealsSelectionBox" style="display: none; background: #f9f9f9; padding: 12px; border-radius: 6px; border: 1px dashed #ccc; margin-top: 10px;">
-    <p style="margin-bottom: 8px; font-weight: 600; font-size: 14px; color: #333;">Select Included Meals:</p>
-    <div style="display: flex; gap: 20px; flex-wrap: wrap;">
-      <label style="cursor: pointer;"><input type="checkbox" id="chkBreakfast"> 🍳 Breakfast</label>
-      <label style="cursor: pointer;"><input type="checkbox" id="chkLunch"> 🍛 Lunch</label>
-      <label style="cursor: pointer;"><input type="checkbox" id="chkDinner"> 🍽️ Dinner</label>
-    </div>
-  </div>
-</div>
+        <!-- MESS & RULES SECTIONS -->
+        <div class="input-group matrix-extra-fields">
+          <label>🍲 Mess & Food Facility</label>
+          <div style="margin: 10px 0; display: flex; gap: 20px;">
+            <label style="cursor: pointer;"><input type="radio" name="foodOpt" id="foodAvailable" value="Yes"> Available ✅</label>
+            <label style="cursor: pointer;"><input type="radio" name="foodOpt" id="foodNotAvailable" value="No" checked> Not Available ❌</label>
+          </div>
+          
+          <div id="mealsSelectionBox" style="display: none; background: #f9f9f9; padding: 12px; border-radius: 6px; border: 1px dashed #ccc; margin-top: 10px;">
+            <p style="margin-bottom: 8px; font-weight: 600; font-size: 14px; color: #333;">Select Included Meals:</p>
+            <div style="display: flex; gap: 20px; flex-wrap: wrap;">
+              <label style="cursor: pointer;"><input type="checkbox" id="chkBreakfast"> 🍳 Breakfast</label>
+              <label style="cursor: pointer;"><input type="checkbox" id="chkLunch"> 🍛 Lunch</label>
+              <label style="cursor: pointer;"><input type="checkbox" id="chkDinner"> 🍽️ Dinner</label>
+            </div>
+          </div>
+        </div>
 
-<div class="input-group matrix-extra-fields" style="margin-top: 15px;">
-  <label>🚫 Property Restrictions & Rules</label>
-  <div style="margin-top: 8px;">
-    <label style="cursor: pointer; display: flex; align-items: center; gap: 8px; font-weight: 500;">
-      <input type="checkbox" id="chkNoSmoking"> 🚭 Strictly No Smoking Allowed in the Premises
-    </label>
-  </div>
-</div>
+        <div class="input-group matrix-extra-fields" style="margin-top: 15px;">
+          <label>🚫 Property Restrictions & Rules</label>
+          <div style="margin-top: 8px;">
+            <label style="cursor: pointer; display: flex; align-items: center; gap: 8px; font-weight: 500;">
+              <input type="checkbox" id="chkNoSmoking"> 🚭 Strictly No Smoking Allowed in the Premises
+            </label>
+          </div>
+        </div>
 
         <div class="input-group matrix-extra-fields">
           <label>📝 About Your Building / Additional Description</label>
@@ -252,6 +302,76 @@
       <button type="button" id="submitBtn" class="btn btn-success">🎉 Save & Complete Verification</button>
     </div>
   </div>
+
+  <script>
+  // Har category ke liye alag se images array store karne ke liye global object
+  window.propertyImagesStorage = {
+    img1BHK: [],
+    img2BHK: [],
+    img3BHK: [],
+    imgSingle: [],
+    imgDouble: [],
+    imgTriple: []
+  };
+
+  // Dynamic Multi-Photo Selector and Cumulative Accumulator
+  window.previewImages = function(input, galleryId) {
+    const gallery = document.getElementById(galleryId);
+    const inputId = input.id; // Jaise 'img1BHK', 'imgSingle' etc.
+    
+    if (input.files && input.files.length > 0) {
+      // Naye selected files ko humare global storage array mein push karenge (overwrite nahi hoga)
+      Array.from(input.files).forEach(file => {
+        // Duplicate check ke liye (same size aur name)
+        const isDuplicate = window.propertyImagesStorage[inputId].some(f => f.name === file.name && f.size === file.size);
+        if(!isDuplicate) {
+          window.propertyImagesStorage[inputId].push(file);
+        }
+      });
+    }
+
+    // UI Gallery ko refresh karein
+    renderGalleryUI(inputId, galleryId);
+    
+    // Sabse zaroori: input field ko clear kar dein taaki user agar SAME photo fir se select kare ya baar-baar click kare toh handler trigger ho sake
+    input.value = "";
+  };
+
+  // Gallery UI ko clear karke naye array ke mutabik render karne ka function
+  function renderGalleryUI(inputId, galleryId) {
+    const gallery = document.getElementById(galleryId);
+    gallery.innerHTML = ""; // Purani visual list clear karein
+
+    window.propertyImagesStorage[inputId].forEach((file, index) => {
+      const reader = new FileReader();
+      reader.onload = function(e) {
+        // Container element for thumb and delete button
+        const container = document.createElement("div");
+        container.style.position = "relative";
+        container.style.display = "inline-block";
+        
+        const img = document.createElement("img");
+        img.src = e.target.result;
+        img.className = "preview-thumb";
+        
+        // Chota sa remove button taaki galat photo select hone par user delete kar sake
+        const removeBtn = document.createElement("span");
+        removeBtn.innerText = "×";
+        removeBtn.style.cssText = "position:absolute; top:-4px; right:-4px; background:#e53935; color:white; border-radius:50%; width:16px; height:16px; font-size:12px; display:flex; align-items:center; justify-content:center; cursor:pointer; font-weight:bold;";
+        
+        removeBtn.onclick = function() {
+          window.propertyImagesStorage[inputId].splice(index, 1); // Array se delete karein
+          renderGalleryUI(inputId, galleryId); // UI refresh karein
+        };
+
+        container.appendChild(img);
+        container.appendChild(removeBtn);
+        gallery.appendChild(container);
+      }
+      reader.readAsDataURL(file);
+    });
+  }
+</script>
   <script type="module" src="add-room-firebase.js"></script>
 </body>
 </html>
