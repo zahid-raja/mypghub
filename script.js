@@ -44,8 +44,117 @@ window.loadRoomDetailPage = (e => {
   if (!t) return;
   let a = "0.5"; t.location && t.location.latitude && (a = calculateRealDistance(t.location.latitude, t.location.longitude));
   
-  // Static Binder
-  document.getElementById("detMainImage").src = t.mainPhotoUrl || "https://via.placeholder.com/400x300?text=Property+Photo";
+  // 📸 IMAGE ARRAY HOLDER FOR SLIDER
+  let imageList = [];
+  let currentSlideIndex = 0;
+  const sliderTrack = document.getElementById("sliderTrack");
+  const dotsContainer = document.getElementById("sliderDotsContainer");
+
+  // Slider Build Function
+  function buildSlider() {
+    if (!sliderTrack || !dotsContainer) return;
+    sliderTrack.innerHTML = "";
+    dotsContainer.innerHTML = "";
+    
+    imageList.forEach((imgUrl, idx) => {
+      const img = document.createElement("img");
+      img.src = imgUrl;
+      img.className = `slide ${idx === 0 ? 'active' : ''}`;
+      img.alt = `Room Image ${idx + 1}`;
+      sliderTrack.appendChild(img);
+
+      const dot = document.createElement("span");
+      dot.className = `dot ${idx === 0 ? 'active' : ''}`;
+      dot.addEventListener("click", () => goToSlide(idx));
+      dotsContainer.appendChild(dot);
+    });
+  }
+
+  function goToSlide(idx) {
+    const slides = sliderTrack.getElementsByClassName("slide");
+    const dots = dotsContainer.getElementsByClassName("dot");
+    if (slides.length === 0) return;
+    
+    if (idx >= slides.length) currentSlideIndex = 0;
+    else if (idx < 0) currentSlideIndex = slides.length - 1;
+    else currentSlideIndex = idx;
+
+    for (let i = 0; i < slides.length; i++) {
+      slides[i].classList.remove("active");
+      if(dots[i]) dots[i].classList.remove("active");
+    }
+    if (slides[currentSlideIndex]) slides[currentSlideIndex].classList.add("active");
+    if (dots[currentSlideIndex]) dots[currentSlideIndex].classList.add("active");
+  }
+
+  // 🎯 Helper Function: Filter & Load Photos For Specific Tab Clicked
+  function updateSliderPhotos(tabName, inventoryData) {
+    let specificImages = [];
+
+    // 1. Ek-ek karke structural hierarchies se dynamic nested images check karein
+    if (inventoryData) {
+      if (inventoryData.images && Array.isArray(inventoryData.images) && inventoryData.images.length > 0) {
+        specificImages = inventoryData.images;
+      } else if (inventoryData.single?.images && Array.isArray(inventoryData.single.images)) {
+        specificImages = inventoryData.single.images;
+      } else if (inventoryData.double?.images && Array.isArray(inventoryData.double.images)) {
+        specificImages = inventoryData.double.images;
+      } else if (inventoryData.triple?.images && Array.isArray(inventoryData.triple.images)) {
+        specificImages = inventoryData.triple.images;
+      } else if (inventoryData.roomPhotosUrl && Array.isArray(inventoryData.roomPhotosUrl)) {
+        specificImages = inventoryData.roomPhotosUrl;
+      }
+    }
+
+    // 2. Fallback: Agar selected room type ki apni images array na mile, toh pure document ki images filter karein
+    if (specificImages.length === 0) {
+      if (t.allPhotos && Array.isArray(t.allPhotos) && t.allPhotos.length > 0) {
+        specificImages = t.allPhotos;
+      } else {
+        if (t.mainPhotoUrl) specificImages.push(t.mainPhotoUrl);
+        if (t.roomPhotosUrl && Array.isArray(t.roomPhotosUrl)) specificImages = specificImages.concat(t.roomPhotosUrl);
+        if (t.additionalPhotos && Array.isArray(t.additionalPhotos)) specificImages = specificImages.concat(t.additionalPhotos);
+      }
+    }
+
+    // 3. Absolute Fallback placeholder image
+    if (specificImages.length === 0) {
+      specificImages.push("https://via.placeholder.com/400x300?text=Property+Photo");
+    }
+
+    // Slider refresh code trigger
+    imageList = specificImages;
+    currentSlideIndex = 0;
+    buildSlider();
+  }
+
+  // Desktop Arrow Clicking Operations
+  document.getElementById("sliderPrevBtn").onclick = (ev) => { ev.stopPropagation(); goToSlide(currentSlideIndex - 1); };
+  document.getElementById("sliderNextBtn").onclick = (ev) => { ev.stopPropagation(); goToSlide(currentSlideIndex + 1); };
+
+  // Mobile Touch Finger Swiping Integration
+  let touchStartX = 0;
+  let touchEndX = 0;
+  const sliderContainer = document.getElementById("propertySlider");
+
+  if (sliderContainer) {
+    sliderContainer.ontouchstart = (ev) => { touchStartX = ev.changedTouches[0].screenX; };
+    sliderContainer.ontouchend = (ev) => {
+      touchEndX = ev.changedTouches[0].screenX;
+      handleSwipeGesture();
+    };
+  }
+
+  function handleSwipeGesture() {
+    const swipeThreshold = 50;
+    if (touchStartX - touchEndX > swipeThreshold) {
+      goToSlide(currentSlideIndex + 1);
+    } else if (touchEndX - touchStartX > swipeThreshold) {
+      goToSlide(currentSlideIndex - 1);
+    }
+  }
+
+  // Bind Static Data Fields
   document.getElementById("detDescription").innerText = t.buildingDescription || t.description || "No description provided.";
   document.getElementById("detAddress").innerHTML = `📍 Address: ${t.exactAddress || t.manualAddress || "Not Provided"}`;
   document.getElementById("detOwnerName").innerHTML = `👤 Owner: ${t.ownerName || "Not Disclosed"}`;
@@ -66,20 +175,24 @@ window.loadRoomDetailPage = (e => {
   
   const m = t.inventory || {}; let u = null;
 
+  // Modified Dynamic Tabs Builder (g Function)
   function g(e, a, n) {
     if (!a) return;
     const i = document.createElement("div"); i.className = "summary-box"; i.innerText = e;
     const l = document.createElement("div"); l.className = "summary-box"; l.innerText = e;
     const r = () => {
       document.querySelectorAll(".summary-box").forEach((e => e.classList.remove("active")));
-      i.classList.add("active"); l.classList.add("active"); p(e, a); h(n);
+      i.classList.add("active"); l.classList.add("active"); 
+      p(e, a); 
+      h(n);
+      updateSliderPhotos(e, a);
     };
     i.addEventListener("click", r); l.addEventListener("click", r);
     if (d) d.appendChild(i); if (c) c.appendChild(l);
     if (!u) u = { deskEl: i, mobEl: l, data: a, name: e, typeKey: n };
   }
 
-  // 🛠️ Dynamic Amenities Renderer (Chair Fix)
+  // Dynamic Amenities Renderer
   function h(e) {
     let a = "", n = "room" === e ? t.facilitiesMatrix?.roomAmenities || [] : t.facilitiesMatrix?.flatAmenities || [];
     if (t.amenities) {
@@ -104,20 +217,6 @@ window.loadRoomDetailPage = (e => {
     document.getElementById("detHighlights").innerHTML = a || "<p style='color:#7f8c8d; font-size:14px;'>Standard basic facilities included.</p>";
     const o = document.getElementById("detDynamicAmenities");
     if (o) o.innerHTML = a || "<span style='color:#888;font-size:13px;'>No amenities listed.</span>";
-    
-    const d = document.getElementById("displayFood"), m = document.getElementById("mealsDisplaySection");
-    if (d) {
-      if (r) {
-        d.innerText = "Available ✅";
-        if (m) {
-          m.style.display = "block";
-          m.innerHTML = t.foodDetails && (t.foodDetails.hasBreakfast || t.foodDetails.hasLunch || t.foodDetails.hasDinner) ? `
-            <span>${t.foodDetails.hasBreakfast ? "🍳 Breakfast: Yes" : "🍳 Breakfast: No ❌"}</span> | 
-            <span>${t.foodDetails.hasLunch ? "🍛 Lunch: Yes" : "🍛 Lunch: No ❌"}</span> | 
-            <span>${t.foodDetails.hasDinner ? "🍽️ Dinner: Yes" : "🍽️ Dinner: No ❌"}</span>` : "<span>Meals included (Timings managed by landlord)</span>";
-        }
-      } else { d.innerText = "Not Available ❌"; if (m) m.style.display = "none"; }
-    }
   }
 
   function p(e, n) {
@@ -146,7 +245,16 @@ window.loadRoomDetailPage = (e => {
     if (m.flats.bhk2) g("2 BHK FLAT", m.flats.bhk2, "flat");
     if (m.flats.bhk3) g("3 BHK FLAT", m.flats.bhk3, "flat");
   }
-  if (u) { u.deskEl.classList.add("active"); u.mobEl.classList.add("active"); p(u.name, u.data); h(u.typeKey); }
+  
+  if (u) { 
+    u.deskEl.classList.add("active"); 
+    u.mobEl.classList.add("active"); 
+    p(u.name, u.data); 
+    h(u.typeKey); 
+    updateSliderPhotos(u.name, u.data); 
+  } else {
+    updateSliderPhotos("DEFAULT", t);
+  }
   
   // Static Rules Fallback
   let b = ""; const f = t.rules?.noSmoking || s.some((e => e.toLowerCase().includes("smoking")));
@@ -154,17 +262,20 @@ window.loadRoomDetailPage = (e => {
   if (t.rules?.noMusic || s.some((e => e.toLowerCase().includes("music")))) b += "<p>🔇 No Loud Music After 10 PM</p>";
   if (t.rules?.noCooking) b += "<p>🍳 Cooking Inside Room Not Allowed</p>";
   document.getElementById("detRulesList").innerHTML = b || "<p>Follow general housing code guidelines.</p>";
-  
-  const y = document.getElementById("displaySmokingRow");
-  if (y) { if (f) { y.style.display = "block"; y.innerHTML = "🚫 No Smoking Allowed"; } else y.style.display = "none"; }
-  
-  // 📑 Dynamic Custom Row Renderer
+
+  // Dynamic Custom Row Renderer (🔒 Anti-Crash Injection Fixed Here)
   const v = document.getElementById("detDynamicDetailsContainer");
   if (v) {
     v.innerHTML = "";
     if (t.customDetailsList && Array.isArray(t.customDetailsList)) {
       t.customDetailsList.forEach((e => {
-        if (e.value && e.value.trim() !== "") v.innerHTML += `<p class="dynamic-row-item"><strong>${e.label}:</strong> ${e.value}</p>`;
+        let safeValue = "";
+        if (e && e.value !== undefined && e.value !== null) {
+          safeValue = (typeof e.value === 'string') ? e.value.trim() : String(e.value).trim();
+        }
+        if (safeValue !== "") {
+          v.innerHTML += `<p class="dynamic-row-item"><strong>${e.label || "Detail"}:</strong> ${safeValue}</p>`;
+        }
       }));
     } else {
       v.innerHTML = `<p class="dynamic-row-item"><strong>📍 Landmark:</strong> ${t.exactAddress || t.manualAddress || "N/A"}</p>`;
