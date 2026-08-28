@@ -14,16 +14,15 @@ const firebaseConfig = {
 
 const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
-const auth = getAuth(app); // 🔥 Auth initialize kiya
+const auth = getAuth(app);
 
 let currentStep = 1;
-let currentUser = null; // 🔥 Logged-in user tracking variable
+let currentUser = null;
 
 // Firebase Auth State Monitor
 onAuthStateChanged(auth, (user) => {
   if (user) {
     currentUser = user;
-    // Auto-populate email/phone if available from auth provider
     if (!document.getElementById('ownerEmail').value && user.email) {
       document.getElementById('ownerEmail').value = user.email;
     }
@@ -62,7 +61,7 @@ setupSubToggle('chkSingle', 'fieldsSingle');
 setupSubToggle('chkDouble', 'fieldsDouble'); 
 setupSubToggle('chktriple', 'fieldsTriple'); 
 
-// 🛠️ AUTOMATIC MIRRORING MECHANISM
+// AUTOMATIC MIRRORING MECHANISM
 document.getElementById('applyBothMaster').addEventListener('change', (e) => {
   const isChecked = e.target.checked;
   const rowElements = document.querySelectorAll('.amenities-group-body tr');
@@ -123,7 +122,7 @@ function compressPhotoBlob(file) {
   });
 }
 
-// 🔥 STEP 1: ONBOARDING JUMP & BACKGROUND OWNER SYNC
+// STEP 1: ONBOARDING JUMP & BACKGROUND OWNER SYNC
 document.getElementById('nextBtn').addEventListener('click', async () => {
   if (!currentUser) {
     alert("Authentication state missing. Please refresh or login again.");
@@ -148,7 +147,6 @@ document.getElementById('nextBtn').addEventListener('click', async () => {
   document.getElementById('nextBtn').disabled = true;
 
   try {
-    // Background mein user ka registration state verify kar dete hain
     await setDoc(doc(db, "owners", currentUser.uid), {
       name: name,
       phone: phone,
@@ -159,7 +157,6 @@ document.getElementById('nextBtn').addEventListener('click', async () => {
 
     localStorage.setItem("isOwner", "true");
 
-    // Seamlessly jump to Room Setup (Step 2) without refresh
     document.getElementById('part1-form').classList.remove('active'); 
     document.getElementById('part2-form').classList.add('active'); 
     currentStep = 2; 
@@ -198,24 +195,51 @@ document.getElementById('submitBtn').addEventListener('click', async () => {
     let masterPhotosListArray = [compressedMainPhoto];
     let flatsCollectionData = null, roomsCollectionData = null;
 
+    // Upgraded Helper to process arrays from window.propertyImagesStorage
+    const getCompressedImagesArray = async (imgId) => {
+      const compressedList = [];
+      const filesArray = (window.propertyImagesStorage && window.propertyImagesStorage[imgId]) ? window.propertyImagesStorage[imgId] : [];
+      for (let file of filesArray) {
+        const comp = await compressPhotoBlob(file);
+        if (comp) {
+          compressedList.push(comp);
+          masterPhotosListArray.push(comp); // Backup master array pool
+        }
+      }
+      return compressedList;
+    };
+
     if (document.getElementById('chkFlat').checked) {
       flatsCollectionData = {};
       const packFlat = async (chk, imgId, totId, vacId, rentId, key) => {
         if (document.getElementById(chk).checked) {
-          const f = document.getElementById(imgId).files[0], comp = f ? await compressPhotoBlob(f) : ""; if(comp) masterPhotosListArray.push(comp);
-          flatsCollectionData[key] = { total: Number(document.getElementById(totId).value)||0, vacant: Number(document.getElementById(vacId).value)||0, rent: Number(document.getElementById(rentId).value)||0, active: true };
+          const imagesArray = await getCompressedImagesArray(imgId);
+          flatsCollectionData[key] = { 
+            total: Number(document.getElementById(totId).value)||0, 
+            vacant: Number(document.getElementById(vacId).value)||0, 
+            rent: Number(document.getElementById(rentId).value)||0, 
+            images: imagesArray,
+            active: true 
+          };
         }
       };
       await packFlat('chk1BHK', 'img1BHK', 'tot1BHK', 'vac1BHK', 'rent1BHK', 'bhk1'); 
       await packFlat('chk2BHK', 'img2BHK', 'tot2BHK', 'vac2BHK', 'rent2BHK', 'bhk2'); 
       await packFlat('chk3BHK', 'img3BHK', 'tot3BHK', 'vac3BHK', 'rent3BHK', 'bhk3');
     }
+
     if (document.getElementById('chkRoom').checked) {
       roomsCollectionData = {};
       const packRoom = async (chk, imgId, totId, vacId, rentId, key) => {
         if (document.getElementById(chk).checked) {
-          const f = document.getElementById(imgId).files[0], comp = f ? await compressPhotoBlob(f) : ""; if(comp) masterPhotosListArray.push(comp);
-          roomsCollectionData[key] = { total: Number(document.getElementById(totId).value)||0, vacant: Number(document.getElementById(vacId).value)||0, rent: Number(document.getElementById(rentId).value)||0, active: true };
+          const imagesArray = await getCompressedImagesArray(imgId);
+          roomsCollectionData[key] = { 
+            total: Number(document.getElementById(totId).value)||0, 
+            vacant: Number(document.getElementById(vacId).value)||0, 
+            rent: Number(document.getElementById(rentId).value)||0, 
+            images: imagesArray,
+            active: true 
+          };
         }
       };
       await packRoom('chkSingle', 'imgSingle', 'totSingle', 'vacSingle', 'rentSingle', 'single'); 
@@ -238,7 +262,6 @@ document.getElementById('submitBtn').addEventListener('click', async () => {
       noSmoking: flatFacilitiesList.includes("No Smoking") || roomFacilitiesList.includes("No Smoking")
     };
 
-    // Food Selection extraction logic
     let foodMealsArr = [];
     if (document.getElementById('foodAvailable').checked) {
       if (document.getElementById('chkBreakfast').checked) foodMealsArr.push("Breakfast");
@@ -247,7 +270,7 @@ document.getElementById('submitBtn').addEventListener('click', async () => {
     }
 
     const finalDocumentData = {
-      ownerUid: currentUser.uid, // 🔥 Linked with the unique User ID
+      ownerUid: currentUser.uid, 
       ownerName: document.getElementById('ownerName').value.trim(), 
       ownerPhone: document.getElementById('ownerPhone').value.trim(), 
       ownerEmail: document.getElementById('ownerEmail').value.trim(),
@@ -274,8 +297,6 @@ document.getElementById('submitBtn').addEventListener('click', async () => {
     
     await addDoc(collection(db, "pghub_properties"), finalDocumentData);
     alert("Property listing successfully registered and launched live!"); 
-    
-    // 🔥 Flow alignment: Direct redirect to Your Buildings Page
     window.location.href = "buildings-list.html";
   } catch (error) { 
     console.error(error); 
