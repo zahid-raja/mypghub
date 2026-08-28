@@ -77,11 +77,20 @@
 
   <div class="detail-layout">
     
-    <!-- 🖼️ LEFT SIDE -->
+    <!-- 🖼️ LEFT SIDE (Slider Area) -->
     <div class="left-side">
-      <div class="slider">
-        <img id="detMainImage" class="slide active" src="https://via.placeholder.com/400x300?text=Loading+Image...">
+      <!-- FIXED Slider: Idhar images change hongi, Desktop arrows aur mobile touch dono integrated hain -->
+      <div class="slider" id="propertySlider">
+        <div class="slider-track" id="sliderTrack">
+          <img id="detMainImage" class="slide active" src="https://via.placeholder.com/400x300?text=Loading+Image...">
+        </div>
+        <!-- Laptop Buttons (CSS media query se mobile par display: none ho jayenge) -->
+        <button class="prev" id="sliderPrevBtn">←</button>
+        <button class="next" id="sliderNextBtn">→</button>
       </div>
+      
+      <!-- Dots Indicator: Dono Laptop aur Mobile par visible rahega -->
+      <div class="dots" id="sliderDotsContainer"></div>
       
       <!-- 💻 Laptop View Wrapper -->
       <div class="desktop-boxes-wrapper">
@@ -102,7 +111,7 @@
       <div class="main-price" id="detPrice">₹0/month</div>
       <div class="top-info" id="detTopInfo">Loading specifications...</div>
 
-      <!-- 🪑 NEW DYNAMIC AMENITIES LOOP PLACEHOLDER (Chair etc. yahan automatic render honge) -->
+      <!-- 🪑 NEW DYNAMIC AMENITIES LOOP PLACEHOLDER -->
       <div class="highlights" id="detHighlights" style="display:none;"></div>
       <div class="section">
         <h3>Facilities & Amenities</h3>
@@ -123,7 +132,6 @@
         <p id="detSharing" style="display:none;">👥 Sharing: </p>
         <div id="detRoomSpecs"></div>
         
-        <!-- Yahan aapka add/delete kiya hua har ek custom detail row automatic loop chalakar dikhega -->
         <div id="detDynamicDetailsContainer"></div>
       </div>
 
@@ -170,19 +178,15 @@
 </div>
 
 <script type="module" src="firebase.js"></script>
-<!-- Firebase listener handle connectivity script injection to handle dynamic map arrays -->
 <script>
-  // Is master hook standard script.js render logic ko override kar ke custom loops chala degi
   document.addEventListener("DOMContentLoaded", () => {
-    const originalRender = window.showPropertyDetails || null;
+    const targetBox = document.getElementById("detDynamicDetailsContainer");
     
-    // Global interval check jab bhi script.js active property load karega
     setInterval(() => {
-      const targetBox = document.getElementById("detDynamicDetailsContainer");
       if(window.currentSelectedPropertyData && !targetBox.getAttribute("data-populated")) {
         const data = window.currentSelectedPropertyData;
         
-        // 1. Render Custom Loop Amenities (Chair, Table, Geyser etc.)
+        // 1. Render Custom Loop Amenities
         const amGrid = document.getElementById("detDynamicAmenities");
         if(data.amenities) {
           amGrid.innerHTML = "";
@@ -193,7 +197,6 @@
           };
           
           Object.keys(data.amenities).forEach(key => {
-            // Label standard key se nikalo ya custom save key se
             if(data.amenities[key] === true && !key.endsWith("_label")) {
               const displayLabel = defaultLabels[key] || data.amenities[key + "_label"] || key;
               const span = document.createElement("span");
@@ -217,7 +220,6 @@
             }
           });
         } else {
-          // Fallback legacy system map values render if matrix missing
           targetBox.innerHTML = `
             <p class="dynamic-row-item"><strong>📍 Landmark/Address:</strong> ${data.exactAddress || 'N/A'}</p>
             <p class="dynamic-row-item"><strong>🍴 Food Facility:</strong> ${data.foodFacility || 'Not Available'}</p>
@@ -228,7 +230,6 @@
         targetBox.setAttribute("data-populated", "true");
       }
       
-      // Reset trigger monitor when details page hides/shows new property
       if(document.getElementById("detailPage").style.display === "none") {
         targetBox.removeAttribute("data-populated");
       }
@@ -249,9 +250,7 @@
         <input type="tel" id="phoneNumber" placeholder="10 Digit Mobile Number" class="main-phone-input">
       </div>
       <button class="modal-btn send-otp-btn" onclick="window.sendOTPCode()">Send OTP</button>
-
       <div class="or-divider">─ OR ─</div>
-
       <button class="modal-btn google-btn" onclick="window.loginWithGoogle()">
         <img src="https://upload.wikimedia.org/wikipedia/commons/c/c1/Google_%22G%22_logo.svg" width="18" height="18" alt="Google">
         Continue with Google
