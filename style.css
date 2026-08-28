@@ -131,7 +131,7 @@ body{
   color:green;
   font-size:18px;
   font-weight:bold;
-}
+} Universal UI Framework
 
 .pg-type{
   color:#555;
@@ -175,7 +175,7 @@ body{
   gap:25px;
 }
 
-/* LEFT */
+/* 📸 DYNAMIC SLIDER LAYOUT IMPLEMENTATION */
 .left-side{
   position:sticky;
   top:90px;
@@ -188,6 +188,12 @@ body{
   overflow:hidden;
   position:relative;
   box-shadow:0 1px 5px rgba(0,0,0,0.1);
+  touch-action: pan-y; /* Multi-touch vertical scrolling block toggle */
+}
+
+.slider-track {
+  width: 100%;
+  position: relative;
 }
 
 .slide{
@@ -201,7 +207,7 @@ body{
   display:block;
 }
 
-/* LAPTOP BUTTONS */
+/* LAPTOP NAVIGATION BUTTONS */
 .prev,
 .next{
   position:absolute;
@@ -210,24 +216,32 @@ body{
   border:none;
   background:rgba(0,0,0,0.6);
   color:white;
-  padding:12px;
+  padding:14px 18px;
   border-radius:50%;
   cursor:pointer;
   z-index:10;
+  font-size: 16px;
+  font-weight: bold;
+  transition: background 0.2s ease;
+}
+
+.prev:hover, .next:hover {
+  background:rgba(0,0,0,0.8);
 }
 
 .prev{
-  left:10px;
+  left:15px;
 }
 
 .next{
-  right:10px;
+  right:15px;
 }
 
-/* DOTS */
+/* DYNAMIC DOTS ENGINE */
 .dots{
   text-align:center;
-  margin-top:10px;
+  margin-top:12px;
+  margin-bottom: 12px;
 }
 
 .dot{
@@ -236,11 +250,14 @@ body{
   border-radius:50%;
   background:#ccc;
   display:inline-block;
-  margin:5px;
+  margin:0 6px;
+  cursor: pointer;
+  transition: all 0.2s ease;
 }
 
 .dot.active{
   background:#2874f0;
+  transform: scale(1.2);
 }
 
 /* RIGHT */
@@ -339,14 +356,11 @@ body{
 /* BOTTOM NAV */
 .bottom-nav {
   display: none;
-  -webkit-user-select: none;
-  -moz-user-select: none;
-  -ms-user-select: none;
   user-select: none;
   -webkit-tap-highlight-color: transparent;
 }
 
-/* MOBILE */
+/* 📱 MOBILE CONFIGURATIONS Breakpoint */
 @media(max-width:768px){
   .header{
     padding:12px;
@@ -392,7 +406,7 @@ body{
     font-size:10px;
   }
 
-  /* MOBILE DETAILS */
+  /* MOBILE DETAILS LAYOUT */
   .detail-layout{
     grid-template-columns:1fr;
   }
@@ -402,13 +416,13 @@ body{
   }
 
   .slide{
-    height:240px;
+    height:250px; /* Mobile slider photo standard execution */
   }
 
-  /* HIDE LAPTOP BUTTONS */
+  /* 🔒 MOBILE ARROW SIGN ABSOLUTE REMOVAL LOCK */
   .prev,
   .next{
-    display:none;
+    display:none !important;
   }
 
   .right-side{
@@ -434,7 +448,7 @@ body{
     padding:12px;
   }
 
-  /* MOBILE NAV */
+  /* MOBILE NAVIGATION */
   .bottom-nav{
     display:flex;
     justify-content:space-around;
@@ -455,7 +469,7 @@ body{
   }
 }
 
-/* Background Overlay (🔒 FIXED: Locked display none for initial state) */
+/* Background Overlay modal setup */
 .modal-overlay {
   position: fixed;
   top: 0;
@@ -466,11 +480,10 @@ body{
   display: none; 
   align-items: center;
   justify-content: center;
-  z-index: 10000; /* Map and Nav ke upar rakhne ke liye higher z-index */
+  z-index: 10000;
   backdrop-filter: blur(4px);
 }
 
-/* Main Modal Card */
 .modal-card {
   background: #ffffff;
   width: 100%;
@@ -479,11 +492,9 @@ body{
   border-radius: 16px;
   box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
   position: relative;
-  font-family: Arial, sans-serif;
   box-sizing: border-box;
 }
 
-/* Close (X) Button */
 .close-modal-btn {
   position: absolute;
   top: 20px;
@@ -491,15 +502,9 @@ body{
   font-size: 28px;
   color: #878787;
   cursor: pointer;
-  transition: color 0.2s ease;
   line-height: 1;
 }
 
-.close-modal-btn:hover {
-  color: #212121;
-}
-
-/* Typography */
 .modal-title {
   font-size: 24px;
   font-weight: 600;
@@ -514,14 +519,12 @@ body{
   line-height: 1.4;
 }
 
-/* Input Row Section */
 .phone-input-row {
   display: flex;
   align-items: center;
   border-bottom: 2px solid #e0e0e0;
   margin-bottom: 30px;
   padding-bottom: 5px;
-  transition: border-color 0.2s ease;
 }
 
 .phone-input-row:focus-within {
@@ -536,7 +539,6 @@ body{
   border: none;
   background: transparent;
   outline: none;
-  padding: 0;
 }
 
 .main-phone-input {
@@ -546,14 +548,8 @@ body{
   outline: none;
   font-size: 16px;
   color: #212121;
-  padding: 5px 0;
 }
 
-.main-phone-input::placeholder {
-  color: #c2c2c2;
-}
-
-/* Universal Button Style */
 .modal-btn {
   width: 100%;
   padding: 14px;
@@ -561,34 +557,22 @@ body{
   font-weight: 600;
   border-radius: 8px;
   cursor: pointer;
-  transition: all 0.2s ease;
   box-sizing: border-box;
 }
 
-/* Send OTP Button */
 .send-otp-btn {
   background: #ff9f00;
   color: #ffffff;
   border: none;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
-.send-otp-btn:hover {
-  background: #f39200;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
-}
-
-/* OR Divider Line */
 .or-divider {
   text-align: center;
   margin: 20px 0;
   color: #878787;
   font-size: 12px;
-  font-weight: 500;
-  position: relative;
 }
 
-/* Google Button */
 .google-btn {
   background: #ffffff;
   color: #212121;
@@ -599,43 +583,20 @@ body{
   gap: 12px;
 }
 
-.google-btn:hover {
-  background: #f7f9fa;
-  border-color: #a0a0a0;
-}
-
-.google-btn img {
-  display: block;
-  object-fit: contain;
-}
-
-/* Footer Section */
-.modal-footer-text {
-  font-size: 11px;
-  color: #878787;
-  text-align: center;
-  margin-top: 25px;
-  line-height: 1.5;
-}
-/* ==========================================
-   📦 DYNAMIC PLAIN TEXT BOXES ROW SYSTEM 
-========================================== */
-
-/* Base Container (Dono screens par horizontal scrolling setup) */
+/* 📦 DYNAMIC TEXT BOXES SCROLL SYSTEM */
 .boxes-row-container {
   display: flex;
   overflow-x: auto;
   white-space: nowrap;
   gap: 12px;
   padding: 5px 2px;
-  scrollbar-width: none; /* Modern browsers scrollbar hide */
+  scrollbar-width: none;
 }
 
 .boxes-row-container::-webkit-scrollbar {
-  display: none; /* Chrome/Safari scrollbar hide */
+  display: none;
 }
 
-/* Clear Writing Plain Boxes (No Logos/Icons) */
 .summary-box {
   display: inline-block;
   padding: 12px 20px;
@@ -647,54 +608,39 @@ body{
   color: #555;
   cursor: pointer;
   text-align: center;
-  transition: all 0.2s ease;
   box-shadow: 0 1px 3px rgba(0,0,0,0.05);
 }
 
-/* Selected Active Box Style (Jab clicked ho) */
 .summary-box.active {
   background: #f0f5ff;
   border-color: #2874f0;
   color: #2874f0;
 }
 
-/* Mobile Wrapper Space Settings */
 .row-gap-space {
-  height: 15px; /* Photo aur pricing ke beech ka controlled space (gap) */
+  height: 15px;
   width: 100%;
   display: block;
 }
 
-
-/* 💻 LAPTOP / DESKTOP RESPONSIVE CONFIGURATION (Screens > 768px) */
 @media (min-width: 769px) {
-  /* Laptop me Left side photo ke theek niche dikhega */
   .desktop-boxes-wrapper {
     display: block !important;
     margin-top: 15px;
   }
-  
-  /* Laptop me right side wala area automatic hide rahega */
   .mobile-boxes-wrapper {
     display: none !important;
   }
 }
 
-
-/* 📱 MOBILE RESPONSIVE CONFIGURATION (Screens <= 768px) */
 @media (max-width: 768px) {
-  /* Mobile me Left side (photo ke niche) wala block hide ho jayega */
   .desktop-boxes-wrapper {
     display: none !important;
   }
-  
-  /* Mobile me Right side pricing ke upar double gap ke sath show hoga */
   .mobile-boxes-wrapper {
     display: block !important;
     margin-bottom: 5px;
   }
-  
-  /* Mobile me elements thode chote aur precise rahenge */
   .summary-box {
     padding: 10px 16px;
     font-size: 13px;
