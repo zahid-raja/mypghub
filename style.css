@@ -362,6 +362,11 @@ body{
 
 /* 📱 MOBILE CONFIGURATIONS Breakpoint */
 @media(max-width:768px){
+  /* Detail Page Fix: Bottom nav buttons ko cover na kare */
+  #detailPage {
+    padding-bottom: 90px !important;
+  }
+
   .header{
     padding:12px;
   }
