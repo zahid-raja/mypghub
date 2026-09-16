@@ -3,11 +3,11 @@
 
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
   <title>MyPGHub</title>
   <link rel="stylesheet" href="style.css">
   <style>
-    /* Naye custom elements ke liye styling taaki look bhatke nahi */
+    /* Custom Styling for Favorites & Dynamic UI */
     .dynamic-amenities-flex {
       display: flex;
       flex-wrap: wrap;
@@ -29,6 +29,124 @@
       color: #444;
       line-height: 1.5;
     }
+
+    .cat-btn {
+      cursor: pointer;
+      user-select: none;
+      transition: all 0.2s ease-in-out;
+    }
+    .cat-btn.active {
+      background-color: #2874f0 !important;
+      color: #ffffff !important;
+      border-color: #2874f0 !important;
+      font-weight: bold;
+      box-shadow: 0 2px 6px rgba(40, 116, 240, 0.3);
+    }
+
+    .dots-container {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 8px;
+      margin-top: 12px;
+      margin-bottom: 15px;
+      width: 100%;
+    }
+
+    /* Top Right Favorite Button Highlight Style */
+    .fav-header-btn {
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      user-select: none;
+      transition: transform 0.1s ease;
+    }
+    .fav-header-btn:active {
+      transform: scale(0.95);
+    }
+
+    /* 🔍 FIXED SEARCH SUGGESTIONS & CHIPS STYLING */
+    .search-box-container {
+      position: relative;
+      flex-grow: 1;
+    }
+    
+    .suggestions-dropdown {
+      position: absolute;
+      top: 100%;
+      left: 0;
+      right: 0;
+      background: #ffffff;
+      border: 1px solid #e2e8f0;
+      border-radius: 8px;
+      box-shadow: 0 4px 15px rgba(0,0,0,0.15);
+      z-index: 99999;
+      max-height: 250px;
+      overflow-y: auto;
+      margin-top: 6px;
+    }
+
+    .suggestion-item {
+      padding: 10px 14px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      cursor: pointer;
+      border-bottom: 1px solid #f1f5f9;
+      font-size: 14px;
+      color: #2d3748;
+    }
+
+    .suggestion-item:hover {
+      background-color: #edf2f7;
+    }
+
+    .suggestion-tag-type {
+      font-size: 11px;
+      background: #e2e8f0;
+      color: #4a5568;
+      padding: 2px 6px;
+      border-radius: 4px;
+      font-weight: 600;
+    }
+
+    .search-chips-wrapper {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+      margin-top: 8px;
+    }
+
+    .search-chip {
+      background: #e3f2fd;
+      color: #2874f0;
+      border: 1px solid #2874f0;
+      padding: 4px 10px;
+      border-radius: 12px;
+      font-size: 12px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      font-weight: 600;
+    }
+
+    .chip-remove {
+      cursor: pointer;
+      font-size: 12px;
+      color: #e74c3c;
+    }
+
+    .clear-search-btn {
+      position: absolute;
+      right: 12px;
+      top: 50%;
+      transform: translateY(-50%);
+      cursor: pointer;
+      color: #718096;
+      font-weight: bold;
+      z-index: 10;
+    }
   </style>
 </head>
 
@@ -40,32 +158,48 @@
     <div class="logo-row">
       <div class="box logo-box">MyPGHub</div>
       <div class="nav-links">
-        <div onclick="goBack()" style="cursor: pointer;">Home</div>
+        <div onclick="window.resetFavoritesView()" style="cursor: pointer;">Home</div>
         <div id="accountBtn" class="action-box" onclick="window.handleAccountClick()">Account</div>
       </div>
     </div>
 
     <div class="header-row">
-      <div class="box search-box">
-        <input type="text" placeholder="Search PG, room...">
+      <div class="box search-box search-box-container" style="position: relative;">
+        <!-- FIXED: Added Event Listeners on Input -->
+        <input 
+          type="text" 
+          id="searchInput" 
+          placeholder="Search house, area, pincode, boys..." 
+          autocomplete="off"
+          oninput="window.handleSearchInput(event)" 
+          onkeydown="window.handleSearchInput(event)"
+        >
+        
+        <span id="clearSearchBtn" class="clear-search-btn" style="display: none;" onclick="window.clearSearchInput()">✕</span>
+        <div id="suggestionsDropdown" class="suggestions-dropdown" style="display: none;"></div>
+        <div id="searchChipsContainer" class="search-chips-wrapper"></div>
       </div>
 
       <div id="loginText" class="action-box" onclick="window.handleLoginClick()">Login</div>
       <div id="userNumberDisplay" class="action-box" style="display: none; font-weight: bold; color: #2874f0;"></div>
 
-      <div class="box action-box">❤️</div>
+      <!-- CLICKABLE TOP RIGHT FAVORITE BUTTON -->
+      <div id="topFavBtn" class="box action-box fav-header-btn" onclick="window.showFavoriteRooms()">
+        ❤️ <span id="favCount" style="font-weight: bold; color: #e74c3c; font-size: 13px;">(0)</span>
+      </div>
     </div>
   </div>
 
+  <!-- CATEGORY BUTTONS -->
   <div class="categories">
-    <div class="cat-btn">Boys PG</div>
-    <div class="cat-btn">Girls PG</div>
-    <div class="cat-btn">Living PG</div>
-    <div class="cat-btn">Single Bed</div>
-    <div class="cat-btn">Double Bed</div>
-    <div class="cat-btn">1BHK Flat</div>
-    <div class="cat-btn">2BHK Flat</div>
-    <div class="cat-btn">3BHK Flat</div>
+    <div class="cat-btn" data-category="Boys PG" onclick="filterCategory(this)">Boys PG</div>
+    <div class="cat-btn" data-category="Girls PG" onclick="filterCategory(this)">Girls PG</div>
+    <div class="cat-btn" data-category="Living PG" onclick="filterCategory(this)">Living PG</div>
+    <div class="cat-btn" data-category="Single Bed" onclick="filterCategory(this)">Single Bed</div>
+    <div class="cat-btn" data-category="Double Bed" onclick="filterCategory(this)">Double Bed</div>
+    <div class="cat-btn" data-category="1BHK Flat" onclick="filterCategory(this)">1BHK Flat</div>
+    <div class="cat-btn" data-category="2BHK Flat" onclick="filterCategory(this)">2BHK Flat</div>
+    <div class="cat-btn" data-category="3BHK Flat" onclick="filterCategory(this)">3BHK Flat</div>
   </div>
 
   <div class="grid" id="roomList"></div>
@@ -76,32 +210,24 @@
   <button class="back-btn" onclick="goBack()">⬅ Back</button>
 
   <div class="detail-layout">
-    
-    <!-- 🖼️ LEFT SIDE (Slider Area) -->
     <div class="left-side">
-      <!-- FIXED Slider: Idhar images change hongi, Desktop arrows aur mobile touch dono integrated hain -->
-      <div class="slider" id="propertySlider">
-        <div class="slider-track" id="sliderTrack">
+      <div id="propertySlider" class="slider-container">
+        <div id="sliderTrack" class="slider-track">
           <img id="detMainImage" class="slide active" src="https://via.placeholder.com/400x300?text=Loading+Image...">
         </div>
-        <!-- Laptop Buttons (CSS media query se mobile par display: none ho jayenge) -->
-        <button class="prev" id="sliderPrevBtn">←</button>
-        <button class="next" id="sliderNextBtn">→</button>
+
+        <button id="sliderPrevBtn" class="slider-btn prev">❮</button>
+        <button id="sliderNextBtn" class="slider-btn next">❯</button>
       </div>
       
-      <!-- Dots Indicator: Dono Laptop aur Mobile par visible rahega -->
-      <div class="dots" id="sliderDotsContainer"></div>
+      <div id="sliderDotsContainer" class="dots-container"></div>
       
-      <!-- 💻 Laptop View Wrapper -->
       <div class="desktop-boxes-wrapper">
         <div id="desktop-boxes-row" class="boxes-row-container"></div>
       </div>
     </div>
 
-    <!-- 💰 RIGHT SIDE -->
     <div class="right-side">
-      
-      <!-- 📱 Mobile View Wrapper -->
       <div class="mobile-boxes-wrapper">
         <div class="row-gap-space"></div>
         <div id="mobile-boxes-row" class="boxes-row-container"></div>
@@ -111,7 +237,6 @@
       <div class="main-price" id="detPrice">₹0/month</div>
       <div class="top-info" id="detTopInfo">Loading specifications...</div>
 
-      <!-- 🪑 NEW DYNAMIC AMENITIES LOOP PLACEHOLDER -->
       <div class="highlights" id="detHighlights" style="display:none;"></div>
       <div class="section">
         <h3>Facilities & Amenities</h3>
@@ -125,7 +250,6 @@
         <p id="detDescription" style="color: #555; line-height: 1.5;"></p>
       </div>
 
-      <!-- 📑 DYNAMIC DETAILS AND SPECIFICATIONS CONTAINER -->
       <div class="section">
         <h3>Room & Property Details</h3>
         <p id="detAddress" style="display:none;">📍 Landmark: </p>
@@ -165,9 +289,10 @@
   </div>
 </div>
 
+<!-- BOTTOM NAV WITH WORKING FAVORITE BUTTON -->
 <div class="bottom-nav">
-  <div onclick="window.location.href='index.html'" style="cursor: pointer;">🏠<br>Home</div>
-  <div>❤️<br>Favourite</div>
+  <div onclick="window.resetFavoritesView()" style="cursor: pointer;">🏠<br>Home</div>
+  <div onclick="window.showFavoriteRooms()" style="cursor: pointer;">❤️<br>Favourite</div>
   <a href="add-room.html" style="text-decoration: none; color: inherit;">
     <div class="nav-item" style="text-align: center; cursor: pointer;">
       <span class="icon" style="display: block; font-size: 20px;">➕</span>
@@ -186,7 +311,6 @@
       if(window.currentSelectedPropertyData && !targetBox.getAttribute("data-populated")) {
         const data = window.currentSelectedPropertyData;
         
-        // 1. Render Custom Loop Amenities
         const amGrid = document.getElementById("detDynamicAmenities");
         if(data.amenities) {
           amGrid.innerHTML = "";
@@ -208,7 +332,6 @@
           if(amGrid.innerHTML === "") amGrid.innerHTML = "<span style='color:#888;font-size:13px;'>No specific active facility tags.</span>";
         }
 
-        // 2. Render Custom Dynamic Specification Rows
         if(data.customDetailsList && Array.isArray(data.customDetailsList)) {
           targetBox.innerHTML = "";
           data.customDetailsList.forEach(row => {
