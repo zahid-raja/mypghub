@@ -97,14 +97,37 @@ onAuthStateChanged(auth, (user) => {
 async function fetchPropertiesFromDatabase() {
   try {
     console.log("⏳ Connecting to Firestore...");
-    // collection 'pghub_properties' se live documents load karo
+
+    // 1. Fetch live manual bookings for dynamic vacancy calculations
+    let allManualBookings = [];
+    try {
+      const snapBookings = await getDocs(collection(db, "pghub_manual_bookings"));
+      snapBookings.forEach((bDoc) => {
+        allManualBookings.push({ id: bDoc.id, ...bDoc.data() });
+      });
+      console.log("✅ Successfully Fetched Live Bookings for Vacancy Tracking:", allManualBookings.length);
+    } catch (e) {
+      console.warn("⚠️ Could not fetch manual bookings:", e.message);
+    }
+    window.allActiveBookings = allManualBookings;
+
+    // 2. Collection 'pghub_properties' se live documents load karo
     const querySnapshot = await getDocs(collection(db, "pghub_properties"));
     const roomsList = [];
 
     querySnapshot.forEach((doc) => {
-      // Document ID aur data object ko merge kiya
       roomsList.push({ id: doc.id, ...doc.data() });
     });
+
+    // Also load any properties from buildings collection
+    try {
+      const buildingsSnap = await getDocs(collection(db, "buildings"));
+      buildingsSnap.forEach((bDoc) => {
+        if (!roomsList.some(r => r.id === bDoc.id)) {
+          roomsList.push({ id: bDoc.id, ...bDoc.data() });
+        }
+      });
+    } catch (e) {}
 
     console.log("✅ Successfully Fetched Live Rooms:", roomsList.length);
     
