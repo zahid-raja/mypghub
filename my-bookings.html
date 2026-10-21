@@ -18,138 +18,1066 @@
       --border: #e2e8f0;
     }
 
-    body { margin: 0; font-family: 'Inter', 'Segoe UI', Arial, sans-serif; background: var(--background); color: var(--text); -webkit-font-smoothing: antialiased; }
-    
-    /* Premium Header */
-    .header { background: var(--surface); padding: 16px 24px; display: flex; align-items: center; justify-content: space-between; box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.05); position: sticky; top: 0; z-index: 1000; border-bottom: 1px solid var(--border); }
-    .back-btn { background: transparent; color: var(--text-muted); border: 1px solid var(--border); padding: 10px 18px; border-radius: 8px; cursor: pointer; font-weight: 500; transition: all 0.2s; }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      background: var(--background);
+      color: var(--text);
+      -webkit-font-smoothing: antialiased;
+    }
+
+    /* Top Bar Header */
+    .header {
+      background: var(--surface);
+      padding: 16px 24px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      position: sticky;
+      top: 0;
+      z-index: 1000;
+      border-bottom: 1px solid var(--border);
+      box-shadow: 0 1px 3px rgba(0,0,0,0.04);
+    }
+    .back-btn {
+      background: transparent;
+      color: var(--text-muted);
+      border: 1px solid var(--border);
+      padding: 9px 16px;
+      border-radius: 8px;
+      cursor: pointer;
+      font-weight: 600;
+      font-size: 13.5px;
+      transition: all 0.2s;
+    }
     .back-btn:hover { background: #f1f5f9; color: var(--text); }
-    .add-booking-btn { background: var(--primary); color: white; border: none; padding: 10px 22px; border-radius: 8px; cursor: pointer; font-weight: 600; font-size: 14px; box-shadow: 0 4px 6px -1px rgba(30, 58, 138, 0.2); transition: all 0.2s; }
+    .title { font-size: 20px; font-weight: 700; color: var(--text); letter-spacing: -0.4px; }
+    .add-booking-btn {
+      background: var(--primary);
+      color: white;
+      border: none;
+      padding: 10px 20px;
+      border-radius: 8px;
+      cursor: pointer;
+      font-weight: 600;
+      font-size: 13.5px;
+      box-shadow: 0 3px 6px rgba(30, 58, 138, 0.2);
+      transition: all 0.2s;
+    }
     .add-booking-btn:hover { background: #172554; transform: translateY(-1px); }
-    .title { font-size: 22px; font-weight: 700; color: var(--text); letter-spacing: -0.5px; }
-    
-    .container { max-width: 1050px; margin: 40px auto; padding: 0 20px; padding-bottom: 60px; }
-    .ledger-card { background: var(--surface); border-radius: 16px; padding: 24px; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -1px rgba(0, 0, 0, 0.03); border: 1px solid var(--border); }
-    
-    /* 📋 Booking Table Rows */
-    .booking-list { display: flex; flex-direction: column; margin-top: 20px; border: 1px solid var(--border); border-radius: 12px; overflow: hidden; background: var(--surface); }
-    .booking-row { display: flex; align-items: center; padding: 20px 24px; border-bottom: 1px solid var(--border); font-size: 15px; transition: background 0.2s; }
-    .booking-row:last-child { border-bottom: none; }
-    .booking-row:hover { background-color: #f8fafc; }
-    
-    .col-name { flex: 2.5; font-weight: 600; color: var(--primary-light); cursor: pointer; text-transform: capitalize; font-size: 16px; }
-    .col-name:hover { color: var(--primary); text-decoration: underline; }
-    .col-room { flex: 1.5; font-weight: 500; color: var(--text-muted); }
-    
-    .col-rent-details { flex: 2.5; display: flex; flex-direction: column; justify-content: center; font-size: 14px; gap: 4px; }
-    .rent-line { color: var(--text); font-weight: 500; }
-    .dues-line { color: var(--danger); font-weight: 600; }
-    .no-dues-line { color: var(--success); font-weight: 600; }
 
-    .col-status { width: 110px; text-align: center; }
-    .status-btn { border: none; padding: 9px 18px; border-radius: 8px; cursor: pointer; font-weight: 600; font-size: 13px; width: 100%; text-align: center; letter-spacing: 0.3px; transition: all 0.2s; }
-    .status-btn.pay-action { background: #eff6ff; color: var(--primary-light); border: 1px solid #bfdbfe; }
-    .status-btn.pay-action:hover { background: var(--primary-light); color: white; }
-    .status-btn.paid-badge { background: #ecfdf5; color: var(--success); border: 1px solid #a7f3d0; cursor: default; }
-    
-    .col-delete { width: 40px; text-align: right; color: #cbd5e1; cursor: pointer; font-size: 16px; transition: color 0.2s; }
-    .col-delete:hover { color: var(--danger); }
+    .container { max-width: 1080px; margin: 32px auto; padding: 0 20px 60px; }
 
-    /* Modals CSS Styling */
-    .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(15, 23, 42, 0.6); backdrop-filter: blur(4px); z-index: 2000; align-items: center; justify-content: center; }
-    .modal-content { background: var(--surface); border-radius: 20px; padding: 32px; width: 90%; max-width: 500px; box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25); max-height: 85vh; overflow-y: auto; border: 1px solid var(--border); }
-    .modal-title { font-size: 20px; font-weight: 700; margin-bottom: 24px; color: var(--text); padding-bottom: 10px; border-bottom: 2px solid #f1f5f9; position: relative; }
+    /* 🏢 Buildings View */
+    .view-header-box {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 24px;
+      flex-wrap: wrap;
+      gap: 16px;
+    }
+    .view-main-title { font-size: 24px; font-weight: 700; color: var(--text); margin: 0 0 6px 0; letter-spacing: -0.5px; }
+    .view-sub-title { font-size: 14px; color: var(--text-muted); margin: 0; }
+    .buildings-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+      gap: 24px;
+    }
+    .building-card {
+      background: var(--surface);
+      border-radius: 16px;
+      border: 1px solid var(--border);
+      box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+      overflow: hidden;
+      transition: all 0.25s ease;
+      display: flex;
+      flex-direction: column;
+    }
+    .building-card:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 12px 24px -4px rgba(0, 0, 0, 0.12);
+      border-color: #cbd5e1;
+    }
+    .b-img-box { height: 180px; background: #e2e8f0; position: relative; overflow: hidden; }
+    .b-img { width: 100%; height: 100%; object-fit: cover; transition: transform 0.3s; }
+    .building-card:hover .b-img { transform: scale(1.03); }
+    .b-type-badge {
+      position: absolute;
+      top: 12px;
+      left: 12px;
+      background: rgba(15, 23, 42, 0.85);
+      color: white;
+      padding: 5px 12px;
+      border-radius: 6px;
+      font-size: 12px;
+      font-weight: 600;
+      backdrop-filter: blur(4px);
+    }
+    .b-body { padding: 20px; display: flex; flex-direction: column; flex: 1; gap: 12px; }
+    .b-title { font-size: 18px; font-weight: 700; color: var(--text); }
+    .b-address { font-size: 13.5px; color: var(--text-muted); display: flex; align-items: flex-start; gap: 6px; line-height: 1.4; }
+    .btn-open-register {
+      margin-top: auto;
+      background: var(--primary);
+      color: white;
+      border: none;
+      padding: 12px 18px;
+      border-radius: 10px;
+      font-weight: 600;
+      font-size: 14px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      transition: all 0.2s;
+    }
+    .btn-open-register:hover { background: #172554; transform: translateY(-1px); }
+
+    /* 🛏️ Room Matrix View */
+    .property-hero-card {
+      background: var(--surface);
+      border-radius: 16px;
+      border: 1px solid var(--border);
+      padding: 24px;
+      margin-bottom: 24px;
+      box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+    }
+    .property-hero-top {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      flex-wrap: wrap;
+      gap: 16px;
+    }
+    .property-hero-info h2 { margin: 0 0 6px 0; font-size: 22px; font-weight: 700; color: var(--text); }
+    .property-hero-address { font-size: 14px; color: var(--text-muted); }
+    .matrix-stats-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));
+      gap: 12px;
+      margin-top: 20px;
+    }
+    .matrix-stat-card {
+      background: #f8fafc;
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 12px 14px;
+      text-align: center;
+    }
+    .matrix-stat-value { font-size: 22px; font-weight: 700; color: var(--text); }
+    .matrix-stat-label { font-size: 12px; font-weight: 600; color: var(--text-muted); margin-top: 3px; }
+    .stat-vacant .matrix-stat-value { color: var(--success); }
+    .stat-occupied .matrix-stat-value { color: #d97706; }
+    .stat-dues .matrix-stat-value { color: var(--danger); }
+
+    .matrix-controls-bar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 12px;
+      margin-bottom: 20px;
+    }
+    .filter-tabs-group { display: flex; gap: 8px; flex-wrap: wrap; }
+    .filter-tab-btn {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      padding: 8px 14px;
+      border-radius: 8px;
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--text-muted);
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    .filter-tab-btn:hover { background: #f1f5f9; color: var(--text); }
+    .filter-tab-btn.active { background: var(--primary); color: white; border-color: var(--primary); }
+    .matrix-search-box {
+      display: flex;
+      align-items: center;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 8px 14px;
+      min-width: 240px;
+    }
+    .matrix-search-box input { border: none; outline: none; font-size: 13.5px; width: 100%; background: transparent; }
+
+    .matrix-card {
+      background: var(--surface);
+      border-radius: 16px;
+      padding: 20px;
+      border: 1px solid var(--border);
+      box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.04);
+    }
+    .matrix-card-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-bottom: 2px solid var(--primary-light);
+      padding-bottom: 12px;
+      margin-bottom: 16px;
+    }
+
+    /* Room Matrix Rows */
+    .room-matrix-list { display: flex; flex-direction: column; gap: 12px; }
+    .room-box-row,
+    .room-card-item {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 16px 20px;
+      display: flex;
+      flex-direction: row;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: nowrap;
+      gap: 16px;
+      transition: all 0.2s ease;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.03);
+    }
+    .room-box-row:hover { box-shadow: 0 4px 8px rgba(0,0,0,0.06); transform: translateY(-1px); }
+    .room-box-row.status-vacant { border-left: 5px solid var(--success); background: #fcfdfc; }
+    .room-box-row.status-occupied { border-left: 5px solid #f59e0b; background: #fffdfa; }
+    .room-box-row.status-dues { border-left: 5px solid #ea580c; background: #fffaf5; }
+
+    .room-identity-group { width: 130px; flex-shrink: 0; }
+    .room-number-title { font-size: 17px; font-weight: 700; color: var(--text); letter-spacing: -0.3px; }
+    .room-type-tag { font-size: 12px; font-weight: 600; color: var(--text-muted); margin-top: 3px; }
+
+    .room-status-group { width: 160px; flex-shrink: 0; }
+    .room-status-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 6px 12px;
+      border-radius: 20px;
+      font-size: 12px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.3px;
+    }
+    .badge-vacant { background: #ecfdf5; color: #047857; border: 1px solid #a7f3d0; }
+    .badge-occupied { background: #fef3c7; color: #b45309; border: 1px solid #fcd34d; }
+    .badge-dues { background: #ffedd5; color: #c2410c; border: 1px solid #fed7aa; }
+
+    .dues-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      padding: 3px 8px;
+      border-radius: 6px;
+      font-size: 11.5px;
+      font-weight: 700;
+      letter-spacing: 0.3px;
+    }
+    .dues-badge.badge-paid { background: #d1fae5; color: #065f46; border: 1px solid #a7f3d0; }
+    .dues-badge.badge-unpaid { background: #fee2e2; color: #b91c1c; border: 1px solid #fecaca; }
+
+    .room-details-group { flex: 1; display: flex; flex-direction: column; gap: 4px; font-size: 14px; min-width: 200px; }
+    .tenant-name-row { font-weight: 600; color: var(--text); cursor: pointer; display: flex; align-items: center; gap: 8px; }
+    .tenant-name-row:hover { color: var(--primary-light); }
+    .room-rent-info { font-size: 13.5px; color: var(--text); }
+    .room-sub-info { font-size: 12.5px; color: var(--text-muted); font-style: italic; }
+
+    .room-actions-group { display: flex; align-items: center; gap: 10px; flex-shrink: 0; }
+    .btn-room-action {
+      border: none;
+      padding: 9px 16px;
+      border-radius: 8px;
+      cursor: pointer;
+      font-weight: 600;
+      font-size: 13px;
+      transition: all 0.2s;
+    }
+    .btn-book-room { background: var(--success); color: white; box-shadow: 0 2px 4px rgba(16, 185, 129, 0.25); }
+    .btn-book-room:hover { background: #059669; transform: translateY(-1px); }
+    .btn-collect-rent { background: #eff6ff; color: var(--primary-light); border: 1px solid #bfdbfe; }
+    .btn-collect-rent:hover { background: var(--primary-light); color: white; }
+    .btn-view-details { background: #f8fafc; color: var(--text-muted); border: 1px solid var(--border); }
+    .btn-view-details:hover { background: #e2e8f0; color: var(--text); }
+    .btn-vacate-room {
+      background: #fef2f2;
+      color: #dc2626;
+      border: 1px solid #fecaca;
+    }
+    .btn-vacate-room:hover {
+      background: #dc2626;
+      color: #ffffff;
+      border-color: #dc2626;
+      transform: translateY(-1px);
+    }
+    .btn-text-full { display: inline; }
+
+    /* Modals & Forms */
+    .modal {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(15, 23, 42, 0.6);
+      backdrop-filter: blur(4px);
+      z-index: 2000;
+      align-items: center;
+      justify-content: center;
+    }
+    .modal-content {
+      background: var(--surface);
+      border-radius: 20px;
+      padding: 32px;
+      width: 90%;
+      max-width: 500px;
+      box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+      max-height: 85vh;
+      overflow-y: auto;
+      border: 1px solid var(--border);
+    }
+    .modal-title {
+      font-size: 18.5px;
+      font-weight: 700;
+      margin-bottom: 22px;
+      color: var(--text);
+      padding-bottom: 10px;
+      border-bottom: 2px solid #f1f5f9;
+      position: relative;
+      line-height: 1.35;
+    }
     .modal-title::after { content: ''; position: absolute; bottom: -2px; left: 0; width: 60px; height: 2px; background: var(--primary-light); }
-    
-    /* Monthwise Collection rows */
+    .modal-header-with-close {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      margin-bottom: 20px;
+      border-bottom: 2px solid #f1f5f9;
+      padding-bottom: 10px;
+      position: relative;
+    }
+    .modal-header-with-close::after {
+      content: '';
+      position: absolute;
+      bottom: -2px;
+      left: 0;
+      width: 60px;
+      height: 2px;
+      background: var(--primary-light);
+    }
+    .modal-header-with-close .modal-title {
+      margin-bottom: 0;
+      padding-bottom: 0;
+      border-bottom: none;
+    }
+    .modal-header-with-close .modal-title::after {
+      display: none;
+    }
+    .modal-actions-add-tenant {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      margin-top: 24px;
+    }
+    .btn-add-tenant-footer {
+      width: 44px;
+      height: 44px;
+      min-width: 44px;
+      border-radius: 12px;
+      background: #eff6ff;
+      border: 1.5px solid #93c5fd;
+      color: var(--primary-light);
+      font-size: 18px;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+    }
+    .btn-add-tenant-footer:hover {
+      background: var(--primary-light);
+      border-color: var(--primary-light);
+      color: #ffffff;
+      transform: translateY(-2px);
+      box-shadow: 0 4px 12px rgba(59, 130, 246, 0.25);
+    }
+    .btn-add-tenant-footer:active {
+      transform: translateY(0);
+    }
+    .btn-add-secondary-tenant {
+      width: 100%;
+      background: #eff6ff;
+      color: var(--primary-light);
+      border: 1.5px dashed #93c5fd;
+      padding: 11px 16px;
+      border-radius: 10px;
+      font-weight: 700;
+      font-size: 13.5px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      transition: all 0.2s ease;
+    }
+    .btn-add-secondary-tenant:hover {
+      background: #dbeafe;
+      border-color: var(--primary-light);
+      color: var(--primary);
+      transform: translateY(-1px);
+    }
+    .secondary-tenant-card {
+      display: none;
+      margin-top: 10px;
+      padding: 16px;
+      background: #f8fafc;
+      border: 1.5px dashed #cbd5e1;
+      border-radius: 12px;
+      animation: fadeInSlide 0.25s ease-out;
+    }
+    .secondary-tenant-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 14px;
+      padding-bottom: 8px;
+      border-bottom: 1px dashed #cbd5e1;
+    }
+    .secondary-tenant-title {
+      font-weight: 700;
+      font-size: 13.5px;
+      color: var(--primary);
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .btn-remove-secondary {
+      background: #fee2e2;
+      color: #b91c1c;
+      border: 1px solid #fecaca;
+      border-radius: 6px;
+      padding: 4px 10px;
+      font-size: 12px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+    .btn-remove-secondary:hover {
+      background: #dc2626;
+      color: #ffffff;
+      border-color: #dc2626;
+    }
+    @keyframes fadeInSlide {
+      from { opacity: 0; transform: translateY(-6px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    .form-group { margin-bottom: 20px; }
+    .form-group label { display: block; font-size: 13px; font-weight: 600; margin-bottom: 8px; color: var(--text); text-transform: uppercase; letter-spacing: 0.5px; }
+    .form-group input, .form-group select {
+      width: 100%;
+      padding: 12px;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      font-size: 14px;
+      transition: all 0.2s;
+      background: #fff;
+    }
+    .form-group input:focus, .form-group select:focus { outline: none; border-color: var(--primary-light); box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.15); }
+    .form-group input:disabled, .form-group select:disabled { background: #f1f5f9; color: var(--text-muted); cursor: not-allowed; }
+    .phone-input-container { display: flex; border: 1px solid var(--border); border-radius: 8px; overflow: hidden; }
+    .phone-prefix { background: #f1f5f9; border-right: 1px solid var(--border); padding: 12px 14px; font-size: 14px; font-weight: 600; color: var(--text-muted); }
+    .phone-input-container input { border: none; flex: 1; }
+    .custom-occ-group { display: none; margin-top: 10px; }
+    .security-lock-display { background: #f0fdfa; border: 1px dashed #5eead4; color: #0f766e; padding: 14px; border-radius: 10px; font-weight: 700; display: flex; justify-content: space-between; margin-bottom: 20px; font-size: 14px; }
+    .modal-actions { display: flex; justify-content: flex-end; gap: 12px; margin-top: 24px; }
+    .btn-cancel { background: #f1f5f9; color: var(--text-muted); border: none; padding: 12px 20px; border-radius: 8px; cursor: pointer; font-weight: 600; font-size: 14px; transition: background 0.2s; }
+    .btn-cancel:hover { background: #e2e8f0; color: var(--text); }
+    .btn-vacate {
+      background: #fef2f2;
+      color: #dc2626;
+      border: 1px solid #fecaca;
+      padding: 12px 20px;
+      border-radius: 8px;
+      font-weight: 600;
+      font-size: 14px;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      transition: all 0.2s;
+    }
+    .btn-vacate:hover {
+      background: #dc2626;
+      color: #ffffff;
+      border-color: #dc2626;
+    }
+    .btn-submit { color: white; border: none; padding: 12px 20px; border-radius: 8px; font-weight: 600; cursor: pointer; transition: all 0.2s; }
+
+    /* Rent Collection Styles */
     .pending-collect-container { display: flex; flex-direction: column; gap: 16px; margin-bottom: 10px; }
     .collect-month-row { border: 1px solid var(--border); border-radius: 12px; padding: 16px; background: #f8fafc; }
     .collect-month-header { display: flex; justify-content: space-between; align-items: center; }
     .collect-month-info { display: flex; flex-direction: column; gap: 4px; }
     .collect-month-name { font-weight: 700; color: var(--text); font-size: 15px; }
     .collect-month-dueamt { font-size: 13.5px; color: var(--danger); font-weight: 600; }
-    
     .collect-input-wrapper { display: none; margin-top: 14px; padding-top: 14px; border-top: 1px dashed var(--border); }
     .collect-field-group { display: flex; gap: 10px; align-items: center; }
     .collect-field-group input { flex: 1; padding: 10px; border: 1px solid var(--border); border-radius: 8px; font-size: 14px; font-weight: 600; }
-    
     .btn-action-pay { background: var(--primary-light); color: white; border: none; padding: 8px 16px; border-radius: 8px; cursor: pointer; font-weight: 600; font-size: 13px; transition: all 0.2s; }
     .btn-action-pay:hover { background: var(--primary); }
     .btn-action-submit { background: var(--success); color: white; border: none; padding: 10px 16px; border-radius: 8px; cursor: pointer; font-weight: 600; font-size: 13px; transition: all 0.2s; }
-
-    /* Advance Section Trigger */
     .btn-future-trigger { background: #f1f5f9; color: var(--text); border: 1px solid var(--border); width: 100%; padding: 12px; border-radius: 10px; font-weight: 600; cursor: pointer; text-align: center; font-size: 13.5px; transition: all 0.2s; margin-top: 10px; }
     .btn-future-trigger:hover { background: #e2e8f0; }
-    .future-months-panel { display: none; margin-top: 12px; display: flex; flex-direction: column; gap: 12px; padding-top: 12px; border-top: 1px dashed var(--border); }
+    .future-months-panel { display: none; margin-top: 12px; flex-direction: column; gap: 12px; padding-top: 12px; border-top: 1px dashed var(--border); }
 
-    /* Form Design elements */
-    .form-group { margin-bottom: 20px; }
-    .form-group label { display: block; font-size: 13px; font-weight: 600; margin-bottom: 8px; color: var(--text); text-transform: uppercase; letter-spacing: 0.5px; }
-    .form-group input, .form-group select { width: 100%; padding: 12px; border: 1px solid var(--border); border-radius: 8px; box-sizing: border-box; font-size: 14px; transition: all 0.2s; background: #fff; }
-    .form-group input:focus, .form-group select:focus { outline: none; border-color: var(--primary-light); box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.15); }
-    .form-group input:disabled, .form-group select:disabled { background: #f1f5f9; color: var(--text-muted); cursor: not-allowed; }
-    
-    .phone-input-container { display: flex; border: 1px solid var(--border); border-radius: 8px; overflow: hidden; }
-    .phone-prefix { background: #f1f5f9; border-right: 1px solid var(--border); padding: 12px 14px; font-size: 14px; font-weight: 600; color: var(--text-muted); }
-    .phone-input-container input { border: none; flex: 1; }
-
-    .modal-actions { display: flex; justify-content: flex-end; gap: 12px; margin-top: 24px; }
-    .btn-cancel { background: #f1f5f9; color: var(--text-muted); border: none; padding: 12px 20px; border-radius: 8px; cursor: pointer; font-weight: 600; font-size: 14px; transition: background 0.2s; }
-    .btn-cancel:hover { background: #e2e8f0; color: var(--text); }
-    .btn-submit { color: white; border: none; padding: 12px 20px; border-radius: 8px; font-weight: 600; cursor: pointer; transition: all 0.2s; }
-    
-    /* History Window Section */
+    /* Statement & History Styles */
     .btn-history-trigger { background: transparent; color: var(--primary-light); border: 1px dashed var(--primary-light); width: 100%; padding: 12px; border-radius: 10px; font-weight: 600; cursor: pointer; text-align: center; font-size: 14px; transition: all 0.2s; margin-top: 15px; margin-bottom: 5px; }
     .btn-history-trigger:hover { background: #eff6ff; color: var(--primary); }
-    
-    .history-dropdown-panel { display: none; margin-top: 15px; background: #f8fafc; border: 1px solid var(--border); border-radius: 12px; padding: 16px; animation: slideDown 0.25s ease-out; }
-    @keyframes slideDown { from { opacity: 0; transform: translateY(-8px); } to { opacity: 1; transform: translateY(0); } }
-
+    .history-dropdown-panel { display: none; margin-top: 15px; background: #f8fafc; border: 1px solid var(--border); border-radius: 12px; padding: 16px; }
     .breakdown-box { display: flex; flex-direction: column; gap: 10px; margin-bottom: 20px; }
     .month-status-card { background: var(--surface); border: 1px solid var(--border); border-radius: 10px; padding: 14px 18px; display: flex; justify-content: space-between; align-items: center; }
     .month-status-card.unpaid-card { border-left: 4px solid var(--danger); background: #fef2f2; }
     .month-status-card.paid-card { border-left: 4px solid var(--success); background: #f0fdf4; }
     .month-status-card.partial-card { border-left: 4px solid var(--warning); background: #fffbeb; }
-    
     .month-badge { font-size: 11px; font-weight: 700; padding: 4px 10px; border-radius: 6px; text-transform: uppercase; }
     .month-badge.unpaid { background: #fee2e2; color: #991b1b; }
     .month-badge.paid { background: #d1fae5; color: #065f46; }
     .month-badge.partial { background: #fef3c7; color: #92400e; }
-
     .history-card-box { background: var(--surface); border: 1px solid var(--border); border-radius: 10px; padding: 12px; max-height: 180px; overflow-y: auto; }
-    .history-item { font-size: 13px; padding: 10px; border-bottom: 1px solid #f1f5f9; display: flex; justify-content: space-between; align-items: center; background: var(--surface); margin-bottom: 6px; border-radius: 6px; border: 1px solid #f8fafc; }
+    .history-item { font-size: 13px; padding: 10px; border-bottom: 1px solid #f1f5f9; display: flex; justify-content: space-between; align-items: center; background: var(--surface); margin-bottom: 6px; border-radius: 6px; }
     .history-item:last-child { margin-bottom: 0; border-bottom: none; }
-    
+
     .empty-msg { text-align: center; padding: 40px; color: var(--text-muted); font-style: italic; }
-    .security-lock-display { background: #f0fdfa; border: 1px dashed #5eead4; color: #0f766e; padding: 14px; border-radius: 10px; font-weight: 700; display: flex; justify-content: space-between; margin-bottom: 20px; font-size: 14px; }
-    .custom-occ-group { display: none; margin-top: 10px; }
+
+    .header-spacer {
+      width: 140px;
+      visibility: hidden;
+    }
+    @media (max-width: 600px) {
+      .header-spacer { display: none; }
+    }
+
+    /* 🏷️ Vacant Breakdown in Register View */
+    .vacant-breakdown-bar {
+      margin-top: 18px;
+      padding: 12px 18px;
+      background: #f0fdf4;
+      border: 1px solid #bbf7d0;
+      border-radius: 12px;
+      display: flex;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 12px;
+    }
+    .vacant-breakdown-title {
+      font-size: 13px;
+      font-weight: 700;
+      color: #166534;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      text-transform: uppercase;
+      letter-spacing: 0.3px;
+    }
+    .vacant-breakdown-icon {
+      font-size: 14px;
+    }
+    .vacant-breakdown-pills {
+      display: inline-flex;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+    .vacant-breakdown-pill {
+      background: #ffffff;
+      border: 1px solid #86efac;
+      padding: 5px 12px;
+      border-radius: 8px;
+      font-size: 13px;
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      box-shadow: 0 1px 2px rgba(16, 185, 129, 0.08);
+    }
+    .vacant-pill-name {
+      font-weight: 700;
+      color: #065f46;
+    }
+    .vacant-pill-count {
+      font-weight: 600;
+      color: #059669;
+    }
+    .vacant-breakdown-pill.vacant-none {
+      color: #64748b;
+      border-color: #cbd5e1;
+      background: #f8fafc;
+    }
+    .vacant-breakdown-sep {
+      color: #86efac;
+      font-weight: 700;
+      font-size: 14px;
+    }
+
+    /* 🏷️ Quick Summary Tag on Building Card */
+    .b-vacant-summary-tag {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      background: #ecfdf5;
+      border: 1px solid #a7f3d0;
+      color: #047857;
+      padding: 8px 12px;
+      border-radius: 8px;
+      font-size: 13px;
+      font-weight: 700;
+      margin: 2px 0 8px 0;
+      width: fit-content;
+      max-width: 100%;
+      flex-wrap: wrap;
+    }
+    .b-vacant-summary-tag .b-vacant-dot {
+      font-size: 10px;
+      display: inline-flex;
+      align-items: center;
+    }
+    .b-vacant-summary-tag .b-vacant-sep {
+      color: #6ee7b7;
+      margin: 0 4px;
+      font-weight: 700;
+    }
+    .b-vacant-summary-tag.is-empty {
+      background: #f8fafc;
+      border-color: #e2e8f0;
+      color: #64748b;
+    }
+
+    @media (max-width: 768px) {
+      .matrix-controls-bar { flex-direction: column; align-items: stretch; }
+      .matrix-search-box { width: 100%; }
+      .room-box-row,
+      .room-card-item {
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+        justify-content: space-between;
+        flex-wrap: nowrap;
+        gap: 10px;
+        padding: 12px 14px;
+      }
+      .room-identity-group { width: auto; flex-shrink: 0; }
+      .room-status-group { width: auto; flex-shrink: 0; }
+      .room-details-group { flex: 1 1 auto; min-width: 0; }
+      .room-actions-group { width: auto; flex-shrink: 0; display: flex; align-items: center; gap: 6px; flex-wrap: nowrap; }
+    }
+
+    /* 📱 Compact Mobile Row Layout for Room Cards */
+    @media (max-width: 640px) {
+      .container {
+        padding: 0 10px 40px;
+      }
+      .matrix-card {
+        padding: 14px 10px;
+      }
+      .room-matrix-list {
+        gap: 8px;
+      }
+      .room-box-row,
+      .room-card-item {
+        display: flex !important;
+        flex-direction: row !important;
+        align-items: center !important;
+        justify-content: space-between !important;
+        flex-wrap: nowrap !important;
+        padding: 8px 10px !important;
+        gap: 8px !important;
+        min-width: 0 !important;
+        box-sizing: border-box !important;
+      }
+      .room-identity-group {
+        width: auto !important;
+        flex-shrink: 0 !important;
+        min-width: 0 !important;
+      }
+      .room-number-title,
+      .room-card-item .room-title {
+        font-size: 13px !important;
+        font-weight: 700 !important;
+        white-space: nowrap !important;
+        line-height: 1.2 !important;
+      }
+      .room-type-tag {
+        font-size: 10.5px !important;
+        white-space: nowrap !important;
+        margin-top: 1px !important;
+      }
+      .room-status-group {
+        width: auto !important;
+        flex-shrink: 0 !important;
+      }
+      .room-status-badge,
+      .room-card-item .status-badge {
+        padding: 3px 7px !important;
+        font-size: 11px !important;
+        white-space: nowrap !important;
+        letter-spacing: 0 !important;
+        gap: 3px !important;
+      }
+      .room-details-group {
+        flex: 1 1 auto !important;
+        min-width: 0 !important;
+        gap: 2px !important;
+        overflow: hidden !important;
+      }
+      .room-rent-info,
+      .room-card-item .room-rent-info {
+        font-size: 11.5px !important;
+        white-space: nowrap !important;
+        overflow: hidden !important;
+        text-overflow: ellipsis !important;
+        line-height: 1.2 !important;
+      }
+      .tenant-name-row {
+        font-size: 11.5px !important;
+        white-space: nowrap !important;
+        overflow: hidden !important;
+        text-overflow: ellipsis !important;
+        gap: 4px !important;
+      }
+      .room-sub-info {
+        font-size: 10px !important;
+        white-space: nowrap !important;
+        overflow: hidden !important;
+        text-overflow: ellipsis !important;
+      }
+      .dues-badge {
+        padding: 2px 5px !important;
+        font-size: 9.5px !important;
+        white-space: nowrap !important;
+      }
+      .room-actions-group {
+        width: auto !important;
+        flex-shrink: 0 !important;
+        display: flex !important;
+        align-items: center !important;
+        gap: 4px !important;
+        flex-wrap: nowrap !important;
+      }
+      .btn-room-action,
+      .room-card-item .btn-action {
+        padding: 6px 9px !important;
+        font-size: 11.5px !important;
+        margin: 0 !important;
+        white-space: nowrap !important;
+        border-radius: 6px !important;
+      }
+      .btn-text-full {
+        display: none !important;
+      }
+    }
+
+    /* 📜 History / Past Tenants Styles */
+    .btn-history-header {
+      display: inline-flex !important;
+      visibility: visible !important;
+      opacity: 1 !important;
+      z-index: 50;
+      background: #1e40af !important;
+      color: #ffffff !important;
+      border: none;
+      padding: 8px 16px;
+      border-radius: 8px;
+      font-weight: 700;
+      font-size: 13.5px;
+      cursor: pointer;
+      align-items: center;
+      gap: 6px;
+      box-shadow: 0 2px 6px rgba(30, 64, 175, 0.25);
+      transition: all 0.2s ease;
+      white-space: nowrap;
+    }
+    .btn-history-header:hover {
+      background: #1d4ed8 !important;
+      transform: translateY(-1px);
+      box-shadow: 0 4px 10px rgba(30, 64, 175, 0.35);
+    }
+    .btn-history-header:active {
+      transform: translateY(0);
+    }
+
+    .history-modal-content {
+      max-width: 580px;
+      width: 92%;
+    }
+    .history-modal-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      margin-bottom: 16px;
+      position: relative;
+    }
+    .history-modal-subtitle {
+      font-size: 13px;
+      color: var(--text-muted);
+      margin-top: 4px;
+    }
+    .history-close-x {
+      background: transparent;
+      border: none;
+      font-size: 20px;
+      color: var(--text-muted);
+      cursor: pointer;
+      padding: 4px 8px;
+      border-radius: 6px;
+      transition: all 0.15s;
+    }
+    .history-close-x:hover {
+      background: #f1f5f9;
+      color: var(--text);
+    }
+    .history-search-container {
+      display: flex;
+      align-items: center;
+      background: #f8fafc;
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 8px 14px;
+      margin-bottom: 16px;
+      gap: 8px;
+    }
+    .history-search-container input {
+      border: none;
+      background: transparent;
+      outline: none;
+      width: 100%;
+      font-size: 13.5px;
+      color: var(--text);
+    }
+    .history-list-wrapper {
+      max-height: 52vh;
+      overflow-y: auto;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      padding-right: 4px;
+    }
+    .past-tenant-item {
+      background: #ffffff;
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      overflow: hidden;
+      transition: all 0.2s ease;
+      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.03);
+    }
+    .past-tenant-item:hover {
+      border-color: #cbd5e1;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.06);
+    }
+    .past-tenant-header-row {
+      padding: 14px 16px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      cursor: pointer;
+      user-select: none;
+      background: #ffffff;
+      transition: background 0.15s;
+    }
+    .past-tenant-header-row:hover {
+      background: #f8fafc;
+    }
+    .past-tenant-identity {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+    .past-tenant-avatar {
+      width: 38px;
+      height: 38px;
+      border-radius: 50%;
+      background: #f1f5f9;
+      color: var(--text-muted);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 18px;
+      flex-shrink: 0;
+      border: 1px solid var(--border);
+    }
+    .past-tenant-name {
+      font-weight: 700;
+      font-size: 15px;
+      color: var(--text);
+    }
+    .past-tenant-phone {
+      font-size: 13px;
+      color: var(--text-muted);
+      margin-top: 2px;
+      display: flex;
+      align-items: center;
+      gap: 4px;
+    }
+    .past-tenant-meta {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .past-tenant-room-badge {
+      background: #f1f5f9;
+      color: var(--text-muted);
+      padding: 3px 8px;
+      border-radius: 6px;
+      font-size: 12px;
+      font-weight: 600;
+    }
+    .past-tenant-chevron {
+      font-size: 12px;
+      color: var(--text-muted);
+      transition: transform 0.2s ease;
+      padding: 4px;
+    }
+    .past-tenant-chevron.open {
+      transform: rotate(180deg);
+    }
+    .past-tenant-details-card {
+      background: #f8fafc;
+      border-top: 1px solid var(--border);
+      padding: 16px;
+      animation: fadeInDetails 0.2s ease;
+    }
+    @keyframes fadeInDetails {
+      from { opacity: 0; transform: translateY(-4px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    .past-details-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 12px;
+    }
+    @media (max-width: 480px) {
+      .past-details-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+    .past-detail-box {
+      background: #ffffff;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 10px 12px;
+    }
+    .past-detail-label {
+      font-size: 11px;
+      text-transform: uppercase;
+      font-weight: 700;
+      color: var(--text-muted);
+      letter-spacing: 0.4px;
+      margin-bottom: 4px;
+    }
+    .past-detail-value {
+      font-size: 14px;
+      font-weight: 700;
+      color: var(--text);
+    }
+    .history-status-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      padding: 3px 10px;
+      border-radius: 20px;
+      font-size: 12px;
+      font-weight: 700;
+      letter-spacing: 0.3px;
+      text-transform: uppercase;
+    }
+    .history-status-pill.status-paid {
+      background: #d1fae5;
+      color: #065f46;
+      border: 1px solid #a7f3d0;
+    }
+    .history-status-pill.status-unpaid {
+      background: #fee2e2;
+      color: #b91c1c;
+      border: 1px solid #fecaca;
+    }
+    .history-status-pill.status-neutral {
+      background: #f1f5f9;
+      color: #475569;
+      border: 1px solid #cbd5e1;
+    }
   </style>
 </head>
 <body>
 
   <!-- Top Bar Layout -->
   <div class="header">
-    <button class="back-btn" onclick="window.history.back();">← Back</button>
-    <div class="title">Rent Ledger Matrix</div>
-    <button class="add-booking-btn" onclick="window.openAddModal()">+ Add New Record</button>
+    <button class="back-btn" id="headerBackBtn" onclick="window.handleHeaderBack()">← Back</button>
+    <div class="title" id="headerTitle">Smart Booking Register</div>
+    <div class="header-spacer"></div>
   </div>
 
-  <!-- Central Register Log Box -->
   <div class="container">
-    <div class="ledger-card">
-      <div style="font-weight: 700; border-bottom: 2px solid var(--primary-light); padding-bottom: 14px; color: var(--text); font-size: 17px;" id="ledgerHeaderTitle">📋 Rent Register Log</div>
-      
-      <div class="booking-list" id="bookingListHolder">
-        <div class="empty-msg">Syncing database statements... ⏳</div>
+    <!-- VIEW 1: Building Selection View (#buildingView) -->
+    <div id="buildingView">
+      <div class="view-header-box">
+        <div>
+          <h2 class="view-main-title">🏢 Select Building</h2>
+          <p class="view-sub-title">Select a property below to open its dedicated Room Matrix Register & manage bookings.</p>
+        </div>
+      </div>
+
+      <div id="buildingsListHolder">
+        <div class="empty-msg">Fetching your properties... Live system syncing ⏳</div>
+      </div>
+    </div>
+
+    <!-- VIEW 2: Room Matrix Register View (#roomMatrixView) -->
+    <div id="roomMatrixView" style="display: none;">
+      <!-- Hero Banner & Stats for Selected Building -->
+      <div id="matrixBuildingHero"></div>
+
+      <!-- Filters & Search Toolbar -->
+      <div class="matrix-controls-bar">
+        <div class="filter-tabs-group">
+          <button class="filter-tab-btn active" id="tabAll" onclick="window.filterRoomMatrix('all')">All Rooms (<span id="countAll">0</span>)</button>
+          <button class="filter-tab-btn" id="tabVacant" onclick="window.filterRoomMatrix('vacant')">🟢 Vacant (<span id="countVacant">0</span>)</button>
+          <button class="filter-tab-btn" id="tabOccupied" onclick="window.filterRoomMatrix('occupied')">🟡 Occupied (<span id="countOccupied">0</span>)</button>
+          <button class="filter-tab-btn" id="tabDues" onclick="window.filterRoomMatrix('dues')">⚠️ Has Dues (<span id="countDues">0</span>)</button>
+        </div>
+        <div class="matrix-search-box">
+          <span style="margin-right: 8px;">🔍</span>
+          <input type="text" id="matrixSearchInput" placeholder="Search room no. or tenant..." oninput="window.onSearchMatrixInput(this.value)">
+        </div>
+      </div>
+
+      <!-- Room Matrix Rows/Boxes Holder -->
+      <div class="matrix-card">
+        <div class="matrix-card-header">
+          <div style="font-weight: 700; color: var(--text); font-size: 16.5px;" id="matrixLedgerMonthTitle">📋 Room Matrix Register</div>
+          <span style="font-size: 13px; color: var(--text-muted);" id="matrixFilteredCount">Showing all units</span>
+        </div>
+        <div id="roomsMatrixHolder">
+          <div class="empty-msg">Loading room matrix... ⏳</div>
+        </div>
       </div>
     </div>
   </div>
 
-  <!-- MODAL 1: Create Profile Form -->
+  <!-- MODAL 1: Create / Book Room Profile Form -->
   <div class="modal" id="addModal">
     <div class="modal-content">
-      <div class="modal-title">Create Tenant Profile</div>
+      <div class="modal-header-with-close">
+        <div class="modal-title" id="addModalTitle">-</div>
+        <button type="button" class="history-close-x" onclick="window.closeModal('addModal')" title="Close">✕</button>
+      </div>
       <form id="addForm" onsubmit="window.saveNewBooking(event)">
+        <input type="hidden" id="addPropertyId">
+        <!-- Space Optimization: Redundant Room Designation and Accommodation Type hidden from form body -->
+        <input type="hidden" id="addRoomTypeSelect" value="Room">
+        <input type="hidden" id="addRoomNumberInput" value="">
+
+        <!-- Primary Tenant Details -->
         <div class="form-group">
           <label>Renter Full Name</label>
           <input type="text" id="addName" placeholder="John Doe" required>
@@ -161,23 +1089,9 @@
             <input type="tel" id="addMobile" pattern="[0-9]{10}" maxlength="10" placeholder="9876543210" oninput="this.value = this.value.replace(/[^0-9]/g, '').slice(0, 10);" required>
           </div>
         </div>
-        <div style="display: flex; gap: 12px;">
-          <div class="form-group" style="flex:1;">
-            <label>Accommodation Type</label>
-            <select id="addRoomTypeSelect" required>
-              <option value="">-- Select --</option>
-              <option value="Flat">Flat</option>
-              <option value="Room">Room</option>
-            </select>
-          </div>
-          <div class="form-group" style="flex:1;">
-            <label>Designation No.</label>
-            <input type="text" id="addRoomNumberInput" placeholder="e.g. 302" required>
-          </div>
-        </div>
         <div class="form-group">
-          <label>Contractual Rent Per Month (₹)</label>
-          <input type="number" id="addRent" placeholder="Monthly rent price" required>
+          <label>Tenant Email Address</label>
+          <input type="email" id="addEmail" placeholder="tenant@example.com">
         </div>
         <div class="form-group">
           <label>Occupation Status</label>
@@ -186,11 +1100,61 @@
             <option value="Student">Student</option>
             <option value="Teacher">Teacher</option>
             <option value="Business">Business</option>
+            <option value="Working Professional">Working Professional</option>
             <option value="custom">+ Custom Profession...</option>
           </select>
           <div class="custom-occ-group" id="customOccWrapper">
             <input type="text" id="addCustomOccupation" placeholder="Type custom occupation">
           </div>
+        </div>
+
+        <!-- Multi-Tenant Support Section (Double Bed / Sharing Rooms / Flats) -->
+        <div id="secondaryTenantSection" style="display: none; margin-bottom: 20px;">
+          <div id="secondaryTenantFields" class="secondary-tenant-card" style="display: none;">
+            <div class="secondary-tenant-header">
+              <span class="secondary-tenant-title">
+                👥 Secondary Tenant / Roommate (Tenant 2)
+              </span>
+              <button type="button" class="btn-remove-secondary" onclick="window.removeSecondaryTenantForm()">
+                ✖ Remove
+              </button>
+            </div>
+            <div class="form-group">
+              <label>Tenant 2 Full Name</label>
+              <input type="text" id="addSecondaryName" placeholder="e.g. Jane Doe">
+            </div>
+            <div class="form-group">
+              <label>Tenant 2 Mobile Contact Number</label>
+              <div class="phone-input-container">
+                <span class="phone-prefix">+91</span>
+                <input type="tel" id="addSecondaryMobile" pattern="[0-9]{10}" maxlength="10" placeholder="9876543210" oninput="this.value = this.value.replace(/[^0-9]/g, '').slice(0, 10);">
+              </div>
+            </div>
+            <div class="form-group">
+              <label>Tenant 2 Email Address</label>
+              <input type="email" id="addSecondaryEmail" placeholder="roommate@example.com">
+            </div>
+            <div class="form-group" style="margin-bottom: 0;">
+              <label>Tenant 2 Occupation Status</label>
+              <select id="addSecondaryOccupationSelect" onchange="window.onSecondaryOccupationChanged()">
+                <option value="">-- Choose Profession --</option>
+                <option value="Student">Student</option>
+                <option value="Teacher">Teacher</option>
+                <option value="Business">Business</option>
+                <option value="Working Professional">Working Professional</option>
+                <option value="custom">+ Custom Profession...</option>
+              </select>
+              <div class="custom-occ-group" id="secondaryCustomOccWrapper" style="display: none; margin-top: 8px;">
+                <input type="text" id="addSecondaryCustomOccupation" placeholder="Type custom occupation">
+              </div>
+            </div>
+          </div>
+          <div id="extraTenantsContainer"></div>
+        </div>
+
+        <div class="form-group">
+          <label>Contractual Rent Per Month (₹)</label>
+          <input type="number" id="addRent" placeholder="Monthly rent price" required>
         </div>
         <div class="form-group">
           <label>Escrow Security Deposit (₹) [Locked Vault]</label>
@@ -200,51 +1164,42 @@
           <label>Move-in / Joining Date</label>
           <input type="date" id="addJoiningDate" required>
         </div>
-        <div class="modal-actions">
-          <button type="button" class="btn-cancel" onclick="window.closeModal('addModal')">Cancel</button>
-          <button type="submit" class="btn-submit" style="background:var(--primary-light);">Register Record</button>
+        <div class="modal-actions modal-actions-add-tenant">
+          <button type="button" class="btn-add-tenant-footer" id="btnAddTenantFooter" onclick="window.handleAddTenantFooterClick()" title="Add Tenant" aria-label="Add Tenant">➕</button>
+          <button type="submit" class="btn-submit" id="btnRegisterRecord" style="background:var(--primary-light); margin-left: auto;">Register Record</button>
         </div>
       </form>
     </div>
   </div>
 
-  <!-- MODAL 2: 💳 Dynamic Monthwise Collector Box -->
+  <!-- MODAL 2: Collect Rental Payment -->
   <div class="modal" id="rentModal">
     <div class="modal-content">
       <div class="modal-title">Collect Rental Payment</div>
       <div style="font-size: 14px; font-weight: 600; color: var(--text-muted); margin-bottom: 16px;">
         Tenant: <span id="popRentName" style="color: var(--primary); font-weight: 700;">-</span>
       </div>
-      
-      <!-- Current & Past Backlog Months Box -->
       <div id="currentMonthContainer" class="pending-collect-container"></div>
-      
-      <!-- Trigger Button for Future Months Extension -->
       <button type="button" class="btn-future-trigger" id="futureMonthsTriggerBtn" onclick="window.toggleFutureMonthsPanel()">➕ Pay for Future Months (Next 5 Months)</button>
-      
-      <!-- Collapsible Future Months Container -->
       <div class="future-months-panel" id="futureMonthsPanel">
         <div id="futureMonthsContainer" class="pending-collect-container"></div>
       </div>
-
       <div class="modal-actions">
         <button type="button" class="btn-cancel" onclick="window.closeModal('rentModal')">Close Window</button>
       </div>
     </div>
   </div>
 
-  <!-- MODAL 3: Audit View -->
+  <!-- MODAL 3: Tenant Details & Statement History -->
   <div class="modal" id="detailModal">
     <div class="modal-content">
       <div class="modal-title">Tenant Audit Summary</div>
       <form id="editForm" onsubmit="window.saveEditedDetails(event)">
         <input type="hidden" id="detailTenantId">
-        
         <div class="security-lock-display">
           <span>🛡️ VAULT LOCKED SECURITY DEPOSIT:</span>
           <span id="detailSecurityDisplay">₹0</span>
         </div>
-
         <div class="form-group">
           <label>Full Legal Name</label>
           <input type="text" id="detailName" required disabled>
@@ -255,6 +1210,10 @@
             <span class="phone-prefix">+91</span>
             <input type="tel" id="detailMobile" pattern="[0-9]{10}" maxlength="10" oninput="this.value = this.value.replace(/[^0-9]/g, '').slice(0, 10);" required disabled>
           </div>
+        </div>
+        <div class="form-group">
+          <label>Registered Email Address</label>
+          <input type="email" id="detailEmail" placeholder="Not Provided" disabled>
         </div>
         <div style="display:flex; gap:12px;">
           <div class="form-group" style="flex:1;">
@@ -282,18 +1241,43 @@
           <input type="text" id="detailJoiningDate" disabled style="background: #f1f5f9; font-weight: 600;">
         </div>
 
+        <!-- Secondary Tenant View in Audit Modal -->
+        <div id="detailSecondaryGroup" style="display: none; margin-bottom: 20px; padding: 14px; background: #f8fafc; border: 1.5px dashed #cbd5e1; border-radius: 12px;">
+          <div style="font-weight: 700; font-size: 13px; color: var(--primary); margin-bottom: 12px; display: flex; align-items: center; gap: 6px;">
+            👥 Secondary Tenant / Roommate (Tenant 2)
+          </div>
+          <div class="form-group">
+            <label>Tenant 2 Full Name</label>
+            <input type="text" id="detailSecondaryName" disabled>
+          </div>
+          <div class="form-group">
+            <label>Tenant 2 Mobile Contact</label>
+            <div class="phone-input-container">
+              <span class="phone-prefix">+91</span>
+              <input type="tel" id="detailSecondaryMobile" pattern="[0-9]{10}" maxlength="10" disabled>
+            </div>
+          </div>
+          <div class="form-group">
+            <label>Tenant 2 Email Address</label>
+            <input type="email" id="detailSecondaryEmail" disabled>
+          </div>
+          <div class="form-group" style="margin-bottom: 0;">
+            <label>Tenant 2 Professional Status</label>
+            <input type="text" id="detailSecondaryOccupation" disabled>
+          </div>
+        </div>
+
         <button type="button" class="btn-history-trigger" id="toggleHistoryBtn" onclick="window.toggleHistoryPanel()">📊 View Statement & Transaction History ↓</button>
-        
         <div class="history-dropdown-panel" id="historyDropdownPanel">
           <label style="font-size: 12px; font-weight: 700; color: var(--text); display:block; margin-bottom:8px; text-transform: uppercase;">📊 Cyclical Statement Balance</label>
           <div class="breakdown-box" id="breakdownContainer"></div>
-
           <label style="font-size: 12px; font-weight: 700; color: var(--primary-light); display:block; margin-top:15px; margin-bottom:8px; text-transform: uppercase;">💰 Verified Transaction Receipts</label>
           <div class="history-card-box" id="historyContainer"></div>
         </div>
 
         <div class="modal-actions" id="detailActions">
           <button type="button" class="btn-cancel" onclick="window.closeModal('detailModal')">Close</button>
+          <button type="button" class="btn-vacate" id="detailVacateBtn" onclick="window.vacateRoom(document.getElementById('detailTenantId').value)">🗑️ Delete / Vacate Room</button>
           <button type="button" class="btn-submit" id="editTriggerBtn" onclick="window.enableEditMode()" style="background: var(--warning);">Modify Data</button>
           <button type="submit" class="btn-submit" id="saveEditBtn" style="display:none; background: var(--success);">Commit Changes</button>
         </div>
@@ -301,10 +1285,36 @@
     </div>
   </div>
 
+  <!-- MODAL 4: Past Tenants / History Modal -->
+  <div class="modal" id="historyModal">
+    <div class="modal-content history-modal-content">
+      <div class="history-modal-header">
+        <div>
+          <div class="modal-title" style="margin-bottom: 4px; padding-bottom: 6px;">📜 Past Tenants History</div>
+          <div class="history-modal-subtitle" id="historyModalSubtitle">Records of vacated and checked-out tenants</div>
+        </div>
+        <button type="button" class="history-close-x" onclick="window.closeModal('historyModal')" title="Close">✕</button>
+      </div>
+
+      <div class="history-search-container">
+        <span class="history-search-icon">🔍</span>
+        <input type="text" id="historySearchInput" placeholder="Filter by past tenant name or phone..." oninput="window.filterPastTenantsList(this.value)">
+      </div>
+
+      <div class="history-list-wrapper" id="pastTenantsListHolder">
+        <div class="empty-msg">Select a building to view past tenants.</div>
+      </div>
+
+      <div class="modal-actions" style="margin-top: 20px;">
+        <button type="button" class="btn-cancel" onclick="window.closeModal('historyModal')">Close Window</button>
+      </div>
+    </div>
+  </div>
+
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
     import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
-    import { getFirestore, collection, addDoc, getDocs, doc, updateDoc, deleteDoc, query, where, orderBy } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+    import { getFirestore, collection, addDoc, getDocs, doc, getDoc, updateDoc, deleteDoc, query, where, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
 
     const firebaseConfig = {
       apiKey: "AIzaSyCxP405IU4nljGIF9LzA4WeVLVk2kb8OEU",
@@ -320,33 +1330,1195 @@
     const db = getFirestore(app);
 
     let currentOwnerUid = null;
+    let currentActiveBuildingId = null;
+    let currentBuildingData = null;
     let localTenantsCache = {};
+    let currentMatrixItems = [];
+    let activeMatrixFilter = 'all';
+    let searchMatrixQuery = '';
 
     const today = new Date();
-    const currentMonthYearStr = String(today.getMonth() + 1).padStart(2, '0') + "-" + today.getFullYear();
     const currentMonthName = today.toLocaleString('default', { month: 'long' }) + " " + today.getFullYear();
-    document.getElementById("ledgerHeaderTitle").innerText = `📋 Rent Register Log: ${currentMonthName}`;
 
-    onAuthStateChanged(auth, (user) => {
-      if (!user) { window.location.href = "account.html"; } 
-      else { 
-        currentOwnerUid = user.uid; 
-        loadLedgerEngine(); 
+    onAuthStateChanged(auth, async (user) => {
+      if (!user) {
+        window.location.href = "account.html";
+      } else {
+        currentOwnerUid = user.uid;
+        const urlParams = new URLSearchParams(window.location.search);
+        const paramBuildingId = urlParams.get('buildingId');
+        if (paramBuildingId) {
+          window.openBuildingRegister(paramBuildingId);
+        } else {
+          window.showBuildingList();
+        }
       }
     });
+
+    window.addEventListener('popstate', () => {
+      const urlParams = new URLSearchParams(window.location.search);
+      const paramBuildingId = urlParams.get('buildingId');
+      if (paramBuildingId) {
+        window.openBuildingRegister(paramBuildingId);
+      } else {
+        window.showBuildingList();
+      }
+    });
+
+    /* ========================================================
+       NAVIGATION & VIEW SWITCHING
+       ======================================================== */
+    window.handleHeaderBack = () => {
+      if (currentActiveBuildingId) {
+        window.showBuildingList();
+      } else {
+        window.location.href = 'account.html';
+      }
+    };
+
+    window.handleHeaderAction = () => {
+      if (currentActiveBuildingId) {
+        window.openBookRoomModal(currentActiveBuildingId);
+      } else {
+        window.location.href = 'add-room.html';
+      }
+    };
+
+    window.showBuildingList = () => {
+      currentActiveBuildingId = null;
+      currentBuildingData = null;
+
+      document.getElementById("roomMatrixView").style.display = "none";
+      document.getElementById("buildingView").style.display = "block";
+      document.getElementById("headerTitle").innerText = "Smart Booking Register";
+
+      const url = new URL(window.location);
+      url.searchParams.delete("buildingId");
+      window.history.pushState({}, "", url.pathname);
+
+      document.getElementById("headerBackBtn").innerText = "← Back to Profile";
+
+      loadBuildingsList();
+    };
+
+    window.openBuildingRegister = async (buildingId) => {
+      if (!buildingId) return;
+      currentActiveBuildingId = buildingId;
+
+      document.getElementById("buildingView").style.display = "none";
+      document.getElementById("roomMatrixView").style.display = "block";
+
+      activeMatrixFilter = 'all';
+      searchMatrixQuery = '';
+      const searchInput = document.getElementById("matrixSearchInput");
+      if (searchInput) searchInput.value = '';
+      updateFilterTabClasses('all');
+
+      const url = new URL(window.location);
+      url.searchParams.set("buildingId", buildingId);
+      window.history.pushState({ buildingId }, "", url);
+
+      document.getElementById("headerBackBtn").innerText = "← Back to Buildings";
+
+      const monthTitle = document.getElementById("matrixLedgerMonthTitle");
+      if (monthTitle) {
+        monthTitle.innerText = `📋 Room Matrix Register: ${currentMonthName}`;
+      }
+
+      await window.loadBuildingRegister(buildingId);
+    };
+
+    /* ========================================================
+       SHARED VACANCY & ROOM CONFIGURATION HELPERS
+       ======================================================== */
+    function extractConfiguredConfigs(building) {
+      if (!building) return [];
+      const configuredConfigs = [];
+
+      if (Array.isArray(building.configuredRoomTypes)) {
+        building.configuredRoomTypes.forEach(c => {
+          const count = Number(c.totalCount || c.total || c.units || 0);
+          if (count > 0) {
+            const typeName = c.type || c.roomType || c.name || "Unit";
+            const isFlat = typeName.toUpperCase().includes("FLAT");
+            configuredConfigs.push({
+              type: isFlat ? "Flat" : "Room",
+              category: typeName,
+              totalCount: count,
+              rent: Number(c.rent || c.price || 0),
+              prefix: c.prefix || (isFlat ? "Flat-" : "SR-"),
+              initialVacant: c.vacant !== undefined ? Number(c.vacant) : count
+            });
+          }
+        });
+      } else if (building.configuredRoomTypes && typeof building.configuredRoomTypes === 'object') {
+        Object.keys(building.configuredRoomTypes).forEach(key => {
+          const c = building.configuredRoomTypes[key];
+          const count = Number(c.totalCount || c.total || c.units || 0);
+          if (count > 0) {
+            const typeName = c.type || c.roomType || key;
+            const isFlat = typeName.toUpperCase().includes("FLAT");
+            configuredConfigs.push({
+              type: isFlat ? "Flat" : "Room",
+              category: typeName,
+              totalCount: count,
+              rent: Number(c.rent || c.price || 0),
+              prefix: c.prefix || (isFlat ? "Flat-" : "SR-"),
+              initialVacant: c.vacant !== undefined ? Number(c.vacant) : count
+            });
+          }
+        });
+      }
+
+      if (configuredConfigs.length === 0 && Array.isArray(building.roomTypes)) {
+        building.roomTypes.forEach(c => {
+          const count = Number(c.totalCount || c.total || c.units || 0);
+          if (count > 0) {
+            const typeName = c.name || c.roomType || c.type || "Unit";
+            const isFlat = typeName.toUpperCase().includes("FLAT");
+            configuredConfigs.push({
+              type: isFlat ? "Flat" : "Room",
+              category: typeName,
+              totalCount: count,
+              rent: Number(c.rent || c.price || 0),
+              prefix: c.prefix || (isFlat ? "Flat-" : "SR-"),
+              initialVacant: c.vacant !== undefined ? Number(c.vacant) : count
+            });
+          }
+        });
+      }
+
+      if (configuredConfigs.length === 0 && building.inventory) {
+        const inv = building.inventory;
+        if (inv.flats) {
+          if (inv.flats.bhk1 && Number(inv.flats.bhk1.total || inv.flats.bhk1.totalCount || 0) > 0) {
+            configuredConfigs.push({
+              type: "Flat",
+              category: "1 BHK FLAT",
+              totalCount: Number(inv.flats.bhk1.total || inv.flats.bhk1.totalCount),
+              rent: Number(inv.flats.bhk1.rent || 0),
+              prefix: "Flat-",
+              initialVacant: inv.flats.bhk1.vacant !== undefined ? Number(inv.flats.bhk1.vacant) : Number(inv.flats.bhk1.total || inv.flats.bhk1.totalCount)
+            });
+          }
+          if (inv.flats.bhk2 && Number(inv.flats.bhk2.total || inv.flats.bhk2.totalCount || 0) > 0) {
+            configuredConfigs.push({
+              type: "Flat",
+              category: "2 BHK FLAT",
+              totalCount: Number(inv.flats.bhk2.total || inv.flats.bhk2.totalCount),
+              rent: Number(inv.flats.bhk2.rent || 0),
+              prefix: "Flat-2-",
+              initialVacant: inv.flats.bhk2.vacant !== undefined ? Number(inv.flats.bhk2.vacant) : Number(inv.flats.bhk2.total || inv.flats.bhk2.totalCount)
+            });
+          }
+          if (inv.flats.bhk3 && Number(inv.flats.bhk3.total || inv.flats.bhk3.totalCount || 0) > 0) {
+            configuredConfigs.push({
+              type: "Flat",
+              category: "3 BHK FLAT",
+              totalCount: Number(inv.flats.bhk3.total || inv.flats.bhk3.totalCount),
+              rent: Number(inv.flats.bhk3.rent || 0),
+              prefix: "Flat-3-",
+              initialVacant: inv.flats.bhk3.vacant !== undefined ? Number(inv.flats.bhk3.vacant) : Number(inv.flats.bhk3.total || inv.flats.bhk3.totalCount)
+            });
+          }
+        }
+        if (inv.rooms) {
+          if (inv.rooms.single && Number(inv.rooms.single.total || inv.rooms.single.totalCount || 0) > 0) {
+            configuredConfigs.push({
+              type: "Room",
+              category: "SINGLE ROOM",
+              totalCount: Number(inv.rooms.single.total || inv.rooms.single.totalCount),
+              rent: Number(inv.rooms.single.rent || 0),
+              prefix: "SR-",
+              initialVacant: inv.rooms.single.vacant !== undefined ? Number(inv.rooms.single.vacant) : Number(inv.rooms.single.total || inv.rooms.single.totalCount)
+            });
+          }
+          if (inv.rooms.double && Number(inv.rooms.double.total || inv.rooms.double.totalCount || 0) > 0) {
+            configuredConfigs.push({
+              type: "Room",
+              category: "DOUBLE ROOM",
+              totalCount: Number(inv.rooms.double.total || inv.rooms.double.totalCount),
+              rent: Number(inv.rooms.double.rent || 0),
+              prefix: "DR-",
+              initialVacant: inv.rooms.double.vacant !== undefined ? Number(inv.rooms.double.vacant) : Number(inv.rooms.double.total || inv.rooms.double.totalCount)
+            });
+          }
+          if (inv.rooms.triple && Number(inv.rooms.triple.total || inv.rooms.triple.totalCount || 0) > 0) {
+            configuredConfigs.push({
+              type: "Room",
+              category: "TRIPLE ROOM",
+              totalCount: Number(inv.rooms.triple.total || inv.rooms.triple.totalCount),
+              rent: Number(inv.rooms.triple.rent || 0),
+              prefix: "TR-",
+              initialVacant: inv.rooms.triple.vacant !== undefined ? Number(inv.rooms.triple.vacant) : Number(inv.rooms.triple.total || inv.rooms.triple.totalCount)
+            });
+          }
+        }
+      }
+
+      if (configuredConfigs.length === 0) {
+        const rootTotal = Number(building.totalCount || building.totalRooms || building.totalUnits || 0);
+        if (rootTotal > 0) {
+          const isFlat = String(building.pgType || building.type || '').toUpperCase().includes("FLAT");
+          configuredConfigs.push({
+            type: isFlat ? "Flat" : "Room",
+            category: building.pgType || (isFlat ? "1 BHK FLAT" : "SINGLE ROOM"),
+            totalCount: rootTotal,
+            rent: Number(building.roomPrice || building.rent || 0),
+            prefix: isFlat ? "Flat-" : "SR-",
+            initialVacant: building.vacantRooms !== undefined ? Number(building.vacantRooms) : rootTotal
+          });
+        }
+      }
+
+      return configuredConfigs;
+    }
+
+    function formatShortRoomType(category) {
+      if (!category) return "Unit";
+      let s = String(category).trim();
+      const bhkMatch = s.match(/([1-9]\s*BHK)/i);
+      if (bhkMatch) return bhkMatch[1].toUpperCase();
+      if (/single/i.test(s)) return "Single Room";
+      if (/double/i.test(s)) return "Double Room";
+      if (/triple/i.test(s)) return "Triple Room";
+      return s.replace(/\bFLAT\b/i, '').replace(/\bROOM\b/i, 'Room').trim() || s;
+    }
+
+    function computeBuildingVacancy(building, buildingBookings = []) {
+      const configuredConfigs = extractConfiguredConfigs(building);
+      const unitsList = [];
+      configuredConfigs.forEach(cfg => {
+        for (let i = 1; i <= cfg.totalCount; i++) {
+          const padNum = String(i).padStart(2, '0');
+          const unitNumber = `${cfg.prefix}${padNum}`;
+          unitsList.push({
+            number: unitNumber,
+            rawNumber: padNum,
+            rawIndex: i,
+            type: cfg.type,
+            category: cfg.category,
+            rent: cfg.rent,
+            isOccupied: false
+          });
+        }
+      });
+
+      const matchedBookingIds = new Set();
+      unitsList.forEach(unit => {
+        const normUnit = unit.number.toLowerCase().replace(/[\s\-_]/g, "");
+        const normRaw = unit.rawNumber.toLowerCase();
+        const rawIdx = String(unit.rawIndex);
+
+        const match = buildingBookings.find(b => {
+          if (matchedBookingIds.has(b.id)) return false;
+          const st = (b.status || "Active").toLowerCase();
+          const rStatus = (b.roomStatus || "").toLowerCase();
+          if (st === "deleted" || st === "vacated" || st === "cancelled" || st === "inactive" || rStatus === "vacant" || b.isActive === false || b.isSecondaryTenant || b.tenantRole === "secondary") return false;
+          const bRoom = (b.roomDesignation || b.roomNumber || b.roomNo || "").toLowerCase().replace(/[\s\-_]/g, "");
+          if (!bRoom) return false;
+
+          if (bRoom === normUnit || bRoom === normRaw) return true;
+          if (bRoom === "flat" + rawIdx || bRoom === "flat" + normRaw) return true;
+          if (bRoom === "sr" + rawIdx || bRoom === "sr" + normRaw) return true;
+          if (bRoom === "dr" + rawIdx || bRoom === "dr" + normRaw) return true;
+          if (bRoom === "tr" + rawIdx || bRoom === "tr" + normRaw) return true;
+          if (bRoom === rawIdx && (b.roomType || '').toLowerCase() === unit.type.toLowerCase()) return true;
+
+          return false;
+        });
+
+        if (match) {
+          matchedBookingIds.add(match.id);
+          unit.isOccupied = true;
+        }
+      });
+
+      const vacantByType = {};
+      configuredConfigs.forEach(cfg => {
+        const cat = cfg.category || cfg.type;
+        vacantByType[cat] = 0;
+      });
+
+      unitsList.forEach(u => {
+        if (!u.isOccupied) {
+          const cat = u.category || u.type || "Unit";
+          vacantByType[cat] = (vacantByType[cat] || 0) + 1;
+        }
+      });
+
+      return { configuredConfigs, unitsList, vacantByType };
+    }
+
+    /* ========================================================
+       BUILDINGS LIST ENGINE (#buildingView)
+       ======================================================== */
+    async function loadBuildingsList() {
+      const holder = document.getElementById("buildingsListHolder");
+      if (!holder) return;
+      holder.innerHTML = `<div class="empty-msg">Fetching buildings from Firestore... ⏳</div>`;
+
+      try {
+        let snapshot = null;
+        try {
+          const qBuildings = query(collection(db, "buildings"), where("ownerUid", "==", currentOwnerUid));
+          const snap = await getDocs(qBuildings);
+          if (!snap.empty) snapshot = snap;
+          else {
+            const allBuildings = await getDocs(collection(db, "buildings"));
+            if (!allBuildings.empty) snapshot = allBuildings;
+          }
+        } catch (e) {
+          // Fallback if collection doesn't exist
+        }
+
+        if (!snapshot || snapshot.empty) {
+          try {
+            const qProps = query(collection(db, "pghub_properties"), where("ownerUid", "==", currentOwnerUid));
+            snapshot = await getDocs(qProps);
+          } catch (e) {}
+        }
+
+        holder.innerHTML = "";
+
+        if (!snapshot || snapshot.empty) {
+          holder.innerHTML = `
+            <div class="empty-msg" style="padding: 40px; background: white; border-radius: 16px; border: 1px dashed var(--border);">
+              <div style="font-size: 36px; margin-bottom: 10px;">🏢</div>
+              <h3 style="margin: 0 0 8px; color: var(--text);">No Buildings Found</h3>
+              <p style="color: var(--text-muted); margin-bottom: 16px;">No building records registered yet.</p>
+              <button class="add-booking-btn" onclick="window.location.href='add-room.html'">+ Add New Building</button>
+            </div>
+          `;
+          return;
+        }
+
+        // Fetch all active manual bookings for vacancy calculation on building cards
+        let allManualBookings = [];
+        try {
+          const qBookings = query(collection(db, "pghub_manual_bookings"), where("ownerId", "==", currentOwnerUid));
+          const snapBookings = await getDocs(qBookings);
+          snapBookings.forEach(d => allManualBookings.push({ id: d.id, ...d.data() }));
+        } catch (e) {}
+
+        if (allManualBookings.length === 0) {
+          try {
+            const snapAll = await getDocs(collection(db, "pghub_manual_bookings"));
+            snapAll.forEach(d => allManualBookings.push({ id: d.id, ...d.data() }));
+          } catch (e) {}
+        }
+
+        const grid = document.createElement("div");
+        grid.className = "buildings-grid";
+
+        snapshot.forEach(docSnap => {
+          const b = docSnap.data();
+          const id = docSnap.id;
+          const name = b.name || b.houseName || b.buildingName || "Building " + id.slice(0, 4);
+          const address = b.address || b.exactAddress || "Address not provided";
+          const type = b.pgType || b.type || "Property";
+          const photo = b.mainPhotoUrl || b.imageUrl || "https://images.unsplash.com/photo-1555854877-bab0e564b8d5?auto=format&fit=crop&w=600&q=80";
+
+          // Calculate vacant breakdown for this building card
+          const bBookings = allManualBookings.filter(bk => {
+            if (bk.propertyId === id || bk.buildingId === id) {
+              const st = (bk.status || "Active").toLowerCase();
+              const rStatus = (bk.roomStatus || "").toLowerCase();
+              return st !== "vacated" && st !== "cancelled" && st !== "inactive" && st !== "deleted" && rStatus !== "vacant" && bk.isActive !== false && !bk.isSecondaryTenant && bk.tenantRole !== "secondary";
+            }
+            return false;
+          });
+
+          const { unitsList, vacantByType } = computeBuildingVacancy(b, bBookings);
+
+          const vacantItems = Object.keys(vacantByType)
+            .filter(cat => vacantByType[cat] > 0)
+            .map(cat => ({
+              name: formatShortRoomType(cat),
+              count: vacantByType[cat]
+            }));
+
+          // Sort descending by count so room type with more vacancies displays first (e.g. 2 BHK (20) | 1 BHK (2))
+          vacantItems.sort((a, b) => b.count - a.count);
+
+          let vacantTagHtml = '';
+          if (vacantItems.length > 0) {
+            const summaryStr = vacantItems.map(it => `${it.name} (${it.count})`).join(' <span class="b-vacant-sep">|</span> ');
+            vacantTagHtml = `
+              <div class="b-vacant-summary-tag">
+                <span class="b-vacant-dot">🟢</span>
+                <span class="b-vacant-tag-text">${summaryStr}</span>
+              </div>
+            `;
+          } else if (unitsList.length > 0) {
+            vacantTagHtml = `
+              <div class="b-vacant-summary-tag is-empty">
+                <span class="b-vacant-dot">⚪</span>
+                <span class="b-vacant-tag-text">Fully Occupied (0 Vacant)</span>
+              </div>
+            `;
+          } else {
+            vacantTagHtml = `
+              <div class="b-vacant-summary-tag is-empty">
+                <span class="b-vacant-dot">⚪</span>
+                <span class="b-vacant-tag-text">No Units Configured</span>
+              </div>
+            `;
+          }
+
+          const card = document.createElement("div");
+          card.className = "building-card";
+          card.innerHTML = `
+            <div class="b-img-box">
+              <img class="b-img" src="${photo}" alt="${name}" onerror="this.src='https://images.unsplash.com/photo-1555854877-bab0e564b8d5?auto=format&fit=crop&w=600&q=80'">
+              <span class="b-type-badge">${type}</span>
+            </div>
+            <div class="b-body">
+              <div class="b-title">🏢 ${name}</div>
+              <div class="b-address">📍 ${address}</div>
+              ${vacantTagHtml}
+              <button class="btn-open-register" onclick="window.openBuildingRegister('${id}')">
+                <span>📋 Open Register</span>
+                <span>➔</span>
+              </button>
+            </div>
+          `;
+          grid.appendChild(card);
+        });
+
+        holder.appendChild(grid);
+      } catch (err) {
+        holder.innerHTML = `<div class="empty-msg" style="color:red;">Error loading buildings: ${err.message}</div>`;
+      }
+    }
+
+    /* ========================================================
+       ROOM MATRIX REGISTER ENGINE: loadBuildingRegister
+       ======================================================== */
+    window.loadBuildingRegister = async function(buildingId) {
+      if (!buildingId) return;
+      currentActiveBuildingId = buildingId;
+
+      const heroHolder = document.getElementById("matrixBuildingHero");
+      const roomsHolder = document.getElementById("roomsMatrixHolder");
+
+      if (heroHolder) heroHolder.innerHTML = `<div class="empty-msg">Syncing building details... ⏳</div>`;
+      if (roomsHolder) roomsHolder.innerHTML = `<div class="empty-msg">Generating configured room units... ⏳</div>`;
+
+      try {
+        // 1. Fetch Building Configuration Document
+        let bDocSnap = await getDoc(doc(db, "buildings", buildingId)).catch(() => null);
+        if (!bDocSnap || !bDocSnap.exists()) {
+          bDocSnap = await getDoc(doc(db, "pghub_properties", buildingId)).catch(() => null);
+        }
+
+        if (!bDocSnap || !bDocSnap.exists()) {
+          if (heroHolder) heroHolder.innerHTML = `<div class="empty-msg" style="color:red; padding:30px;">⚠️ Building record not found!</div>`;
+          if (roomsHolder) roomsHolder.innerHTML = "";
+          return;
+        }
+
+        const building = bDocSnap.data();
+        currentBuildingData = building;
+        const bName = building.name || building.houseName || building.buildingName || "Building";
+        const headerTitleEl = document.getElementById("headerTitle");
+        if (headerTitleEl) headerTitleEl.innerText = `${bName} Register`;
+
+        // 2. Read Configured Room Types & totalCount using shared helper
+        const configuredConfigs = extractConfiguredConfigs(building);
+
+        // 3. Dynamically Generate ONLY Configured Units (01, 02... using 2-digit padding)
+        const unitsList = [];
+        configuredConfigs.forEach(cfg => {
+          for (let i = 1; i <= cfg.totalCount; i++) {
+            const padNum = String(i).padStart(2, '0');
+            const unitNumber = `${cfg.prefix}${padNum}`;
+            unitsList.push({
+              number: unitNumber,
+              rawNumber: padNum,
+              rawIndex: i,
+              type: cfg.type,
+              category: cfg.category,
+              rent: cfg.rent,
+              isOccupied: false,
+              status: "Vacant",
+              tenantName: "",
+              tenantPhone: "",
+              tenantId: "",
+              duesStatus: "PAID",
+              duesAmount: 0
+            });
+          }
+        });
+
+        // 4. Fetch Active Bookings for this Specific Building ID
+        let buildingBookings = [];
+        localTenantsCache = {};
+
+        try {
+          const qProp = query(collection(db, "pghub_manual_bookings"), where("propertyId", "==", buildingId));
+          const snap1 = await getDocs(qProp);
+          snap1.forEach(bDoc => {
+            const b = bDoc.data();
+            localTenantsCache[bDoc.id] = b;
+            buildingBookings.push({ id: bDoc.id, ...b });
+          });
+        } catch (e) {}
+
+        if (buildingBookings.length === 0) {
+          try {
+            const qBuild = query(collection(db, "pghub_manual_bookings"), where("buildingId", "==", buildingId));
+            const snap2 = await getDocs(qBuild);
+            snap2.forEach(bDoc => {
+              if (!localTenantsCache[bDoc.id]) {
+                const b = bDoc.data();
+                localTenantsCache[bDoc.id] = b;
+                buildingBookings.push({ id: bDoc.id, ...b });
+              }
+            });
+          } catch (e) {}
+        }
+
+        if (buildingBookings.length === 0 && currentOwnerUid) {
+          try {
+            const qOwner = query(collection(db, "pghub_manual_bookings"), where("ownerId", "==", currentOwnerUid));
+            const snapOwner = await getDocs(qOwner);
+            snapOwner.forEach(bDoc => {
+              const b = bDoc.data();
+              if ((b.propertyId === buildingId || b.buildingId === buildingId) && !localTenantsCache[bDoc.id]) {
+                localTenantsCache[bDoc.id] = b;
+                buildingBookings.push({ id: bDoc.id, ...b });
+              }
+            });
+          } catch (e) {}
+        }
+
+        buildingBookings = buildingBookings.filter(b => {
+          const st = (b.status || "Active").toLowerCase();
+          const rStatus = (b.roomStatus || "").toLowerCase();
+          return st !== "vacated" && st !== "cancelled" && st !== "inactive" && st !== "deleted" && rStatus !== "vacant" && b.isActive !== false;
+        });
+
+        // Match primary bookings to configured units
+        const activePrimaryBookings = buildingBookings.filter(b => !b.isSecondaryTenant && b.tenantRole !== "secondary");
+
+        // 5. Match Configured Units with Active Tenant Bookings
+        const matchedBookingIds = new Set();
+        unitsList.forEach(unit => {
+          const normUnit = unit.number.toLowerCase().replace(/[\s\-_]/g, "");
+          const normRaw = unit.rawNumber.toLowerCase();
+          const rawIdx = String(unit.rawIndex);
+
+          const match = activePrimaryBookings.find(b => {
+            if (matchedBookingIds.has(b.id)) return false;
+            const bRoom = (b.roomDesignation || b.roomNumber || b.roomNo || "").toLowerCase().replace(/[\s\-_]/g, "");
+            if (!bRoom) return false;
+
+            if (bRoom === normUnit || bRoom === normRaw) return true;
+            if (bRoom === "flat" + rawIdx || bRoom === "flat" + normRaw) return true;
+            if (bRoom === "sr" + rawIdx || bRoom === "sr" + normRaw) return true;
+            if (bRoom === "dr" + rawIdx || bRoom === "dr" + normRaw) return true;
+            if (bRoom === "tr" + rawIdx || bRoom === "tr" + normRaw) return true;
+            if (bRoom === rawIdx && (b.roomType || '').toLowerCase() === unit.type.toLowerCase()) return true;
+
+            return false;
+          });
+
+          if (match) {
+            matchedBookingIds.add(match.id);
+            unit.isOccupied = true;
+            unit.status = "Occupied";
+            const primaryName = match.name || match.renterName || "Tenant";
+            const sec = match.secondaryTenant || (match.tenants && match.tenants.find(t => t.role === "secondary"));
+            unit.tenantName = (sec && sec.name) ? `${primaryName} & ${sec.name}` : primaryName;
+            unit.tenantPhone = match.mobile || match.phone || "";
+            unit.secondaryTenant = sec || null;
+            unit.tenantId = match.id;
+            unit.rent = Number(match.rent || unit.rent);
+
+            let mAcc = match.monthlyAccounts || {};
+            let backlog = 0;
+            const now = new Date();
+            Object.keys(mAcc).forEach(mKey => {
+              const [m, y] = mKey.split("-").map(Number);
+              if (m && y) {
+                const mDate = new Date(y, m - 1, 1);
+                if (mDate <= new Date(now.getFullYear(), now.getMonth(), 1)) {
+                  backlog += (mAcc[mKey].baki || 0);
+                }
+              }
+            });
+            unit.duesAmount = backlog;
+            unit.duesStatus = backlog > 0 ? "UNPAID" : "PAID";
+          }
+        });
+
+        // 6. Sort Units Naturally
+        unitsList.sort((a, b) => a.number.localeCompare(b.number, undefined, { numeric: true }));
+
+        // 7. Update Metrics & Hero Header
+        const totalCount = unitsList.length;
+        const vacantCount = unitsList.filter(r => !r.isOccupied).length;
+        const occupiedCount = unitsList.filter(r => r.isOccupied).length;
+        const duesCount = unitsList.filter(r => r.isOccupied && r.duesStatus === "UNPAID").length;
+        const totalDuesPending = unitsList.reduce((sum, r) => sum + (r.duesAmount || 0), 0);
+
+        document.getElementById("countAll").innerText = totalCount;
+        document.getElementById("countVacant").innerText = vacantCount;
+        document.getElementById("countOccupied").innerText = occupiedCount;
+        document.getElementById("countDues").innerText = duesCount;
+
+        // Compute Vacant Breakdown by Room/Flat Type
+        const vacantTypeMap = {};
+        configuredConfigs.forEach(cfg => {
+          const cat = cfg.category || cfg.type;
+          vacantTypeMap[cat] = 0;
+        });
+        unitsList.forEach(u => {
+          if (!u.isOccupied) {
+            const cat = u.category || u.type || "Unit";
+            vacantTypeMap[cat] = (vacantTypeMap[cat] || 0) + 1;
+          }
+        });
+
+        const vacantBreakdownItems = Object.keys(vacantTypeMap)
+          .filter(cat => vacantTypeMap[cat] > 0)
+          .map(cat => ({
+            name: cat,
+            count: vacantTypeMap[cat]
+          }));
+
+        let vacantBreakdownHtml = '';
+        if (vacantBreakdownItems.length > 0) {
+          const pillsHtml = vacantBreakdownItems.map(item => `
+            <span class="vacant-breakdown-pill">
+              <span class="vacant-pill-name">${item.name}:</span>
+              <span class="vacant-pill-count">${item.count} Vacant</span>
+            </span>
+          `).join('<span class="vacant-breakdown-sep">|</span>');
+
+          vacantBreakdownHtml = `
+            <div class="vacant-breakdown-bar">
+              <div class="vacant-breakdown-title">
+                <span class="vacant-breakdown-icon">🏷️</span>
+                <span>Vacant Breakdown:</span>
+              </div>
+              <div class="vacant-breakdown-pills">
+                ${pillsHtml}
+              </div>
+            </div>
+          `;
+        } else if (totalCount > 0) {
+          vacantBreakdownHtml = `
+            <div class="vacant-breakdown-bar">
+              <div class="vacant-breakdown-title">
+                <span class="vacant-breakdown-icon">🏷️</span>
+                <span>Vacant Breakdown:</span>
+              </div>
+              <div class="vacant-breakdown-pills">
+                <span class="vacant-breakdown-pill vacant-none">Fully Occupied (0 Vacant)</span>
+              </div>
+            </div>
+          `;
+        }
+
+        if (heroHolder) {
+          heroHolder.innerHTML = `
+            <div class="property-hero-card">
+              <div class="property-hero-top">
+                <div class="property-hero-info" style="width: 100%;">
+                  <div style="display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 12px; margin-bottom: 6px;">
+                    <h2 style="margin: 0;">🏢 ${bName}</h2>
+                    <button type="button" class="btn-history-header" id="btnPastTenantsHistory" onclick="window.openPastTenantsHistoryModal('${buildingId}')" title="View Past Tenants / History" style="display: inline-flex !important; visibility: visible !important; opacity: 1 !important; z-index: 50; background: #1e40af !important; color: #ffffff !important; border: none; padding: 8px 16px; border-radius: 8px; font-weight: 700; font-size: 13.5px; cursor: pointer; align-items: center; gap: 6px; box-shadow: 0 2px 6px rgba(0,0,0,0.15);">
+                      📜 History
+                    </button>
+                  </div>
+                  <div class="property-hero-address">📍 ${building.address || building.exactAddress || 'Address not specified'} • <span style="font-weight:600; color:var(--primary);">${building.pgType || 'Property'}</span></div>
+                </div>
+              </div>
+              <div class="matrix-stats-grid">
+                <div class="matrix-stat-card"><div class="matrix-stat-value">${totalCount}</div><div class="matrix-stat-label">Configured Units</div></div>
+                <div class="matrix-stat-card stat-vacant"><div class="matrix-stat-value">${vacantCount}</div><div class="matrix-stat-label">🟢 Vacant</div></div>
+                <div class="matrix-stat-card stat-occupied"><div class="matrix-stat-value">${occupiedCount}</div><div class="matrix-stat-label">🟡 Occupied</div></div>
+                <div class="matrix-stat-card stat-dues"><div class="matrix-stat-value">₹${totalDuesPending.toLocaleString('en-IN')}</div><div class="matrix-stat-label">⚠️ Pending Dues</div></div>
+              </div>
+              ${vacantBreakdownHtml}
+            </div>
+          `;
+        }
+
+        currentMatrixItems = unitsList;
+        applyFiltersAndRender();
+
+      } catch (err) {
+        if (roomsHolder) {
+          roomsHolder.innerHTML = `<div class="empty-msg" style="color:red; padding:30px;">Error loading building register: ${err.message}</div>`;
+        }
+      }
+    };
+
+    window.loadBuildingRoomMatrix = window.loadBuildingRegister;
+
+    /* ========================================================
+       RENDER MATRIX ROWS & FILTERING
+       ======================================================== */
+    function updateFilterTabClasses(selectedFilter) {
+      const tabs = {
+        all: document.getElementById("tabAll"),
+        vacant: document.getElementById("tabVacant"),
+        occupied: document.getElementById("tabOccupied"),
+        dues: document.getElementById("tabDues")
+      };
+      Object.keys(tabs).forEach(k => {
+        if (tabs[k]) {
+          if (k === selectedFilter) tabs[k].classList.add("active");
+          else tabs[k].classList.remove("active");
+        }
+      });
+    }
+
+    window.filterRoomMatrix = (filterType) => {
+      activeMatrixFilter = filterType;
+      updateFilterTabClasses(filterType);
+      applyFiltersAndRender();
+    };
+
+    window.onSearchMatrixInput = (text) => {
+      searchMatrixQuery = (text || '').toLowerCase().trim();
+      applyFiltersAndRender();
+    };
+
+    function applyFiltersAndRender() {
+      let filtered = currentMatrixItems;
+
+      if (activeMatrixFilter === 'vacant') {
+        filtered = filtered.filter(u => !u.isOccupied);
+      } else if (activeMatrixFilter === 'occupied') {
+        filtered = filtered.filter(u => u.isOccupied);
+      } else if (activeMatrixFilter === 'dues') {
+        filtered = filtered.filter(u => u.isOccupied && u.duesStatus === "UNPAID");
+      }
+
+      if (searchMatrixQuery) {
+        filtered = filtered.filter(u => {
+          const roomMatch = u.number && u.number.toLowerCase().includes(searchMatrixQuery);
+          const catMatch = u.category && u.category.toLowerCase().includes(searchMatrixQuery);
+          const tenantMatch = u.tenantName && u.tenantName.toLowerCase().includes(searchMatrixQuery);
+          const phoneMatch = (u.tenantPhone && u.tenantPhone.includes(searchMatrixQuery)) || (u.secondaryTenant && u.secondaryTenant.mobile && u.secondaryTenant.mobile.includes(searchMatrixQuery));
+          return roomMatch || catMatch || tenantMatch || phoneMatch;
+        });
+      }
+
+      const countDisplay = document.getElementById("matrixFilteredCount");
+      if (countDisplay) {
+        countDisplay.innerText = `Showing ${filtered.length} of ${currentMatrixItems.length} units`;
+      }
+
+      renderMatrixRows(filtered);
+    }
+
+    function renderMatrixRows(items) {
+      const roomsHolder = document.getElementById("roomsMatrixHolder");
+      roomsHolder.innerHTML = "";
+
+      if (!items || items.length === 0) {
+        roomsHolder.innerHTML = `
+          <div class="empty-msg" style="padding: 40px; background: white; border-radius: 14px; border: 1px dashed var(--border);">
+            <p style="font-size: 16px; font-weight: 600; margin-bottom: 8px;">No rooms found matching the criteria.</p>
+            <button class="add-booking-btn" onclick="window.openBookRoomModal('${currentActiveBuildingId}')">+ Book A Room</button>
+          </div>
+        `;
+        return;
+      }
+
+      const listContainer = document.createElement("div");
+      listContainer.className = "room-matrix-list";
+
+      items.forEach(room => {
+        const isOccupied = room.isOccupied;
+        const row = document.createElement("div");
+        row.className = `room-box-row room-card-item ${isOccupied ? (room.duesStatus === 'UNPAID' ? 'status-dues' : 'status-occupied') : 'status-vacant'}`;
+
+        if (!isOccupied) {
+          row.innerHTML = `
+            <div class="room-identity-group">
+              <div class="room-number-title room-title">🚪 ${room.number}</div>
+              <div class="room-type-tag">${room.category || room.type}</div>
+            </div>
+            <div class="room-status-group">
+              <span class="room-status-badge status-badge badge-vacant">🟢 Vacant</span>
+            </div>
+            <div class="room-details-group">
+              <div class="room-rent-info">Rent: <strong>₹${room.rent ? room.rent.toLocaleString('en-IN') : '---'}</strong> / mo</div>
+              <div class="room-sub-info">Available for booking</div>
+            </div>
+            <div class="room-actions-group">
+              <button class="btn-room-action btn-action btn-book-room" onclick="window.openBookRoomModal('${currentActiveBuildingId}', '${room.number}', '${room.type}', ${room.rent || 0}, '${(room.category || '').replace(/'/g, "\\'")}')">
+                ➕ Book<span class="btn-text-full"> Room</span>
+              </button>
+            </div>
+          `;
+        } else {
+          const isDuesUnpaid = room.duesStatus === "UNPAID" || room.duesAmount > 0;
+          const statusBadge = isDuesUnpaid 
+            ? `<span class="room-status-badge status-badge badge-dues">🟠 Occupied</span>`
+            : `<span class="room-status-badge status-badge badge-occupied">🟡 Occupied</span>`;
+
+          const duesBadge = isDuesUnpaid
+            ? `<span class="dues-badge badge-unpaid">UNPAID ⚠️ ${room.duesAmount > 0 ? '(Due: ₹' + room.duesAmount.toLocaleString('en-IN') + ')' : ''}</span>`
+            : `<span class="dues-badge badge-paid">PAID ✅</span>`;
+
+          row.innerHTML = `
+            <div class="room-identity-group">
+              <div class="room-number-title room-title">🚪 ${room.number}</div>
+              <div class="room-type-tag">${room.category || room.type}</div>
+            </div>
+            <div class="room-status-group">
+              ${statusBadge}
+            </div>
+            <div class="room-details-group">
+              <div class="tenant-name-row" onclick="window.openDetailModal('${room.tenantId}')" title="View Tenant Details">
+                👤 <strong>${room.tenantName || 'Tenant'}</strong> ${room.tenantPhone ? '• 📞 +91 ' + room.tenantPhone : ''}
+              </div>
+              <div class="room-rent-info">Rent: ₹${room.rent ? room.rent.toLocaleString('en-IN') : '0'}/mo | ${duesBadge}</div>
+            </div>
+            <div class="room-actions-group">
+              <button class="btn-room-action btn-action btn-collect-rent" onclick="window.openRentModal('${room.tenantId}')">
+                💳 Collect<span class="btn-text-full"> Rent</span>
+              </button>
+              <button class="btn-room-action btn-action btn-view-details" onclick="window.openDetailModal('${room.tenantId}')">
+                👁️ Details
+              </button>
+              <button class="btn-room-action btn-action btn-vacate-room" onclick="window.vacateRoom('${room.tenantId}')" title="Delete / Vacate Room">
+                🗑️ <span class="btn-text-full">Delete / </span>Vacate<span class="btn-text-full"> Room</span>
+              </button>
+            </div>
+          `;
+        }
+
+        listContainer.appendChild(row);
+      });
+
+      roomsHolder.appendChild(listContainer);
+    }
+
+    /* ========================================================
+       MODALS & BOOKING HANDLERS
+       ======================================================== */
+    function toTitleCase(str) {
+      if (!str) return "";
+      return str.replace(/\w\S*/g, (txt) => txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase());
+    }
+
+    function formatRoomCategoryForTitle(roomNumber, roomType, roomCategory) {
+      let cat = (roomCategory || "").trim();
+      const num = (roomNumber || "").trim().toUpperCase();
+      const type = (roomType || "").trim();
+
+      const uCat = cat.toUpperCase();
+      if (uCat.includes("1 BHK") || num.startsWith("FLAT-1") || num.startsWith("FLAT-01")) {
+        return "1 BHK Flat";
+      }
+      if (uCat.includes("2 BHK") || num.startsWith("FLAT-2")) {
+        return "2 BHK Flat";
+      }
+      if (uCat.includes("3 BHK") || num.startsWith("FLAT-3")) {
+        return "3 BHK Flat";
+      }
+      if (uCat.includes("DOUBLE") || num.startsWith("DR-") || num.startsWith("DR0") || num.startsWith("DR ")) {
+        return "Double Bed";
+      }
+      if (uCat.includes("TRIPLE") || num.startsWith("TR-") || num.startsWith("TR0") || num.startsWith("TR ")) {
+        return "Triple Bed";
+      }
+      if (uCat.includes("SINGLE") || num.startsWith("SR-") || num.startsWith("SR0") || num.startsWith("SR ")) {
+        return "Single Room";
+      }
+      if (uCat.includes("FLAT") || num.startsWith("FLAT-") || (type && type.toLowerCase() === "flat")) {
+        return cat ? toTitleCase(cat) : "Flat";
+      }
+      if (cat) {
+        return toTitleCase(cat);
+      }
+      return type ? toTitleCase(type) : "Room";
+    }
+
+    function determineRoomOccupancyType(roomNumber, roomType, roomCategory) {
+      const combined = `${roomNumber || ''} ${roomType || ''} ${roomCategory || ''}`.toUpperCase();
+      if (combined.includes('FLAT') || (roomType && String(roomType).toLowerCase() === 'flat') || combined.includes('BHK')) {
+        return 'FLAT';
+      }
+      if (combined.includes('DOUBLE') || combined.includes('DR-') || combined.includes('DR0') || combined.includes('DR ') || /(\b2\s*bed\b|\b2\s*sharing\b|\bdouble\s*bed\b)/i.test(combined)) {
+        return 'DOUBLE';
+      }
+      if (combined.includes('TRIPLE') || combined.includes('TR-') || combined.includes('TR0') || combined.includes('TR ')) {
+        return 'TRIPLE';
+      }
+      if (combined.includes('SINGLE') || combined.includes('SR-') || combined.includes('SR0') || combined.includes('SR ') || /(\b1\s*bed\b|\bsingle\b)/i.test(combined)) {
+        return 'SINGLE';
+      }
+      return 'SINGLE';
+    }
+
+    function isMultiTenantRoom(roomNumber, roomType, roomCategory) {
+      return determineRoomOccupancyType(roomNumber, roomType, roomCategory) !== 'SINGLE';
+    }
+
+    window.currentModalRoomOccupancy = 'SINGLE';
+
+    window.updateAddTenantFooterVisibility = () => {
+      const addBtn = document.getElementById("btnAddTenantFooter");
+      if (!addBtn) return;
+
+      const occType = window.currentModalRoomOccupancy || 'SINGLE';
+      const secFields = document.getElementById("secondaryTenantFields");
+      const isSecOpen = secFields && secFields.style.display !== "none";
+      const extraCount = document.querySelectorAll(".extra-tenant-card").length;
+      const totalSecondaryCount = (isSecOpen ? 1 : 0) + extraCount;
+
+      if (occType === 'SINGLE') {
+        // Single Room: Do NOT display the "➕" button at all. Only show "Register Record".
+        addBtn.style.display = "none";
+      } else if (occType === 'DOUBLE') {
+        // Double Room:
+        // Show "➕" icon on the 1st tenant form.
+        // On the 2nd tenant form, HIDE the "➕" icon completely (since max occupancy is 2) and show only the "Register Record" button.
+        if (totalSecondaryCount >= 1) {
+          addBtn.style.display = "none";
+        } else {
+          addBtn.style.display = "inline-flex";
+        }
+      } else if (occType === 'TRIPLE') {
+        if (totalSecondaryCount >= 2) {
+          addBtn.style.display = "none";
+        } else {
+          addBtn.style.display = "inline-flex";
+        }
+      } else {
+        // Flat (1BHK/2BHK/3BHK): Keep the "➕" icon visible so additional flatmates/roommates can be added as needed.
+        addBtn.style.display = "inline-flex";
+      }
+    };
+
+    window.handleAddTenantFooterClick = () => {
+      const occType = window.currentModalRoomOccupancy || 'SINGLE';
+      if (occType === 'SINGLE') return;
+
+      const secSection = document.getElementById("secondaryTenantSection");
+      const secFields = document.getElementById("secondaryTenantFields");
+      if (!secSection || !secFields) return;
+
+      secSection.style.display = "block";
+
+      if (secFields.style.display === "none" || !secFields.style.display) {
+        // Load / open form for 2nd tenant
+        secFields.style.display = "block";
+        const nameInput = document.getElementById("addSecondaryName");
+        if (nameInput) {
+          nameInput.focus();
+          secFields.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+        }
+      } else if (occType === 'FLAT' || occType === 'TRIPLE') {
+        // Additional flatmate / roommate
+        window.addExtraFlatmateForm();
+      }
+
+      window.updateAddTenantFooterVisibility();
+    };
+
+    window.addExtraFlatmateForm = () => {
+      const extraContainer = document.getElementById("extraTenantsContainer");
+      if (!extraContainer) return;
+
+      const existingExtra = document.querySelectorAll(".extra-tenant-card").length;
+      const tenantNumber = 3 + existingExtra;
+
+      const card = document.createElement("div");
+      card.className = "secondary-tenant-card extra-tenant-card";
+      card.style.display = "block";
+      card.style.marginTop = "14px";
+      card.innerHTML = `
+        <div class="secondary-tenant-header">
+          <span class="secondary-tenant-title">
+            👥 Additional Roommate (Tenant ${tenantNumber})
+          </span>
+          <button type="button" class="btn-remove-secondary" onclick="window.removeExtraFlatmateCard(this)">
+            ✖ Remove
+          </button>
+        </div>
+        <div class="form-group">
+          <label>Tenant ${tenantNumber} Full Name</label>
+          <input type="text" class="extra-tenant-name" placeholder="e.g. Roommate Name">
+        </div>
+        <div class="form-group">
+          <label>Tenant ${tenantNumber} Mobile Contact Number</label>
+          <div class="phone-input-container">
+            <span class="phone-prefix">+91</span>
+            <input type="tel" class="extra-tenant-mobile" pattern="[0-9]{10}" maxlength="10" placeholder="9876543210" oninput="this.value = this.value.replace(/[^0-9]/g, '').slice(0, 10);">
+          </div>
+        </div>
+        <div class="form-group">
+          <label>Tenant ${tenantNumber} Email Address</label>
+          <input type="email" class="extra-tenant-email" placeholder="roommate${tenantNumber}@example.com">
+        </div>
+        <div class="form-group" style="margin-bottom: 0;">
+          <label>Tenant ${tenantNumber} Occupation Status</label>
+          <select class="extra-tenant-occ-select" onchange="window.onExtraOccupationChanged(this)">
+            <option value="">-- Choose Profession --</option>
+            <option value="Student">Student</option>
+            <option value="Teacher">Teacher</option>
+            <option value="Business">Business</option>
+            <option value="Working Professional">Working Professional</option>
+            <option value="custom">+ Custom Profession...</option>
+          </select>
+          <div class="custom-occ-group extra-custom-occ-wrapper" style="display: none; margin-top: 8px;">
+            <input type="text" class="extra-tenant-custom-occ" placeholder="Type custom occupation">
+          </div>
+        </div>
+      `;
+      extraContainer.appendChild(card);
+
+      const newNameInput = card.querySelector(".extra-tenant-name");
+      if (newNameInput) {
+        newNameInput.focus();
+        card.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+      }
+
+      window.updateAddTenantFooterVisibility();
+    };
+
+    window.onExtraOccupationChanged = (selectEl) => {
+      const card = selectEl.closest(".extra-tenant-card");
+      if (!card) return;
+      const wrap = card.querySelector(".extra-custom-occ-wrapper");
+      if (wrap) wrap.style.display = (selectEl.value === 'custom') ? 'block' : 'none';
+    };
+
+    window.removeExtraFlatmateCard = (btn) => {
+      const card = btn.closest(".extra-tenant-card");
+      if (card) {
+        card.remove();
+      }
+      const extraCards = document.querySelectorAll(".extra-tenant-card");
+      extraCards.forEach((c, idx) => {
+        const tNum = 3 + idx;
+        const title = c.querySelector(".secondary-tenant-title");
+        if (title) title.innerHTML = `👥 Additional Roommate (Tenant ${tNum})`;
+        const labels = c.querySelectorAll("label");
+        if (labels[0]) labels[0].innerText = `Tenant ${tNum} Full Name`;
+        if (labels[1]) labels[1].innerText = `Tenant ${tNum} Mobile Contact Number`;
+        if (labels[2]) labels[2].innerText = `Tenant ${tNum} Email Address`;
+        if (labels[3]) labels[3].innerText = `Tenant ${tNum} Occupation Status`;
+      });
+
+      const secFields = document.getElementById("secondaryTenantFields");
+      const isSecOpen = secFields && secFields.style.display !== "none";
+      if (!isSecOpen && extraCards.length === 0) {
+        const secSection = document.getElementById("secondaryTenantSection");
+        if (secSection) secSection.style.display = "none";
+      }
+
+      window.updateAddTenantFooterVisibility();
+    };
+
+    window.removeSecondaryTenantForm = () => {
+      const fields = document.getElementById("secondaryTenantFields");
+      if (fields) fields.style.display = "none";
+      
+      const secName = document.getElementById("addSecondaryName");
+      const secMobile = document.getElementById("addSecondaryMobile");
+      const secEmail = document.getElementById("addSecondaryEmail");
+      const secOcc = document.getElementById("addSecondaryOccupationSelect");
+      const secCustomOcc = document.getElementById("addSecondaryCustomOccupation");
+      const secCustomOccWrapper = document.getElementById("secondaryCustomOccWrapper");
+
+      if (secName) secName.value = "";
+      if (secMobile) secMobile.value = "";
+      if (secEmail) secEmail.value = "";
+      if (secOcc) secOcc.value = "";
+      if (secCustomOcc) secCustomOcc.value = "";
+      if (secCustomOccWrapper) secCustomOccWrapper.style.display = "none";
+
+      const extraCards = document.querySelectorAll(".extra-tenant-card");
+      if (extraCards.length === 0) {
+        const secSection = document.getElementById("secondaryTenantSection");
+        if (secSection) secSection.style.display = "none";
+      }
+
+      window.updateAddTenantFooterVisibility();
+    };
+
+    window.resetSecondaryTenantForm = () => {
+      window.removeSecondaryTenantForm();
+      const extraContainer = document.getElementById("extraTenantsContainer");
+      if (extraContainer) extraContainer.innerHTML = "";
+      const secSection = document.getElementById("secondaryTenantSection");
+      if (secSection) secSection.style.display = "none";
+      window.updateAddTenantFooterVisibility();
+    };
+
+    window.toggleSecondaryTenantForm = () => {
+      window.handleAddTenantFooterClick();
+    };
+
+    window.onSecondaryOccupationChanged = () => {
+      const val = document.getElementById("addSecondaryOccupationSelect").value;
+      const wrap = document.getElementById("secondaryCustomOccWrapper");
+      if (wrap) wrap.style.display = (val === 'custom') ? 'block' : 'none';
+    };
 
     window.openAddModal = () => {
       document.getElementById("addModal").style.display = "flex";
     };
 
-    window.closeModal = (id) => {
-      document.getElementById(id).style.display = "none";
-      if (id === 'detailModal') {
-        window.disableEditMode();
+    window.openBookRoomModal = (buildingId, roomNumber, roomType, defaultRent, roomCategory) => {
+      document.getElementById("addForm").reset();
+      document.getElementById("customOccWrapper").style.display = "none";
+
+      const propId = buildingId || currentActiveBuildingId || "";
+      document.getElementById("addPropertyId").value = propId;
+
+      if (!roomNumber && window.currentMatrixItems && window.currentMatrixItems.length > 0) {
+        const firstVacant = window.currentMatrixItems.find(u => !u.isOccupied);
+        if (firstVacant) {
+          roomNumber = firstVacant.number;
+          roomType = firstVacant.type;
+          defaultRent = firstVacant.rent;
+          roomCategory = firstVacant.category;
+        }
       }
+
+      document.getElementById("addRoomNumberInput").value = roomNumber || "";
+      document.getElementById("addRoomTypeSelect").value = roomType || "Room";
+      if (defaultRent) document.getElementById("addRent").value = defaultRent;
+      document.getElementById("addJoiningDate").value = new Date().toISOString().split('T')[0];
+
+      // Update Modal Header Title: ONLY display Room Type and Designation Number (e.g. "2 BHK Flat - Flat-2-01" or "Double Bed - DR-01")
+      const modalTitleEl = document.getElementById("addModalTitle");
+      if (modalTitleEl) {
+        const friendlyCat = formatRoomCategoryForTitle(roomNumber, roomType, roomCategory);
+        if (roomNumber) {
+          modalTitleEl.innerText = `${friendlyCat} - ${roomNumber}`;
+        } else {
+          modalTitleEl.innerText = friendlyCat || "Room Booking";
+        }
+      }
+
+      // Track room occupancy type: 'SINGLE' | 'DOUBLE' | 'FLAT' | 'TRIPLE'
+      window.currentModalRoomOccupancy = determineRoomOccupancyType(roomNumber, roomType, roomCategory);
+
+      // Reset secondary tenant form & configure footer button visibility
+      window.resetSecondaryTenantForm();
+
+      window.openAddModal();
     };
 
-    // Everywhere screen overlay click logic to close models instantly
+    window.closeModal = (id) => {
+      document.getElementById(id).style.display = "none";
+      if (id === 'addModal') window.resetSecondaryTenantForm();
+      if (id === 'detailModal') window.disableEditMode();
+    };
+
     window.onclick = function(event) {
       if (event.target.classList.contains('modal')) {
         window.closeModal(event.target.id);
@@ -382,7 +2554,6 @@
       return mDate.toLocaleString('default', { month: 'long' }) + " " + y;
     }
 
-    // Dynamic timeline loop: Generates months from Joining Date all the way up to Present Month + 5 Future Months
     function ensureFutureMonthsPopulated(monthlyAccounts, baseRent, joiningDateStr) {
       let isChanged = false;
       const jd = new Date(joiningDateStr);
@@ -394,11 +2565,9 @@
 
       while (loopDate <= endDate) {
         let mKey = String(loopDate.getMonth() + 1).padStart(2, '0') + "-" + loopDate.getFullYear();
-        
         if (!monthlyAccounts[mKey]) {
           let isFirstMonth = (joiningMonthKey === mKey);
           let monthBillAmount = isFirstMonth ? calculateStartingMonthRent(joiningDateStr, baseRent) : baseRent;
-          
           monthlyAccounts[mKey] = {
             totalPayable: monthBillAmount,
             paid: 0,
@@ -411,81 +2580,67 @@
       return isChanged;
     }
 
-    async function loadLedgerEngine() {
-      const holder = document.getElementById("bookingListHolder");
-      try {
-        const q = query(collection(db, "pghub_manual_bookings"), where("ownerId", "==", currentOwnerUid), orderBy("createdAt", "asc"));
-        const snapshot = await getDocs(q);
-        holder.innerHTML = "";
-        localTenantsCache = {};
-
-        if(snapshot.empty) {
-          holder.innerHTML = `<div class="empty-msg">No tenant archives documented yet. Click '+ Add New Record' to log a file.</div>`;
-          return;
-        }
-
-        let index = 1;
-        for (const docSnap of snapshot.docs) {
-          const id = docSnap.id;
-          const data = docSnap.data();
-          localTenantsCache[id] = data;
-
-          let monthlyAccounts = data.monthlyAccounts || {};
-          
-          let detectionStatus = ensureFutureMonthsPopulated(monthlyAccounts, data.rent, data.joiningDate);
-          if (detectionStatus) {
-            await updateDoc(doc(db, "pghub_manual_bookings", id), { monthlyAccounts: monthlyAccounts });
-          }
-
-          let totalBacklogOutstanding = 0;
-          Object.keys(monthlyAccounts).forEach(mKey => {
-            const [m, y] = mKey.split("-").map(Number);
-            const mDate = new Date(y, m - 1, 1);
-            const curDateBoundary = new Date(today.getFullYear(), today.getMonth(), 1);
-            
-            // Front UI logic: Ignores pure future months from calculation
-            if (mDate <= curDateBoundary) {
-              totalBacklogOutstanding += (monthlyAccounts[mKey].baki || 0);
-            }
-          });
-
-          const activeRent = monthlyAccounts[currentMonthYearStr] ? monthlyAccounts[currentMonthYearStr].totalPayable : data.rent;
-          const curMonthShort = today.toLocaleString('default', { month: 'long' });
-
-          const row = document.createElement("div");
-          row.className = "booking-row";
-          
-          row.innerHTML = `
-            <div class="col-name" onclick="window.openDetailModal('${id}')">${index}. ${data.name}</div>
-            <div class="col-room">${data.roomType}: ${data.roomDesignation}</div>
-            <div class="col-rent-details">
-              <div class="rent-line">${curMonthShort} Rent: ₹${activeRent}</div>
-              <div class="${totalBacklogOutstanding > 0 ? 'dues-line' : 'no-dues-line'}">
-                ${totalBacklogOutstanding > 0 ? 'Dues Outstanding: ₹' + totalBacklogOutstanding : 'Fully Settled 🟢'}
-              </div>
-            </div>
-            <div class="col-status">
-              <button class="status-btn pay-action" onclick="window.openRentModal('${id}')">Collect</button>
-            </div>
-            <div class="col-delete" onclick="window.deleteTenant('${id}')">🗑️</div>
-          `;
-          holder.appendChild(row);
-          index++;
-        }
-      } catch(err) { holder.innerHTML = `<div class="empty-msg" style="color:red;">Error: ${err.message}</div>`; }
-    }
-
     window.saveNewBooking = async (e) => {
       e.preventDefault();
       let finalOccupation = document.getElementById("addOccupationSelect").value;
-      if(finalOccupation === "custom") {
+      if (finalOccupation === "custom") {
         finalOccupation = document.getElementById("addCustomOccupation").value.trim() || "Other";
       }
 
       const designationNum = document.getElementById("addRoomNumberInput").value.trim() || "Custom";
+      const roomTypeVal = document.getElementById("addRoomTypeSelect").value || "Room";
       const baseRent = parseInt(document.getElementById("addRent").value) || 0;
       const securityDeposit = parseInt(document.getElementById("addSecurityDeposit").value) || 0;
       const joiningDateVal = document.getElementById("addJoiningDate").value;
+      const propId = document.getElementById("addPropertyId").value || currentActiveBuildingId || "";
+      const primaryEmail = document.getElementById("addEmail") ? document.getElementById("addEmail").value.trim() : "";
+      const primaryName = document.getElementById("addName").value.trim();
+      const primaryMobile = document.getElementById("addMobile").value.trim();
+
+      // Check secondary tenant details
+      const secContainer = document.getElementById("secondaryTenantFields");
+      const isSecActive = secContainer && secContainer.style.display !== "none";
+      const secName = document.getElementById("addSecondaryName") ? document.getElementById("addSecondaryName").value.trim() : "";
+      const hasSecondary = isSecActive && secName.length > 0;
+
+      let secondaryData = null;
+      if (hasSecondary) {
+        let secOcc = document.getElementById("addSecondaryOccupationSelect").value;
+        if (secOcc === "custom") {
+          secOcc = document.getElementById("addSecondaryCustomOccupation").value.trim() || "Other";
+        }
+        secondaryData = {
+          name: secName,
+          mobile: document.getElementById("addSecondaryMobile") ? document.getElementById("addSecondaryMobile").value.trim() : "",
+          email: document.getElementById("addSecondaryEmail") ? document.getElementById("addSecondaryEmail").value.trim() : "",
+          occupation: secOcc || "Not Specified"
+        };
+      }
+
+      // Check additional flatmates / roommates (Tenant 3+)
+      const extraTenantCards = document.querySelectorAll(".extra-tenant-card");
+      const additionalTenants = [];
+      extraTenantCards.forEach((card) => {
+        const nameInput = card.querySelector(".extra-tenant-name");
+        const tName = nameInput ? nameInput.value.trim() : "";
+        if (tName) {
+          const mobileInput = card.querySelector(".extra-tenant-mobile");
+          const emailInput = card.querySelector(".extra-tenant-email");
+          const occSelect = card.querySelector(".extra-tenant-occ-select");
+          const customOccInput = card.querySelector(".extra-tenant-custom-occ");
+          let tOcc = occSelect ? occSelect.value : "";
+          if (tOcc === "custom" && customOccInput) {
+            tOcc = customOccInput.value.trim() || "Other";
+          }
+          additionalTenants.push({
+            role: "roommate",
+            name: tName,
+            mobile: mobileInput ? mobileInput.value.trim() : "",
+            email: emailInput ? emailInput.value.trim() : "",
+            occupation: tOcc || "Not Specified"
+          });
+        }
+      });
 
       let initialMonthlyAccounts = {};
       const joiningMonthKey = getMonthYearStrFromDate(joiningDateVal);
@@ -497,34 +2652,121 @@
 
       const record = {
         ownerId: currentOwnerUid,
-        name: document.getElementById("addName").value.trim(),
-        mobile: document.getElementById("addMobile").value.trim(),
-        roomType: document.getElementById("addRoomTypeSelect").value,
+        propertyId: propId,
+        name: primaryName,
+        mobile: primaryMobile,
+        email: primaryEmail,
+        roomType: roomTypeVal,
         roomDesignation: designationNum,
-        propertyId: "",
         rent: baseRent,
         securityDeposit: securityDeposit,
         occupation: finalOccupation,
         joiningDate: joiningDateVal,
         monthlyAccounts: initialMonthlyAccounts,
         paymentHistory: [],
-        createdAt: Date.now()
+        createdAt: Date.now(),
+        hasSecondaryTenant: hasSecondary || additionalTenants.length > 0,
+        secondaryTenant: secondaryData,
+        tenants: [
+          {
+            role: "primary",
+            name: primaryName,
+            mobile: primaryMobile,
+            email: primaryEmail,
+            occupation: finalOccupation
+          }
+        ]
       };
+
+      if (hasSecondary) {
+        record.tenants.push({
+          role: "secondary",
+          ...secondaryData
+        });
+      }
+
+      additionalTenants.forEach(t => {
+        record.tenants.push(t);
+      });
 
       ensureFutureMonthsPopulated(record.monthlyAccounts, baseRent, joiningDateVal);
 
       try {
-        await addDoc(collection(db, "pghub_manual_bookings"), record);
+        const primaryDocRef = await addDoc(collection(db, "pghub_manual_bookings"), record);
+
+        // Multi-Tenant Support: save secondary tenant record linked to this room's booking in Firestore
+        if (hasSecondary) {
+          const secondaryRecord = {
+            ownerId: currentOwnerUid,
+            propertyId: propId,
+            parentBookingId: primaryDocRef.id,
+            primaryBookingId: primaryDocRef.id,
+            isSecondaryTenant: true,
+            tenantRole: "secondary",
+            primaryTenantName: primaryName,
+            name: secondaryData.name,
+            mobile: secondaryData.mobile,
+            email: secondaryData.email,
+            occupation: secondaryData.occupation,
+            roomType: roomTypeVal,
+            roomDesignation: designationNum,
+            rent: 0,
+            securityDeposit: 0,
+            joiningDate: joiningDateVal,
+            status: "Active",
+            isActive: true,
+            createdAt: Date.now()
+          };
+          const secDocRef = await addDoc(collection(db, "pghub_manual_bookings"), secondaryRecord);
+          await updateDoc(doc(db, "pghub_manual_bookings", primaryDocRef.id), {
+            secondaryBookingId: secDocRef.id,
+            "secondaryTenant.id": secDocRef.id
+          });
+        }
+
+        for (const extraT of additionalTenants) {
+          const extraRecord = {
+            ownerId: currentOwnerUid,
+            propertyId: propId,
+            parentBookingId: primaryDocRef.id,
+            primaryBookingId: primaryDocRef.id,
+            isSecondaryTenant: true,
+            tenantRole: "roommate",
+            primaryTenantName: primaryName,
+            name: extraT.name,
+            mobile: extraT.mobile,
+            email: extraT.email,
+            occupation: extraT.occupation,
+            roomType: roomTypeVal,
+            roomDesignation: designationNum,
+            rent: 0,
+            securityDeposit: 0,
+            joiningDate: joiningDateVal,
+            status: "Active",
+            isActive: true,
+            createdAt: Date.now()
+          };
+          await addDoc(collection(db, "pghub_manual_bookings"), extraRecord);
+        }
+
         window.closeModal('addModal');
         document.getElementById("addForm").reset();
-        loadLedgerEngine();
-      } catch(err) { alert("Error: " + err.message); }
+        window.resetSecondaryTenantForm();
+
+        if (currentActiveBuildingId) {
+          await window.loadBuildingRegister(currentActiveBuildingId);
+        } else {
+          loadBuildingsList();
+        }
+      } catch (err) {
+        alert("Error saving booking: " + err.message);
+      }
     };
 
     window.toggleFutureMonthsPanel = () => {
       const panel = document.getElementById("futureMonthsPanel");
       const btn = document.getElementById("futureMonthsTriggerBtn");
-      if(panel.style.display === "flex") {
+      if (panel.style.display === "flex") {
         panel.style.display = "none";
         btn.innerText = "➕ Pay for Future Months (Next 5 Months)";
       } else {
@@ -533,13 +2775,17 @@
       }
     };
 
+    /* ========================================================
+       RENT COLLECTION ENGINE
+       ======================================================== */
     window.openRentModal = (id) => {
       const tenant = localTenantsCache[id];
-      document.getElementById("popRentName").innerText = tenant.name;
-      
+      if (!tenant) return;
+
+      const secTenant = tenant.secondaryTenant || (tenant.tenants && tenant.tenants.find(t => t.role === "secondary"));
+      document.getElementById("popRentName").innerText = tenant.name + (secTenant && secTenant.name ? ' & ' + secTenant.name : '');
       const currentContainer = document.getElementById("currentMonthContainer");
       const futureContainer = document.getElementById("futureMonthsContainer");
-      
       currentContainer.innerHTML = "";
       futureContainer.innerHTML = "";
       
@@ -581,7 +2827,6 @@
           </div>
         `;
 
-        // Splits display dynamically: Current or past history vs advance dropdown
         if (mDate <= curDateBoundary) {
           hasCurrentOrPastDues = true;
           currentContainer.appendChild(rowDiv);
@@ -593,7 +2838,7 @@
       if (!hasCurrentOrPastDues) {
         currentContainer.innerHTML = `<div style="text-align:center; padding:15px; color:var(--success); font-weight:700;">Current Month Status: Fully Settled 🟢</div>`;
       }
-      if(futureContainer.children.length === 0) {
+      if (futureContainer.children.length === 0) {
         futureContainer.innerHTML = `<div style="text-align:center; padding:10px; color:var(--text-muted); font-style:italic;">No future months registered framework.</div>`;
       }
 
@@ -603,13 +2848,12 @@
     window.triggerMonthPayInput = (id, mKey, balance) => {
       document.getElementById(`inputWrapper-${id}-${mKey}`).style.display = "block";
       const payBtn = document.querySelector(`#header-${id}-${mKey} .btn-action-pay`);
-      if(payBtn) payBtn.style.display = "none";
+      if (payBtn) payBtn.style.display = "none";
     };
 
     window.submitSingleMonthReceipt = async (id, mKey) => {
       const tenant = localTenantsCache[id];
       const enteredAmt = parseInt(document.getElementById(`amtInput-${id}-${mKey}`).value) || 0;
-      
       let monthlyAccounts = tenant.monthlyAccounts || {};
       let currentAcc = monthlyAccounts[mKey];
 
@@ -634,11 +2878,18 @@
 
         alert(`Payment of ₹${enteredAmt} successfully recorded for ${monthLabel}!`);
         window.closeModal('rentModal');
-        await loadLedgerEngine();
+        if (currentActiveBuildingId) {
+          await window.loadBuildingRegister(currentActiveBuildingId);
+        }
         window.openRentModal(id);
-      } catch(err) { alert("Transaction Failure: " + err.message); }
+      } catch (err) {
+        alert("Transaction Failure: " + err.message);
+      }
     };
 
+    /* ========================================================
+       TENANT AUDIT & DETAILS MODAL
+       ======================================================== */
     window.toggleHistoryPanel = () => {
       const panel = document.getElementById("historyDropdownPanel");
       const btn = document.getElementById("toggleHistoryBtn");
@@ -653,16 +2904,32 @@
 
     window.openDetailModal = (id) => {
       const tenant = localTenantsCache[id];
+      if (!tenant) return;
+
       document.getElementById("detailTenantId").value = id;
       document.getElementById("detailName").value = tenant.name;
       document.getElementById("detailMobile").value = tenant.mobile;
+      if (document.getElementById("detailEmail")) {
+        document.getElementById("detailEmail").value = tenant.email || "";
+      }
       document.getElementById("detailRoomType").value = tenant.roomType || "Room";
       document.getElementById("detailRoomDesignation").value = tenant.roomDesignation || "";
       document.getElementById("detailRent").value = tenant.rent;
       document.getElementById("detailOccupation").value = tenant.occupation;
-      
       document.getElementById("detailSecurityDisplay").innerText = tenant.securityDeposit ? `₹${tenant.securityDeposit}` : "₹0";
-      
+
+      const secGroup = document.getElementById("detailSecondaryGroup");
+      const secTenant = tenant.secondaryTenant || (tenant.tenants && tenant.tenants.find(t => t.role === "secondary"));
+      if (secTenant && secTenant.name) {
+        if (secGroup) secGroup.style.display = "block";
+        if (document.getElementById("detailSecondaryName")) document.getElementById("detailSecondaryName").value = secTenant.name || "";
+        if (document.getElementById("detailSecondaryMobile")) document.getElementById("detailSecondaryMobile").value = secTenant.mobile || "";
+        if (document.getElementById("detailSecondaryEmail")) document.getElementById("detailSecondaryEmail").value = secTenant.email || "";
+        if (document.getElementById("detailSecondaryOccupation")) document.getElementById("detailSecondaryOccupation").value = secTenant.occupation || "";
+      } else {
+        if (secGroup) secGroup.style.display = "none";
+      }
+
       const jd = new Date(tenant.joiningDate);
       document.getElementById("detailJoiningDate").value = isNaN(jd.getTime()) ? tenant.joiningDate : jd.toLocaleDateString('en-IN', {day: 'numeric', month: 'short', year: 'numeric'});
 
@@ -671,7 +2938,6 @@
 
       const breakdownBox = document.getElementById("breakdownContainer");
       breakdownBox.innerHTML = "";
-      
       let monthlyAccounts = tenant.monthlyAccounts || {};
 
       Object.keys(monthlyAccounts).sort((a,b) => {
@@ -686,7 +2952,7 @@
         let cardTheme = "unpaid-card";
         let labelText = "Settlement Pending";
         
-        if(acc.baki === 0) {
+        if (acc.baki === 0) {
           statusClass = "paid";
           cardTheme = "paid-card";
           labelText = "Fully Settled";
@@ -716,7 +2982,7 @@
       const histBox = document.getElementById("historyContainer");
       histBox.innerHTML = "";
       let logs = tenant.paymentHistory || [];
-      if(logs.length === 0) {
+      if (logs.length === 0) {
         histBox.innerHTML = `<div style="font-size:12px; color:var(--text-muted); text-align:center; padding:15px; font-style:italic;">No transactions logged yet.</div>`;
       } else {
         logs.forEach(logText => {
@@ -733,11 +2999,15 @@
     window.enableEditMode = () => {
       document.getElementById("detailName").disabled = false;
       document.getElementById("detailMobile").disabled = false;
+      if (document.getElementById("detailEmail")) document.getElementById("detailEmail").disabled = false;
       document.getElementById("detailRoomType").disabled = false;
       document.getElementById("detailRoomDesignation").disabled = false;
       document.getElementById("detailRent").disabled = false;
       document.getElementById("detailOccupation").disabled = false;
-      
+      if (document.getElementById("detailSecondaryName")) document.getElementById("detailSecondaryName").disabled = false;
+      if (document.getElementById("detailSecondaryMobile")) document.getElementById("detailSecondaryMobile").disabled = false;
+      if (document.getElementById("detailSecondaryEmail")) document.getElementById("detailSecondaryEmail").disabled = false;
+      if (document.getElementById("detailSecondaryOccupation")) document.getElementById("detailSecondaryOccupation").disabled = false;
       document.getElementById("editTriggerBtn").style.display = "none";
       document.getElementById("saveEditBtn").style.display = "block";
     };
@@ -745,11 +3015,15 @@
     window.disableEditMode = () => {
       document.getElementById("detailName").disabled = true;
       document.getElementById("detailMobile").disabled = true;
+      if (document.getElementById("detailEmail")) document.getElementById("detailEmail").disabled = true;
       document.getElementById("detailRoomType").disabled = true;
       document.getElementById("detailRoomDesignation").disabled = true;
       document.getElementById("detailRent").disabled = true;
       document.getElementById("detailOccupation").disabled = true;
-      
+      if (document.getElementById("detailSecondaryName")) document.getElementById("detailSecondaryName").disabled = true;
+      if (document.getElementById("detailSecondaryMobile")) document.getElementById("detailSecondaryMobile").disabled = true;
+      if (document.getElementById("detailSecondaryEmail")) document.getElementById("detailSecondaryEmail").disabled = true;
+      if (document.getElementById("detailSecondaryOccupation")) document.getElementById("detailSecondaryOccupation").disabled = true;
       document.getElementById("editTriggerBtn").style.display = "block";
       document.getElementById("saveEditBtn").style.display = "none";
     };
@@ -768,9 +3042,11 @@
          }
       });
       
+      const emailField = document.getElementById("detailEmail");
       const updatedData = {
         name: document.getElementById("detailName").value.trim(),
         mobile: document.getElementById("detailMobile").value.trim(),
+        email: emailField ? emailField.value.trim() : (tenant.email || ""),
         roomType: document.getElementById("detailRoomType").value,
         roomDesignation: document.getElementById("detailRoomDesignation").value.trim(),
         rent: updatedRent,
@@ -778,21 +3054,409 @@
         occupation: document.getElementById("detailOccupation").value.trim()
       };
 
+      const secNameInput = document.getElementById("detailSecondaryName");
+      if (secNameInput && secNameInput.value.trim()) {
+        const secName = secNameInput.value.trim();
+        const secMobile = document.getElementById("detailSecondaryMobile") ? document.getElementById("detailSecondaryMobile").value.trim() : "";
+        const secEmail = document.getElementById("detailSecondaryEmail") ? document.getElementById("detailSecondaryEmail").value.trim() : "";
+        const secOcc = document.getElementById("detailSecondaryOccupation") ? document.getElementById("detailSecondaryOccupation").value.trim() : "";
+        
+        updatedData.hasSecondaryTenant = true;
+        updatedData.secondaryTenant = {
+          name: secName,
+          mobile: secMobile,
+          email: secEmail,
+          occupation: secOcc
+        };
+        updatedData.tenants = [
+          { role: "primary", name: updatedData.name, mobile: updatedData.mobile, email: updatedData.email, occupation: updatedData.occupation },
+          { role: "secondary", name: secName, mobile: secMobile, email: secEmail, occupation: secOcc }
+        ];
+
+        if (tenant.secondaryBookingId) {
+          try {
+            await updateDoc(doc(db, "pghub_manual_bookings", tenant.secondaryBookingId), {
+              name: secName,
+              mobile: secMobile,
+              email: secEmail,
+              occupation: secOcc,
+              primaryTenantName: updatedData.name,
+              roomType: updatedData.roomType,
+              roomDesignation: updatedData.roomDesignation
+            });
+          } catch (e) {
+            console.warn("Could not sync secondary tenant edit:", e);
+          }
+        }
+      }
+
       try {
         await updateDoc(doc(db, "pghub_manual_bookings", id), updatedData);
         alert("Tenant details updated successfully!");
         window.closeModal('detailModal');
-        loadLedgerEngine();
-      } catch(err) { alert("Update failed: " + err.message); }
+        if (currentActiveBuildingId) {
+          await window.loadBuildingRegister(currentActiveBuildingId);
+        }
+      } catch (err) {
+        alert("Update failed: " + err.message);
+      }
     };
 
-    window.deleteTenant = async (id) => {
-      if(confirm("Are you absolutely sure you want to permanently delete this tenant log? This cannot be undone.")) {
-        try {
-          await deleteDoc(doc(db, "pghub_manual_bookings", id));
-          loadLedgerEngine();
-        } catch(err) { alert("Deletion failure: " + err.message); }
+    window.vacateRoom = async (id) => {
+      if (!id) {
+        alert("Booking ID not found.");
+        return;
       }
+
+      if (!confirm("Are you sure you want to remove this tenant and vacate the room?")) {
+        return;
+      }
+
+      try {
+        const bookingRef = doc(db, "pghub_manual_bookings", id);
+        await updateDoc(bookingRef, {
+          status: "DELETED",
+          isActive: false,
+          roomStatus: "VACANT",
+          vacatedAt: serverTimestamp()
+        });
+
+        const tenant = localTenantsCache[id];
+        if (tenant && tenant.secondaryBookingId) {
+          try {
+            await updateDoc(doc(db, "pghub_manual_bookings", tenant.secondaryBookingId), {
+              status: "DELETED",
+              isActive: false,
+              roomStatus: "VACANT",
+              vacatedAt: serverTimestamp()
+            });
+          } catch (e) {
+            console.warn("Could not sync secondary tenant vacate:", e);
+          }
+        }
+
+        if (localTenantsCache[id]) {
+          localTenantsCache[id].status = "DELETED";
+          localTenantsCache[id].isActive = false;
+          localTenantsCache[id].roomStatus = "VACANT";
+        }
+
+        window.closeModal('detailModal');
+
+        if (currentActiveBuildingId) {
+          await window.loadBuildingRegister(currentActiveBuildingId);
+        } else {
+          await loadBuildingsList();
+        }
+      } catch (err) {
+        console.error("Vacate room error:", err);
+        alert("Failed to vacate room: " + err.message);
+      }
+    };
+
+    window.deleteTenant = window.vacateRoom;
+
+    /* ========================================================
+       PAST TENANTS / HISTORY MODULE
+       ======================================================== */
+    function escapeHtml(str) {
+      if (!str) return '';
+      return String(str)
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;")
+        .replace(/"/g, "&quot;")
+        .replace(/'/g, "&#039;");
+    }
+
+    function formatPastTenantDate(val) {
+      if (!val) return "Not Recorded";
+      if (typeof val.toDate === "function") {
+        try {
+          return val.toDate().toLocaleDateString("en-IN", { day: "numeric", month: "short", year: "numeric" });
+        } catch (e) {}
+      }
+      if (val && typeof val.seconds === "number") {
+        try {
+          return new Date(val.seconds * 1000).toLocaleDateString("en-IN", { day: "numeric", month: "short", year: "numeric" });
+        } catch (e) {}
+      }
+      if (typeof val === "number") {
+        try {
+          return new Date(val).toLocaleDateString("en-IN", { day: "numeric", month: "short", year: "numeric" });
+        } catch (e) {}
+      }
+      if (typeof val === "string") {
+        const d = new Date(val);
+        if (!isNaN(d.getTime())) {
+          return d.toLocaleDateString("en-IN", { day: "numeric", month: "short", year: "numeric" });
+        }
+        return val;
+      }
+      return "Not Recorded";
+    }
+
+    window.currentPastTenantsList = [];
+
+    window.openPastTenantsHistoryModal = async (buildingId) => {
+      const targetBuildingId = buildingId || currentActiveBuildingId;
+      if (!targetBuildingId) {
+        alert("Building ID is not available.");
+        return;
+      }
+
+      const modal = document.getElementById("historyModal");
+      const listContainer = document.getElementById("pastTenantsListHolder");
+      const subtitle = document.getElementById("historyModalSubtitle");
+      const searchInput = document.getElementById("historySearchInput");
+
+      if (searchInput) searchInput.value = "";
+      if (subtitle) {
+        const bName = currentBuildingData ? (currentBuildingData.buildingName || currentBuildingData.name || currentBuildingData.houseName || "Building") : "Building";
+        subtitle.innerText = `Archived tenant records for ${bName}`;
+      }
+
+      modal.style.display = "flex";
+      listContainer.innerHTML = `<div class="empty-msg" style="padding: 30px;">Fetching past tenant records... Live syncing ⏳</div>`;
+
+      try {
+        const pastTenantsMap = new Map();
+
+        // Query 1: strictly matching buildingId == currentBuildingId and status == "DELETED" (Requirement 4)
+        try {
+          const q1 = query(
+            collection(db, "pghub_manual_bookings"),
+            where("buildingId", "==", targetBuildingId),
+            where("status", "==", "DELETED")
+          );
+          const snap1 = await getDocs(q1);
+          snap1.forEach(d => pastTenantsMap.set(d.id, { id: d.id, ...d.data() }));
+        } catch (e) {
+          console.warn("Query buildingId DELETED error:", e);
+        }
+
+        // Query 2: matching propertyId == targetBuildingId and status == "DELETED"
+        try {
+          const q2 = query(
+            collection(db, "pghub_manual_bookings"),
+            where("propertyId", "==", targetBuildingId),
+            where("status", "==", "DELETED")
+          );
+          const snap2 = await getDocs(q2);
+          snap2.forEach(d => pastTenantsMap.set(d.id, { id: d.id, ...d.data() }));
+        } catch (e) {
+          console.warn("Query propertyId DELETED error:", e);
+        }
+
+        // Query 3: status == "CHECKED_OUT" (Requirement 2)
+        try {
+          const q3 = query(
+            collection(db, "pghub_manual_bookings"),
+            where("buildingId", "==", targetBuildingId),
+            where("status", "==", "CHECKED_OUT")
+          );
+          const snap3 = await getDocs(q3);
+          snap3.forEach(d => pastTenantsMap.set(d.id, { id: d.id, ...d.data() }));
+        } catch (e) {}
+
+        try {
+          const q4 = query(
+            collection(db, "pghub_manual_bookings"),
+            where("propertyId", "==", targetBuildingId),
+            where("status", "==", "CHECKED_OUT")
+          );
+          const snap4 = await getDocs(q4);
+          snap4.forEach(d => pastTenantsMap.set(d.id, { id: d.id, ...d.data() }));
+        } catch (e) {}
+
+        // Fallback: check building/property documents to catch any case differences (e.g. "deleted", "checked_out")
+        if (pastTenantsMap.size === 0) {
+          try {
+            const qFb1 = query(collection(db, "pghub_manual_bookings"), where("propertyId", "==", targetBuildingId));
+            const snapFb1 = await getDocs(qFb1);
+            snapFb1.forEach(d => {
+              const data = d.data();
+              const st = String(data.status || '').toUpperCase();
+              if (st === "DELETED" || st === "CHECKED_OUT") {
+                pastTenantsMap.set(d.id, { id: d.id, ...data });
+              }
+            });
+          } catch (e) {}
+
+          try {
+            const qFb2 = query(collection(db, "pghub_manual_bookings"), where("buildingId", "==", targetBuildingId));
+            const snapFb2 = await getDocs(qFb2);
+            snapFb2.forEach(d => {
+              const data = d.data();
+              const st = String(data.status || '').toUpperCase();
+              if (st === "DELETED" || st === "CHECKED_OUT") {
+                pastTenantsMap.set(d.id, { id: d.id, ...data });
+              }
+            });
+          } catch (e) {}
+        }
+
+        window.currentPastTenantsList = Array.from(pastTenantsMap.values());
+
+        // Sort by vacatedAt / leavingDate / createdAt descending (most recent first)
+        window.currentPastTenantsList.sort((a, b) => {
+          const getT = (item) => {
+            const val = item.vacatedAt || item.leavingDate || item.createdAt;
+            if (!val) return 0;
+            if (val.seconds) return val.seconds * 1000;
+            if (typeof val.toDate === 'function') return val.toDate().getTime();
+            const d = new Date(val).getTime();
+            return isNaN(d) ? 0 : d;
+          };
+          return getT(b) - getT(a);
+        });
+
+        renderPastTenantsList(window.currentPastTenantsList);
+
+      } catch (err) {
+        console.error("Error fetching past tenants:", err);
+        listContainer.innerHTML = `<div class="empty-msg" style="color:var(--danger); padding:30px;">Error loading history: ${err.message}</div>`;
+      }
+    };
+
+    function renderPastTenantsList(tenantsList) {
+      const container = document.getElementById("pastTenantsListHolder");
+      if (!container) return;
+
+      if (!tenantsList || tenantsList.length === 0) {
+        container.innerHTML = `
+          <div style="text-align:center; padding: 40px 20px; color: var(--text-muted);">
+            <div style="font-size: 40px; margin-bottom: 12px;">📜</div>
+            <div style="font-weight: 700; font-size: 16px; color: var(--text); margin-bottom: 6px;">No Past Tenants Found</div>
+            <div style="font-size: 13.5px; line-height: 1.5; max-width: 340px; margin: 0 auto;">
+              No archived, deleted, or vacated tenant records found for this property.
+            </div>
+          </div>
+        `;
+        return;
+      }
+
+      container.innerHTML = "";
+
+      tenantsList.forEach((tenant) => {
+        const item = document.createElement("div");
+        item.className = "past-tenant-item";
+        item.id = `past-item-${tenant.id}`;
+
+        const pName = escapeHtml(tenant.name || "Unnamed Tenant");
+        const secTenant = tenant.secondaryTenant || (tenant.tenants && tenant.tenants.find(t => t.role === "secondary"));
+        const secNameStr = secTenant && secTenant.name ? ` & ${escapeHtml(secTenant.name)}` : '';
+        const name = `${pName}${secNameStr}`;
+        const secPhoneStr = secTenant && secTenant.mobile ? ` | 📞 +91 ${escapeHtml(secTenant.mobile)}` : '';
+        const phone = `${escapeHtml(tenant.mobile || tenant.phone || "No phone number")}${secPhoneStr}`;
+        const roomDesig = tenant.roomDesignation || tenant.roomNumber || tenant.roomNo || "";
+
+        // Strictly the 4 required details:
+        // 1. Joining Date (joinedDate / joiningDate)
+        const rawJoining = tenant.joinedDate || tenant.joiningDate || tenant.joinDate || tenant.createdAt;
+        const joiningFormatted = formatPastTenantDate(rawJoining);
+
+        // 2. Leaving Date (vacatedAt / leavingDate)
+        const rawLeaving = tenant.vacatedAt || tenant.leavingDate || tenant.vacateDate || tenant.checkoutDate;
+        const leavingFormatted = formatPastTenantDate(rawLeaving);
+
+        // 3. SECURITY DEPOSIT Money (cautionMoney / securityDeposit)
+        let depositVal = 0;
+        if (tenant.cautionMoney !== undefined && tenant.cautionMoney !== null && tenant.cautionMoney !== '') {
+          depositVal = tenant.cautionMoney;
+        } else if (tenant.securityDeposit !== undefined && tenant.securityDeposit !== null && tenant.securityDeposit !== '') {
+          depositVal = tenant.securityDeposit;
+        }
+        const depositFormatted = isNaN(Number(depositVal)) ? String(depositVal) : `₹${Number(depositVal).toLocaleString('en-IN')}`;
+
+        // 4. Paid Status (cautionMoneyStatus / paymentStatus)
+        let paidStatus = tenant.cautionMoneyStatus || tenant.paymentStatus || tenant.depositStatus;
+        if (!paidStatus) {
+          paidStatus = (Number(depositVal) > 0) ? "PAID" : "N/A";
+        }
+        const sUpper = String(paidStatus).trim().toUpperCase();
+        let pillClass = "status-neutral";
+        if (sUpper.includes("PAID") || sUpper.includes("SETTLED") || sUpper.includes("SUCCESS") || sUpper.includes("REFUNDED")) {
+          pillClass = "status-paid";
+        } else if (sUpper.includes("UNPAID") || sUpper.includes("PENDING") || sUpper.includes("DUE") || sUpper.includes("FAILED")) {
+          pillClass = "status-unpaid";
+        }
+
+        item.innerHTML = `
+          <div class="past-tenant-header-row" onclick="window.togglePastTenantDetails('${tenant.id}')">
+            <div class="past-tenant-identity">
+              <div class="past-tenant-avatar">👤</div>
+              <div>
+                <div class="past-tenant-name">${name}</div>
+                <div class="past-tenant-phone">📞 ${phone}</div>
+              </div>
+            </div>
+            <div class="past-tenant-meta">
+              ${roomDesig ? `<span class="past-tenant-room-badge">Unit ${escapeHtml(roomDesig)}</span>` : ''}
+              <span class="past-tenant-chevron" id="chevron-${tenant.id}">▼</span>
+            </div>
+          </div>
+          <div class="past-tenant-details-card" id="past-details-${tenant.id}" style="display: none;">
+            <div class="past-details-grid">
+              <div class="past-detail-box">
+                <div class="past-detail-label">📅 Joining Date</div>
+                <div class="past-detail-value">${joiningFormatted}</div>
+              </div>
+              <div class="past-detail-box">
+                <div class="past-detail-label">🚪 Leaving Date</div>
+                <div class="past-detail-value">${leavingFormatted}</div>
+              </div>
+              <div class="past-detail-box">
+                <div class="past-detail-label">🛡️ Security Deposit</div>
+                <div class="past-detail-value">${depositFormatted}</div>
+              </div>
+              <div class="past-detail-box">
+                <div class="past-detail-label">💳 Paid Status</div>
+                <div class="past-detail-value">
+                  <span class="history-status-pill ${pillClass}">${escapeHtml(paidStatus)}</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        `;
+
+        container.appendChild(item);
+      });
+    }
+
+    window.togglePastTenantDetails = (tenantId) => {
+      const detailsEl = document.getElementById(`past-details-${tenantId}`);
+      const chevronEl = document.getElementById(`chevron-${tenantId}`);
+      if (!detailsEl) return;
+
+      const isOpen = detailsEl.style.display !== "none";
+      if (isOpen) {
+        detailsEl.style.display = "none";
+        if (chevronEl) chevronEl.classList.remove("open");
+      } else {
+        detailsEl.style.display = "block";
+        if (chevronEl) chevronEl.classList.add("open");
+      }
+    };
+
+    window.filterPastTenantsList = (query) => {
+      const q = (query || "").trim().toLowerCase();
+      if (!window.currentPastTenantsList) return;
+
+      if (!q) {
+        renderPastTenantsList(window.currentPastTenantsList);
+        return;
+      }
+
+      const filtered = window.currentPastTenantsList.filter(t => {
+        const sec = t.secondaryTenant || (t.tenants && t.tenants.find(x => x.role === "secondary"));
+        const nameMatch = (t.name || "").toLowerCase().includes(q) || (sec && sec.name && sec.name.toLowerCase().includes(q));
+        const phoneMatch = (t.mobile || t.phone || "").includes(q) || (sec && sec.mobile && sec.mobile.includes(q));
+        const roomMatch = (t.roomDesignation || t.roomNumber || "").toLowerCase().includes(q);
+        return nameMatch || phoneMatch || roomMatch;
+      });
+
+      renderPastTenantsList(filtered);
     };
   </script>
 </body>
