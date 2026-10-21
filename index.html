@@ -51,6 +51,10 @@
       margin-top: 12px;
       margin-bottom: 15px;
       width: 100%;
+      max-width: 100%;
+      box-sizing: border-box;
+      flex-wrap: wrap;
+      overflow-x: hidden;
     }
 
     /* Top Right Favorite Button Highlight Style */
@@ -147,6 +151,40 @@
       font-weight: bold;
       z-index: 10;
     }
+
+    /* 🏷️ Live Vacant Breakdown Tag */
+    .b-vacant-summary-tag {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      background: #ecfdf5;
+      border: 1px solid #a7f3d0;
+      color: #047857;
+      padding: 4px 8px;
+      border-radius: 6px;
+      font-size: 11.5px;
+      font-weight: 700;
+      margin: 6px 0 3px 0;
+      width: fit-content;
+      max-width: 100%;
+      flex-wrap: wrap;
+      line-height: 1.3;
+    }
+    .b-vacant-summary-tag .b-vacant-dot {
+      font-size: 9px;
+      display: inline-flex;
+      align-items: center;
+    }
+    .b-vacant-summary-tag .b-vacant-sep {
+      color: #6ee7b7;
+      margin: 0 4px;
+      font-weight: 700;
+    }
+    .b-vacant-summary-tag.is-empty {
+      background: #f8fafc;
+      border-color: #e2e8f0;
+      color: #64748b;
+    }
   </style>
 </head>
 
@@ -180,12 +218,56 @@
         <div id="searchChipsContainer" class="search-chips-wrapper"></div>
       </div>
 
+      <button type="button" id="nearMeBtn" class="near-me-btn" onclick="window.toggleNearMeFilter()" title="Show properties near your current location">
+        📍 Near Me
+      </button>
+
       <div id="loginText" class="action-box" onclick="window.handleLoginClick()">Login</div>
       <div id="userNumberDisplay" class="action-box" style="display: none; font-weight: bold; color: #2874f0;"></div>
 
       <!-- CLICKABLE TOP RIGHT FAVORITE BUTTON -->
       <div id="topFavBtn" class="box action-box fav-header-btn" onclick="window.showFavoriteRooms()">
         ❤️ <span id="favCount" style="font-weight: bold; color: #e74c3c; font-size: 13px;">(0)</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- 📍 LOCATION QUICK PICKER MODAL -->
+  <div id="locationPickerModal" class="location-picker-modal" style="display: none;">
+    <div class="location-modal-backdrop" onclick="window.closeLocationPicker()"></div>
+    <div class="location-modal-card">
+      <div class="location-modal-header">
+        <div class="location-modal-title">
+          <span style="font-size: 20px;">📍</span>
+          <div>
+            <h3 style="margin: 0; font-size: 16px; color: #1e293b;">Select Location / Area</h3>
+            <p style="margin: 2px 0 0 0; font-size: 12px; color: #64748b;">Find verified PGs & flats in your preferred locality</p>
+          </div>
+        </div>
+        <button type="button" class="location-modal-close" onclick="window.closeLocationPicker()">✕</button>
+      </div>
+
+      <div class="location-modal-search">
+        <input 
+          type="text" 
+          id="locationSearchInput" 
+          placeholder="Search area, city, or landmark (Press Enter)..." 
+          oninput="window.filterLocationChips(this.value)"
+          onkeydown="if(event.key === 'Enter') { event.preventDefault(); window.submitLocationSearch(this.value); }"
+        >
+      </div>
+
+      <div class="location-modal-body">
+        <div class="location-gps-option" onclick="window.useDeviceGpsLocation()">
+          <span class="gps-icon">🎯</span>
+          <div>
+            <strong style="color: #1e40af; font-size: 13.5px;">Use Current Device Location (GPS)</strong>
+            <small style="display: block; color: #64748b; font-size: 11.5px;">Detect nearby properties using device GPS</small>
+          </div>
+        </div>
+
+        <div class="location-section-title">🏙️ Available Cities & Localities</div>
+        <div id="locationChipsContainer" class="location-chips-grid"></div>
       </div>
     </div>
   </div>
@@ -201,6 +283,8 @@
     <div class="cat-btn" data-category="2BHK Flat" onclick="filterCategory(this)">2BHK Flat</div>
     <div class="cat-btn" data-category="3BHK Flat" onclick="filterCategory(this)">3BHK Flat</div>
   </div>
+
+  <div id="nearMeStatusBanner" class="near-me-status-banner" style="display: none;"></div>
 
   <div class="grid" id="roomList"></div>
 
